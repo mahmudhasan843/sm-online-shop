@@ -1,0 +1,73 @@
+{
+  "settings": {
+    "shopName": "SM Online Shop",
+    "tagline": "Style • Comfort • Confidence ♥",
+    "phone1": "01827872334",
+    "phone2": "01886995687",
+    "facebook": "https://www.facebook.com/share/1Dr8FEmuoQ/",
+    "currency": "BDT"
+  },
+  "products": [
+    {
+      "id": 1,
+      "name": "Elegant Party Dress",
+      "category": "Dresses",
+      "price": 1550,
+      "oldPrice": 1950,
+      "discount": 20,
+      "stock": 20,
+      "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=85"
+    },
+    {
+      "id": 2,
+      "name": "Floral Long Kurti",
+      "category": "Tops",
+      "price": 1450,
+      "oldPrice": 1930,
+      "discount": 25,
+      "stock": 15,
+      "image": "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=700&q=85"
+    },
+    {
+      "id": 3,
+      "name": "Luxury Embroidered Saree",
+      "category": "Saree",
+      "price": 1750,
+      "oldPrice": 2130,
+      "discount": 18,
+      "stock": 12,
+      "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=85"
+    },
+    {
+      "id": 4,
+      "name": "Premium Chiffon Hijab",
+      "category": "Hijab",
+      "price": 550,
+      "oldPrice": 700,
+      "discount": 22,
+      "stock": 30,
+      "image": "https://images.unsplash.com/photo-1584187774001-0d7a5c5c0e44?auto=format&fit=crop&w=700&q=85"
+    },
+    {
+      "id": 5,
+      "name": "Stylish Hand Bag",
+      "category": "Bags",
+      "price": 1350,
+      "oldPrice": 1730,
+      "discount": 22,
+      "stock": 18,
+      "image": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=85"
+    },
+    {
+      "id": 6,
+      "name": "Trendy Casual Shoes",
+      "category": "Shoes",
+      "price": 1299,
+      "oldPrice": 1855,
+      "discount": 30,
+      "stock": 22,
+      "image": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
+    }
+  ],
+  "orders": []
+}
