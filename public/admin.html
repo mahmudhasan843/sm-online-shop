@@ -1,911 +1,1849 @@
-const express = require("express");
-const path = require("path");
-const fs = require("fs");
-const crypto = require("crypto");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
 
-const app = express();
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-const PORT = process.env.PORT || 3000;
+  <title>SM Online Shop — Admin Panel</title>
 
-
-/* =====================================
-   BODY SIZE
-   Image compressed Base64 data রাখার জন্য
-===================================== */
-
-app.use(express.json({
-  limit: "3mb"
-}));
-
-app.use(express.urlencoded({
-  extended: true,
-  limit: "3mb"
-}));
-
-
-/* =====================================
-   PUBLIC
-===================================== */
-
-app.use(
-  express.static(
-    path.join(__dirname, "public")
-  )
-);
-
-
-/* =====================================
-   DATA FILE
-===================================== */
-
-const DATA =
-  path.join(__dirname, "data.json");
-
-
-const SECRET =
-  process.env.SESSION_SECRET ||
-  "CHANGE_THIS_SECRET";
-
-
-const ADMIN_USER =
-  process.env.ADMIN_USER ||
-  "SMADMIN";
-
-
-const ADMIN_PASS =
-  process.env.ADMIN_PASS ||
-  "SM2728";
-
-
-/* =====================================
-   DEFAULT DATA
-===================================== */
-
-const defaultData = {
-
-  settings: {
-
-    shopName: "SM Online Shop",
-
-    tagline:
-      "Style • Comfort • Confidence ♥",
-
-    phone1: "01827872334",
-
-    phone2: "01886995687",
-
-    facebook:
-      "https://www.facebook.com/",
-
-    currency: "BDT"
-
-  },
-
-
-  products: [
-
-    {
-      id: 1,
-      name: "Elegant Party Dress",
-      category: "Dresses",
-      price: 1550,
-      oldPrice: 1950,
-      discount: 20,
-      stock: 20,
-      image:
-        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-      id: 2,
-      name: "Floral Long Kurti",
-      category: "Tops",
-      price: 1450,
-      oldPrice: 1930,
-      discount: 25,
-      stock: 15,
-      image:
-        "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-      id: 3,
-      name: "Luxury Embroidered Saree",
-      category: "Saree",
-      price: 1750,
-      oldPrice: 2130,
-      discount: 18,
-      stock: 12,
-      image:
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-      id: 4,
-      name: "Premium Chiffon Hijab",
-      category: "Hijab",
-      price: 550,
-      oldPrice: 700,
-      discount: 22,
-      stock: 30,
-      image:
-        "https://images.unsplash.com/photo-1584187774001-0d7a5c5c0e44?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-      id: 5,
-      name: "Stylish Hand Bag",
-      category: "Bags",
-      price: 1350,
-      oldPrice: 1730,
-      discount: 22,
-      stock: 18,
-      image:
-        "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-      id: 6,
-      name: "Trendy Casual Shoes",
-      category: "Shoes",
-      price: 1299,
-      oldPrice: 1855,
-      discount: 30,
-      stock: 22,
-      image:
-        "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
+  <style>
+    * {
+      box-sizing: border-box;
     }
 
-  ],
+    body {
+      margin: 0;
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+      background: #f4f5f7;
+      color: #222;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .topbar {
+      height: 60px;
+      background: #17131b;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .brand {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .logout-btn {
+      background: #777;
+      color: white;
+      border: 0;
+      padding: 9px 15px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+
+    .layout {
+      display: flex;
+      min-height: calc(100vh - 60px);
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #17131b;
+      color: white;
+      padding: 20px 12px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: white;
+      padding: 13px 12px;
+      margin-bottom: 6px;
+      text-align: left;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: #ed1268;
+    }
+
+    .main {
+      flex: 1;
+      padding: 24px;
+      overflow-x: auto;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: #17131b;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .login-box h1 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .login-box p {
+      text-align: center;
+      color: #666;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .field textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .primary-btn {
+      width: 100%;
+      border: 0;
+      background: #ed1268;
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #d00000;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .success {
+      color: #008000;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns:
+        repeat(4, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-title {
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .card-value {
+      font-size: 27px;
+      font-weight: bold;
+      color: #ed1268;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid #eee;
+      padding: 12px 8px;
+      text-align: left;
+    }
+
+    th {
+      background: #fafafa;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .small-btn {
+      border: 0;
+      padding: 7px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 2px;
+    }
+
+    .edit-btn {
+      background: #eee;
+    }
+
+    .delete-btn {
+      background: #ffe1e1;
+      color: #b00000;
+    }
+
+    .status {
+      padding: 5px 9px;
+      border-radius: 15px;
+      background: #fff1b8;
+      display: inline-block;
+    }
+
+    .product-form {
+      display: grid;
+      grid-template-columns:
+        repeat(2, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .form-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 10px;
+    }
+
+    .form-actions button {
+      width: auto;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .secondary-btn {
+      border: 1px solid #ccc;
+      background: white;
+      padding: 11px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .mobile-menu {
+      display: none;
+      background: #ed1268;
+      color: white;
+      border: 0;
+      padding: 8px 12px;
+      border-radius: 7px;
+    }
+
+    @media (max-width: 800px) {
+      .sidebar {
+        width: 180px;
+      }
+
+      .cards {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .product-form {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .layout {
+        display: block;
+      }
+
+      .sidebar {
+        width: 100%;
+        display: none;
+      }
+
+      .sidebar.open {
+        display: block;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .main {
+        padding: 15px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .topbar {
+        padding: 0 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ================= LOGIN ================= -->
+
+<div id="loginScreen" class="login-screen">
+
+  <div class="login-box">
+
+    <h1>🔐 Admin Login</h1>
+
+    <p>SM Online Shop</p>
+
+    <form id="loginForm">
+
+      <div class="field">
+        <label>Username</label>
+
+        <input
+          id="username"
+          type="text"
+          placeholder="Enter username"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+
+        <input
+          id="password"
+          type="password"
+          placeholder="Enter password"
+          required
+        >
+      </div>
+
+      <button
+        class="primary-btn"
+        type="submit"
+      >
+        Login
+      </button>
+
+      <div
+        id="loginMessage"
+        class="error"
+      ></div>
+
+    </form>
+
+  </div>
+
+</div>
 
 
-  orders: []
+<!-- ================= ADMIN APP ================= -->
 
-};
+<div
+  id="adminApp"
+  style="display:none;"
+>
 
+  <div class="topbar">
 
-/* =====================================
-   CREATE DATA FILE IF NOT EXISTS
-===================================== */
+    <div class="brand">
+      SM Online Shop — Admin Panel
+    </div>
 
-if(!fs.existsSync(DATA)){
+    <button
+      class="mobile-menu"
+      onclick="toggleSidebar()"
+    >
+      ☰
+    </button>
 
-  fs.writeFileSync(
-    DATA,
-    JSON.stringify(
-      defaultData,
-      null,
-      2
-    )
-  );
+    <button
+      class="logout-btn"
+      onclick="logout()"
+    >
+      Logout
+    </button>
 
-}
-
-
-/* =====================================
-   READ / WRITE
-===================================== */
-
-function read(){
-
-  try{
-
-    return JSON.parse(
-      fs.readFileSync(
-        DATA,
-        "utf8"
-      )
-    );
-
-  }catch(error){
-
-    console.error(
-      "DATA READ ERROR:",
-      error
-    );
-
-    return defaultData;
-
-  }
-
-}
+  </div>
 
 
-function write(data){
+  <div class="layout">
 
-  fs.writeFileSync(
-    DATA,
-    JSON.stringify(
-      data,
-      null,
-      2
-    )
-  );
+    <!-- SIDEBAR -->
 
-}
+    <aside
+      id="sidebar"
+      class="sidebar"
+    >
 
+      <button
+        class="nav-btn active"
+        onclick="showPage('dashboard', this)"
+      >
+        📊 Dashboard
+      </button>
 
-/* =====================================
-   ADMIN SESSIONS
-===================================== */
+      <button
+        class="nav-btn"
+        onclick="showPage('products', this)"
+      >
+        🛍 Products
+      </button>
 
-const sessions = new Map();
+      <button
+        class="nav-btn"
+        onclick="showPage('orders', this)"
+      >
+        📦 Orders
+      </button>
 
+      <button
+        class="nav-btn"
+        onclick="showPage('settings', this)"
+      >
+        ⚙ Store Settings
+      </button>
 
-function makeToken(user){
+      <button
+        class="nav-btn"
+        onclick="window.open('/', '_blank')"
+      >
+        🌐 View Store
+      </button>
 
-  const raw =
-    user +
-    "." +
-    Date.now() +
-    "." +
-    crypto
-      .randomBytes(24)
-      .toString("hex");
-
-
-  const hash =
-    crypto
-      .createHmac(
-        "sha256",
-        SECRET
-      )
-      .update(raw)
-      .digest("hex");
-
-
-  return (
-    hash +
-    "." +
-    Buffer
-      .from(user)
-      .toString("base64url")
-  );
-
-}
+    </aside>
 
 
-/* =====================================
-   AUTH
-===================================== */
+    <!-- MAIN -->
 
-function auth(req,res,next){
-
-  const token =
-    req.headers.authorization
-      ?.replace("Bearer ","");
+    <main class="main">
 
 
-  if(
-    !token ||
-    !sessions.has(token)
-  ){
+      <!-- ================= DASHBOARD ================= -->
 
-    return res
-      .status(401)
-      .json({
-        error:"Unauthorized"
-      });
+      <section
+        id="dashboard"
+        class="page active"
+      >
 
-  }
+        <h1>📊 Dashboard</h1>
 
+        <div class="cards">
 
-  req.admin =
-    sessions.get(token);
+          <div class="card">
+            <div class="card-title">
+              Products
+            </div>
 
-
-  next();
-
-}
-
-
-/* =====================================
-   STORE API
-===================================== */
-
-app.get(
-  "/api/store",
-  (req,res)=>{
-
-    const d = read();
-
-    res.json({
-
-      settings:d.settings,
-
-      products:d.products
-
-    });
-
-  }
-);
+            <div
+              id="productCount"
+              class="card-value"
+            >
+              0
+            </div>
+          </div>
 
 
-/* =====================================
-   ADMIN LOGIN
-===================================== */
+          <div class="card">
+            <div class="card-title">
+              Orders
+            </div>
 
-app.post(
-  "/api/admin/login",
-  (req,res)=>{
+            <div
+              id="orderCount"
+              class="card-value"
+            >
+              0
+            </div>
+          </div>
 
-    const {
-      username,
-      password
-    } = req.body || {};
+
+          <div class="card">
+            <div class="card-title">
+              Pending
+            </div>
+
+            <div
+              id="pendingCount"
+              class="card-value"
+            >
+              0
+            </div>
+          </div>
 
 
-    if(
-      username !== ADMIN_USER ||
-      password !== ADMIN_PASS
-    ){
+          <div class="card">
+            <div class="card-title">
+              Sales
+            </div>
 
-      return res
-        .status(401)
-        .json({
-          error:"Invalid username or password"
-        });
+            <div
+              id="salesCount"
+              class="card-value"
+            >
+              ৳0
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h2>Welcome 👋</h2>
+
+          <p>
+            এখান থেকে আপনার পুরো online shop
+            পরিচালনা করতে পারবেন।
+          </p>
+
+          <p>
+            Products → পণ্য যোগ/পরিবর্তন/মুছে ফেলুন
+          </p>
+
+          <p>
+            Orders → Customer order দেখুন
+          </p>
+
+          <p>
+            Store Settings → Shop information পরিবর্তন করুন
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================= PRODUCTS ================= -->
+
+      <section
+        id="products"
+        class="page"
+      >
+
+        <h1>🛍 Products</h1>
+
+
+        <div class="panel">
+
+          <h2 id="productFormTitle">
+            Add New Product
+          </h2>
+
+          <form
+            id="productForm"
+            class="product-form"
+          >
+
+            <input
+              type="hidden"
+              id="productId"
+            >
+
+
+            <div class="field">
+              <label>Product Name</label>
+
+              <input
+                id="productName"
+                required
+              >
+            </div>
+
+
+            <div class="field">
+              <label>Category</label>
+
+              <input
+                id="productCategory"
+                placeholder="Dresses"
+              >
+            </div>
+
+
+            <div class="field">
+              <label>Price</label>
+
+              <input
+                id="productPrice"
+                type="number"
+                min="0"
+                required
+              >
+            </div>
+
+
+            <div class="field">
+              <label>Old Price</label>
+
+              <input
+                id="productOldPrice"
+                type="number"
+                min="0"
+              >
+            </div>
+
+
+            <div class="field">
+              <label>Discount %</label>
+
+              <input
+                id="productDiscount"
+                type="number"
+                min="0"
+              >
+            </div>
+
+
+            <div class="field">
+              <label>Stock</label>
+
+              <input
+                id="productStock"
+                type="number"
+                min="0"
+                required
+              >
+            </div>
+
+
+            <div class="field full">
+              <label>Image URL</label>
+
+              <input
+                id="productImage"
+                placeholder="https://..."
+              >
+            </div>
+
+
+            <div class="form-actions">
+
+              <button
+                class="primary-btn"
+                type="submit"
+              >
+                Save Product
+              </button>
+
+              <button
+                type="button"
+                class="secondary-btn"
+                onclick="resetProductForm()"
+              >
+                Clear
+              </button>
+
+            </div>
+
+          </form>
+
+          <div
+            id="productMessage"
+            class="success"
+          ></div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h2>All Products</h2>
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Action</th>
+                </tr>
+
+              </thead>
+
+              <tbody
+                id="productsTable"
+              ></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================= ORDERS ================= -->
+
+      <section
+        id="orders"
+        class="page"
+      >
+
+        <h1>📦 Orders</h1>
+
+        <div class="panel">
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th>Total</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+
+              </thead>
+
+              <tbody
+                id="ordersTable"
+              ></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================= SETTINGS ================= -->
+
+      <section
+        id="settings"
+        class="page"
+      >
+
+        <h1>⚙ Store Settings</h1>
+
+
+        <div class="panel">
+
+          <form id="settingsForm">
+
+            <div class="field">
+              <label>Shop Name</label>
+
+              <input
+                id="shopName"
+              >
+            </div>
+
+
+            <div class="field">
+              <label>Tagline</label>
+
+              <input
+                id="tagline"
+              >
+            </div>
+
+
+            <div class="field">
+              <label>Phone 1</label>
+
+              <input
+                id="phone1"
+              >
+            </div>
+
+
+            <div class="field">
+              <label>Phone 2</label>
+
+              <input
+                id="phone2"
+              >
+            </div>
+
+
+            <div class="field">
+              <label>Facebook URL</label>
+
+              <input
+                id="facebook"
+              >
+            </div>
+
+
+            <div class="field">
+              <label>Currency</label>
+
+              <input
+                id="currency"
+                value="BDT"
+              >
+            </div>
+
+
+            <button
+              class="primary-btn"
+              type="submit"
+            >
+              Save Settings
+            </button>
+
+          </form>
+
+
+          <div
+            id="settingsMessage"
+            class="success"
+          ></div>
+
+        </div>
+
+      </section>
+
+
+    </main>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  // ===================================
+  // LOGIN CHECK
+  // ===================================
+
+  async function checkLogin() {
+
+    try {
+
+      const response =
+        await fetch("/api/admin/me");
+
+      if (response.ok) {
+
+        showAdmin();
+
+      } else {
+
+        showLogin();
+
+      }
+
+    } catch (error) {
+
+      showLogin();
 
     }
 
-
-    const token =
-      makeToken(username);
+  }
 
 
-    sessions.set(
-      token,
-      username
-    );
+  function showLogin() {
 
+    document.getElementById(
+      "loginScreen"
+    ).style.display = "flex";
 
-    res.json({
-      token
-    });
+    document.getElementById(
+      "adminApp"
+    ).style.display = "none";
 
   }
-);
 
 
-/* =====================================
-   ADMIN LOGOUT
-===================================== */
+  function showAdmin() {
 
-app.post(
-  "/api/admin/logout",
-  auth,
-  (req,res)=>{
+    document.getElementById(
+      "loginScreen"
+    ).style.display = "none";
 
-    const token =
-      req.headers.authorization
-        .replace("Bearer ","");
+    document.getElementById(
+      "adminApp"
+    ).style.display = "block";
 
-
-    sessions.delete(token);
-
-
-    res.json({
-      ok:true
-    });
+    loadDashboard();
 
   }
-);
 
 
-/* =====================================
-   ADMIN ORDERS
-===================================== */
+  // ===================================
+  // LOGIN
+  // ===================================
 
-app.get(
-  "/api/admin/orders",
-  auth,
-  (req,res)=>{
+  document
+    .getElementById("loginForm")
+    .addEventListener(
+      "submit",
+      async function (event) {
 
-    res.json(
-      read().orders
-    );
+        event.preventDefault();
 
-  }
-);
+        const username =
+          document.getElementById(
+            "username"
+          ).value.trim();
 
+        const password =
+          document.getElementById(
+            "password"
+          ).value;
 
-/* =====================================
-   ADMIN PRODUCTS
-===================================== */
-
-app.get(
-  "/api/admin/products",
-  auth,
-  (req,res)=>{
-
-    res.json(
-      read().products
-    );
-
-  }
-);
-
-
-/* =====================================
-   ADD PRODUCT
-===================================== */
-
-app.post(
-  "/api/admin/products",
-  auth,
-  (req,res)=>{
-
-    const d = read();
-
-    const p = req.body || {};
-
-
-    if(
-      !p.name ||
-      p.price === undefined ||
-      p.price === ""
-    ){
-
-      return res
-        .status(400)
-        .json({
-          error:"Name and price required"
-        });
-
-    }
-
-
-    p.id =
-      Date.now();
-
-
-    p.price =
-      Number(p.price);
-
-
-    p.oldPrice =
-      Number(
-        p.oldPrice ||
-        p.price
-      );
-
-
-    p.stock =
-      Number(
-        p.stock || 0
-      );
-
-
-    p.discount =
-      Number(
-        p.discount || 0
-      );
-
-
-    p.category =
-      p.category || "Other";
-
-
-    /*
-      Image can be:
-      - Base64 image from phone
-      - Existing URL
-    */
-
-    p.image =
-      p.image || "";
-
-
-    d.products.push(p);
-
-
-    write(d);
-
-
-    res.json(p);
-
-  }
-);
-
-
-/* =====================================
-   EDIT PRODUCT
-===================================== */
-
-app.put(
-  "/api/admin/products/:id",
-  auth,
-  (req,res)=>{
-
-    const d = read();
-
-    const id =
-      Number(req.params.id);
-
-
-    const index =
-      d.products.findIndex(
-        x => x.id === id
-      );
-
-
-    if(index < 0){
-
-      return res
-        .status(404)
-        .json({
-          error:"Product not found"
-        });
-
-    }
-
-
-    const oldProduct =
-      d.products[index];
-
-
-    const update =
-      req.body || {};
-
-
-    /*
-      If new image is not sent,
-      keep old image.
-    */
-
-    if(
-      !update.image &&
-      oldProduct.image
-    ){
-
-      update.image =
-        oldProduct.image;
-
-    }
-
-
-    d.products[index] = {
-
-      ...oldProduct,
-
-      ...update,
-
-      id:id
-
-    };
-
-
-    for(
-      const key of [
-        "price",
-        "oldPrice",
-        "stock",
-        "discount"
-      ]
-    ){
-
-      if(
-        d.products[index][key] !==
-        undefined
-      ){
-
-        d.products[index][key] =
-          Number(
-            d.products[index][key]
+        const message =
+          document.getElementById(
+            "loginMessage"
           );
 
-      }
+        message.textContent =
+          "Logging in...";
 
+        try {
+
+          const response =
+            await fetch(
+              "/api/admin/login",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body: JSON.stringify({
+                  username,
+                  password
+                })
+              }
+            );
+
+          const data =
+            await response.json();
+
+          if (!response.ok) {
+
+            message.textContent =
+              data.error ||
+              "Login failed";
+
+            return;
+          }
+
+          message.textContent = "";
+
+          showAdmin();
+
+        } catch (error) {
+
+          message.textContent =
+            "Server connection error";
+
+        }
+
+      }
+    );
+
+
+  // ===================================
+  // LOGOUT
+  // ===================================
+
+  async function logout() {
+
+    await fetch(
+      "/api/admin/logout",
+      {
+        method: "POST"
+      }
+    );
+
+    showLogin();
+
+    document.getElementById(
+      "password"
+    ).value = "";
+
+  }
+
+
+  // ===================================
+  // NAVIGATION
+  // ===================================
+
+  function showPage(
+    pageId,
+    button
+  ) {
+
+    document
+      .querySelectorAll(".page")
+      .forEach(
+        (page) =>
+          page.classList.remove(
+            "active"
+          )
+      );
+
+    document
+      .getElementById(pageId)
+      .classList.add("active");
+
+
+    document
+      .querySelectorAll(".nav-btn")
+      .forEach(
+        (btn) =>
+          btn.classList.remove(
+            "active"
+          )
+      );
+
+    if (button) {
+      button.classList.add("active");
     }
 
 
-    write(d);
+    if (pageId === "dashboard") {
+      loadDashboard();
+    }
+
+    if (pageId === "products") {
+      loadProducts();
+    }
+
+    if (pageId === "orders") {
+      loadOrders();
+    }
+
+    if (pageId === "settings") {
+      loadSettings();
+    }
+
+  }
 
 
-    res.json(
-      d.products[index]
+  function toggleSidebar() {
+
+    document
+      .getElementById("sidebar")
+      .classList.toggle("open");
+
+  }
+
+
+  // ===================================
+  // DASHBOARD
+  // ===================================
+
+  async function loadDashboard() {
+
+    const response =
+      await fetch(
+        "/api/admin/dashboard"
+      );
+
+    if (response.status === 401) {
+      showLogin();
+      return;
+    }
+
+    const data =
+      await response.json();
+
+    document.getElementById(
+      "productCount"
+    ).textContent = data.products;
+
+    document.getElementById(
+      "orderCount"
+    ).textContent = data.orders;
+
+    document.getElementById(
+      "pendingCount"
+    ).textContent = data.pending;
+
+    document.getElementById(
+      "salesCount"
+    ).textContent =
+      "৳" +
+      Number(data.sales || 0)
+        .toLocaleString();
+
+  }
+
+
+  // ===================================
+  // PRODUCTS
+  // ===================================
+
+  async function loadProducts() {
+
+    const response =
+      await fetch(
+        "/api/admin/products"
+      );
+
+    if (response.status === 401) {
+      showLogin();
+      return;
+    }
+
+    const products =
+      await response.json();
+
+    const table =
+      document.getElementById(
+        "productsTable"
+      );
+
+    table.innerHTML = "";
+
+    products.forEach(
+      (product) => {
+
+        const row =
+          document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${product.id}</td>
+
+          <td>
+            ${escapeHtml(product.name)}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              product.category || ""
+            )}
+          </td>
+
+          <td>
+            ৳${Number(
+              product.price
+            ).toLocaleString()}
+          </td>
+
+          <td>
+            ${product.stock}
+          </td>
+
+          <td>
+
+            <button
+              class="small-btn edit-btn"
+              onclick='editProduct(${JSON.stringify(product)})'
+            >
+              Edit
+            </button>
+
+            <button
+              class="small-btn delete-btn"
+              onclick="deleteProduct(${product.id})"
+            >
+              Delete
+            </button>
+
+          </td>
+        `;
+
+        table.appendChild(row);
+
+      }
     );
 
   }
-);
 
 
-/* =====================================
-   DELETE PRODUCT
-===================================== */
+  // ===================================
+  // ADD / EDIT PRODUCT
+  // ===================================
 
-app.delete(
-  "/api/admin/products/:id",
-  auth,
-  (req,res)=>{
+  document
+    .getElementById("productForm")
+    .addEventListener(
+      "submit",
+      async function (event) {
 
-    const d = read();
+        event.preventDefault();
 
-    const id =
-      Number(req.params.id);
+        const id =
+          document.getElementById(
+            "productId"
+          ).value;
+
+        const product = {
+
+          name:
+            document.getElementById(
+              "productName"
+            ).value,
+
+          category:
+            document.getElementById(
+              "productCategory"
+            ).value,
+
+          price:
+            Number(
+              document.getElementById(
+                "productPrice"
+              ).value
+            ),
+
+          oldPrice:
+            Number(
+              document.getElementById(
+                "productOldPrice"
+              ).value || 0
+            ),
+
+          discount:
+            Number(
+              document.getElementById(
+                "productDiscount"
+              ).value || 0
+            ),
+
+          stock:
+            Number(
+              document.getElementById(
+                "productStock"
+              ).value
+            ),
+
+          image:
+            document.getElementById(
+              "productImage"
+            ).value
+
+        };
 
 
-    d.products =
-      d.products.filter(
-        x => x.id !== id
+        let response;
+
+
+        if (id) {
+
+          response =
+            await fetch(
+              "/api/admin/products/" +
+              id,
+              {
+                method: "PUT",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify(product)
+              }
+            );
+
+        } else {
+
+          response =
+            await fetch(
+              "/api/admin/products",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify(product)
+              }
+            );
+
+        }
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok) {
+
+          alert(
+            data.error ||
+            "Product save failed"
+          );
+
+          return;
+
+        }
+
+
+        document.getElementById(
+          "productMessage"
+        ).textContent =
+          "Product saved successfully.";
+
+        resetProductForm();
+
+        loadProducts();
+
+        loadDashboard();
+
+      }
+    );
+
+
+  function editProduct(product) {
+
+    document.getElementById(
+      "productId"
+    ).value = product.id;
+
+    document.getElementById(
+      "productName"
+    ).value = product.name || "";
+
+    document.getElementById(
+      "productCategory"
+    ).value =
+      product.category || "";
+
+    document.getElementById(
+      "productPrice"
+    ).value =
+      product.price || 0;
+
+    document.getElementById(
+      "productOldPrice"
+    ).value =
+      product.oldPrice || 0;
+
+    document.getElementById(
+      "productDiscount"
+    ).value =
+      product.discount || 0;
+
+    document.getElementById(
+      "productStock"
+    ).value =
+      product.stock || 0;
+
+    document.getElementById(
+      "productImage"
+    ).value =
+      product.image || "";
+
+    document.getElementById(
+      "productFormTitle"
+    ).textContent =
+      "Edit Product";
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  }
+
+
+  function resetProductForm() {
+
+    document
+      .getElementById(
+        "productForm"
+      )
+      .reset();
+
+    document.getElementById(
+      "productId"
+    ).value = "";
+
+    document.getElementById(
+      "productFormTitle"
+    ).textContent =
+      "Add New Product";
+
+  }
+
+
+  async function deleteProduct(id) {
+
+    if (
+      !confirm(
+        "এই product টি delete করতে চান?"
+      )
+    ) {
+      return;
+    }
+
+
+    const response =
+      await fetch(
+        "/api/admin/products/" +
+        id,
+        {
+          method: "DELETE"
+        }
       );
 
 
-    write(d);
+    const data =
+      await response.json();
 
 
-    res.json({
-      ok:true
-    });
+    if (!response.ok) {
 
-  }
-);
+      alert(
+        data.error ||
+        "Delete failed"
+      );
 
-
-/* =====================================
-   STORE SETTINGS
-===================================== */
-
-app.put(
-  "/api/admin/settings",
-  auth,
-  (req,res)=>{
-
-    const d = read();
-
-
-    d.settings = {
-
-      ...d.settings,
-
-      ...(req.body || {})
-
-    };
-
-
-    write(d);
-
-
-    res.json(
-      d.settings
-    );
-
-  }
-);
-
-
-/* =====================================
-   CREATE ORDER
-===================================== */
-
-app.post(
-  "/api/orders",
-  (req,res)=>{
-
-    const d = read();
-
-
-    const {
-      customer,
-      items,
-      paymentMethod
-    } = req.body || {};
-
-
-    if(
-      !customer?.name ||
-      !customer?.phone ||
-      !customer?.address ||
-      !Array.isArray(items) ||
-      !items.length
-    ){
-
-      return res
-        .status(400)
-        .json({
-          error:
-            "Customer and order details are required"
-        });
+      return;
 
     }
 
 
-    let total = 0;
+    loadProducts();
 
-    const clean = [];
+    loadDashboard();
 
-
-    for(
-      const item of items
-    ){
-
-      const p =
-        d.products.find(
-          x =>
-            x.id ===
-            Number(item.id)
-        );
+  }
 
 
-      const q =
-        Math.max(
-          1,
-          Number(
-            item.qty || 1
-          )
-        );
+  // ===================================
+  // ORDERS
+  // ===================================
+
+  async function loadOrders() {
+
+    const response =
+      await fetch(
+        "/api/admin/orders"
+      );
+
+    if (response.status === 401) {
+      showLogin();
+      return;
+    }
+
+    const orders =
+      await response.json();
+
+    const table =
+      document.getElementById(
+        "ordersTable"
+      );
+
+    table.innerHTML = "";
 
 
-      if(
-        !p ||
-        p.stock < q
-      ){
+    if (!orders.length) {
 
-        return res
-          .status(400)
-          .json({
-            error:
-              `Out of stock: ${
-                p?.name || "product"
-              }`
-          });
+      table.innerHTML = `
+        <tr>
+          <td colspan="7">
+            No orders yet.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+
+    orders.forEach(
+      (order) => {
+
+        const customer =
+          order.customer || {};
+
+        const row =
+          document.createElement("tr");
+
+        row.innerHTML = `
+
+          <td>
+            ${escapeHtml(
+              String(order.id)
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              customer.name || ""
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              customer.phone || ""
+            )}
+          </td>
+
+          <td>
+            ৳${Number(
+              order.total || 0
+            ).toLocaleString()}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              order.paymentMethod || "cod"
+            )}
+          </td>
+
+          <td>
+            <span class="status">
+              ${escapeHtml(
+                order.status || "Pending"
+              )}
+            </span>
+          </td>
+
+          <td>
+
+            <select
+              onchange="updateOrderStatus('${escapeHtml(String(order.id))}', this.value)"
+            >
+
+              <option
+                value="Pending"
+                ${
+                  order.status === "Pending"
+                    ? "selected"
+                    : ""
+                }
+              >
+                Pending
+              </option>
+
+              <option
+                value="Confirmed"
+                ${
+                  order.status === "Confirmed"
+                    ? "selected"
+                    : ""
+                }
+              >
+                Confirmed
+              </option>
+
+              <option
+                value="Delivered"
+                ${
+                  order.status === "Delivered"
+                    ? "selected"
+                    : ""
+                }
+              >
+                Delivered
+              </option>
+
+              <option
+                value="Cancelled"
+                ${
+                  order.status === "Cancelled"
+                    ? "selected"
+                    : ""
+                }
+              >
+                Cancelled
+              </option>
+
+            </select>
+
+          </td>
+
+        `;
+
+        table.appendChild(row);
 
       }
+    );
+
+  }
 
 
-      total +=
-        p.price * q;
+  async function updateOrderStatus(
+    id,
+    status
+  ) {
+
+    const response =
+      await fetch(
+        "/api/admin/orders/" +
+        encodeURIComponent(id),
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            status
+          })
+        }
+      );
 
 
-      clean.push({
+    if (!response.ok) {
 
-        id:p.id,
+      alert(
+        "Order status update failed"
+      );
 
-        name:p.name,
-
-        price:p.price,
-
-        qty:q
-
-      });
+      return;
 
     }
 
 
-    const order = {
+    loadOrders();
 
-      id:
-        "SM" +
-        Date.now(),
+    loadDashboard();
 
-      createdAt:
-        new Date()
-          .toISOString(),
-
-      customer,
-
-      items:clean,
-
-      total,
-
-      paymentMethod:
-        paymentMethod || "cod",
-
-      status:"Pending"
-
-    };
+  }
 
 
-    d.orders.unshift(order);
+  // ===================================
+  // SETTINGS
+  // ===================================
+
+  async function loadSettings() {
+
+    const response =
+      await fetch(
+        "/api/admin/settings"
+      );
+
+    if (response.status === 401) {
+      showLogin();
+      return;
+    }
+
+    const settings =
+      await response.json();
 
 
-    clean.forEach(x=>{
+    document.getElementById(
+      "shopName"
+    ).value =
+      settings.shopName || "";
 
-      const p =
-        d.products.find(
-          y => y.id === x.id
-        );
+    document.getElementById(
+      "tagline"
+    ).value =
+      settings.tagline || "";
+
+    document.getElementById(
+      "phone1"
+    ).value =
+      settings.phone1 || "";
+
+    document.getElementById(
+      "phone2"
+    ).value =
+      settings.phone2 || "";
+
+    document.getElementById(
+      "facebook"
+    ).value =
+      settings.facebook || "";
+
+    document.getElementById(
+      "currency"
+    ).value =
+      settings.currency || "BDT";
+
+  }
 
 
-      if(p){
+  document
+    .getElementById("settingsForm")
+    .addEventListener(
+      "submit",
+      async function (event) {
 
-        p.stock -= x.qty;
+        event.preventDefault();
+
+
+        const settings = {
+
+          shopName:
+            document.getElementById(
+              "shopName"
+            ).value,
+
+          tagline:
+            document.getElementById(
+              "tagline"
+            ).value,
+
+          phone1:
+            document.getElementById(
+              "phone1"
+            ).value,
+
+          phone2:
+            document.getElementById(
+              "phone2"
+            ).value,
+
+          facebook:
+            document.getElementById(
+              "facebook"
+            ).value,
+
+          currency:
+            document.getElementById(
+              "currency"
+            ).value
+
+        };
+
+
+        const response =
+          await fetch(
+            "/api/admin/settings",
+            {
+              method: "PUT",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body:
+                JSON.stringify(settings)
+            }
+          );
+
+
+        if (!response.ok) {
+
+          alert(
+            "Settings save failed"
+          );
+
+          return;
+
+        }
+
+
+        document.getElementById(
+          "settingsMessage"
+        ).textContent =
+          "Settings saved successfully.";
 
       }
-
-    });
-
-
-    write(d);
-
-
-    res.json({
-
-      ok:true,
-
-      orderId:order.id,
-
-      total
-
-    });
-
-  }
-);
-
-
-/* =====================================
-   PAYMENT ADAPTER
-===================================== */
-
-app.post(
-  "/api/payment/create",
-  (req,res)=>{
-
-    const method =
-      req.body?.method;
-
-
-    if(
-      ![
-        "bkash",
-        "nagad",
-        "card"
-      ].includes(method)
-    ){
-
-      return res
-        .status(400)
-        .json({
-          error:
-            "Unsupported payment method"
-        });
-
-    }
-
-
-    res
-      .status(501)
-      .json({
-        error:
-          `${method} gateway credentials are not configured.`
-      });
-
-  }
-);
-
-
-/* =====================================
-   FALLBACK
-===================================== */
-
-app.get(
-  "*",
-  (req,res)=>{
-
-    res.sendFile(
-      path.join(
-        __dirname,
-        "public",
-        "index.html"
-      )
     );
 
-  }
-);
 
+  // ===================================
+  // SECURITY / HTML ESCAPE
+  // ===================================
 
-/* =====================================
-   START
-===================================== */
+  function escapeHtml(value) {
 
-app.listen(
-  PORT,
-  "0.0.0.0",
-  ()=>{
-
-    console.log(
-      `SM Online Shop running on port ${PORT}`
-    );
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
 
   }
-);
+
+
+  // ===================================
+  // START
+  // ===================================
+
+  checkLogin();
+
+</script>
+
+</body>
+</html>
