@@ -1,26 +1,1348 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SM Admin</title><style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f7;color:#18151b}.login{max-width:390px;margin:90px auto;background:#fff;padding:30px;border-radius:18px;box-shadow:0 20px 50px #0001}.login input,.form input{width:100%;padding:11px;margin:6px 0 14px;border:1px solid #ddd;border-radius:8px}.btn{border:0;background:#f41470;color:#fff;padding:11px 16px;border-radius:8px;font-weight:bold;cursor:pointer}.btn.gray{background:#777}.hidden{display:none}header{background:#17151b;color:#fff;padding:17px 5%;display:flex;justify-content:space-between}.wrap{max-width:1250px;margin:22px auto;padding:0 14px}.dash{display:grid;grid-template-columns:210px 1fr;gap:16px}.side{background:#17151b;border-radius:15px;padding:12px;min-height:650px}.side button{width:100%;border:0;background:transparent;color:#fff;text-align:left;padding:12px;border-radius:8px;cursor:pointer}.side button.active,.side button:hover{background:#f41470}.main{background:#fff;border-radius:15px;padding:22px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{border:1px solid #eee;border-radius:12px;padding:17px}.card b{display:block;color:#f41470;font-size:25px;margin-top:5px}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid #eee;text-align:left}.table img{width:50px;height:60px;object-fit:cover;border-radius:6px}.modal{display:none;position:fixed;inset:0;background:#0008;align-items:center;justify-content:center;padding:15px}.modal.show{display:flex}.modalbox{background:#fff;border-radius:16px;padding:22px;width:min(650px,100%);max-height:90vh;overflow:auto}.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.order{border:1px solid #eee;padding:14px;border-radius:10px;margin:8px 0}.status{color:#f41470;font-weight:bold}.act{display:flex;gap:5px;flex-wrap:wrap}.red{background:#d52f46}.form label{font-size:12px;font-weight:bold}.notice{padding:12px;background:#fff7d9;border:1px solid #f1d97a;border-radius:10px;font-size:12px}
-@media(max-width:800px){.dash{grid-template-columns:1fr}.side{min-height:auto}.cards{grid-template-columns:repeat(2,1fr)}.row2{grid-template-columns:1fr}.table{font-size:11px;display:block;overflow:auto}}
-</style></head><body>
-<header><b>SM Online Shop — Admin Panel</b><button class="btn gray" onclick="logout()">Logout</button></header>
-<div id="login" class="login"><h2>Admin Login</h2><label>Username</label><input id="u" value="SMADMIN"><label>Password</label><input id="pw" type="password" value="SM2728"><button class="btn" onclick="login()">Login</button></div>
-<div id="app" class="wrap hidden"><div class="dash"><aside class="side"><button class="active" onclick="tab('dash',this)">📊 Dashboard</button><button onclick="tab('prod',this)">🛍 Products</button><button onclick="tab('orders',this)">📦 Orders</button><button onclick="tab('settings',this)">⚙ Store Settings</button><a href="/" target="_blank"><button>🌐 View Store</button></a></aside><main class="main">
-<section id="dash"><h2>Dashboard</h2><div class="cards"><div class="card">Products<b id="sp">0</b></div><div class="card">Orders<b id="so">0</b></div><div class="card">Pending<b id="sPending">0</b></div><div class="card">Sales<b id="sales">৳0</b></div></div><div class="notice" style="margin-top:18px">Payment gateways: Cash on Delivery is active. bKash, Nagad and Card/Bank are wired into the checkout UI but require your merchant credentials before live transactions.</div></section>
-<section id="prod" class="hidden"><h2>Products</h2><button class="btn" onclick="openP()">+ Add Product</button><div style="overflow:auto;margin-top:15px"><table class="table"><thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div></section>
-<section id="orders" class="hidden"><h2>Orders</h2><div id="olist"></div></section>
-<section id="settings" class="hidden"><h2>Store Settings</h2><div class="form"><label>Shop Name</label><input id="sn"><label>Tagline</label><input id="st"><div class="row2"><div><label>Phone 1</label><input id="ph1"></div><div><label>Phone 2</label><input id="ph2"></div></div><label>Facebook Page</label><input id="fb"><button class="btn" onclick="saveSettings()">Save</button></div></section>
-</main></div></div>
-<div id="modal" class="modal"><div class="modalbox"><h2 id="mt">Product</h2><div class="form"><label>Name</label><input id="pn"><div class="row2"><div><label>Category</label><input id="pc"></div><div><label>Stock</label><input id="ps" type="number"></div></div><div class="row2"><div><label>Price</label><input id="pp" type="number"></div><div><label>Old Price</label><input id="po" type="number"></div></div><div class="row2"><div><label>Discount %</label><input id="pd" type="number"></div><div><label>Image URL</label><input id="pi"></div></div><button class="btn" onclick="saveP()">Save</button> <button class="btn gray" onclick="modal.classList.remove('show')">Cancel</button></div></div></div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SM Online Shop - Admin</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f5f7;
+color:#18151b
+}
+.hidden{display:none!important}
+
+.login{
+max-width:390px;
+margin:80px auto;
+background:#fff;
+padding:30px;
+border-radius:18px;
+box-shadow:0 20px 50px #0002
+}
+
+.login h2{
+margin-top:0
+}
+
+input{
+width:100%;
+padding:12px;
+margin:6px 0 14px;
+border:1px solid #ddd;
+border-radius:8px;
+font-size:15px
+}
+
+.btn{
+border:0;
+background:#f41470;
+color:#fff;
+padding:11px 16px;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer
+}
+
+.btn.gray{background:#777}
+.btn.red{background:#d52f46}
+
+header{
+background:#17151b;
+color:#fff;
+padding:17px 5%;
+display:flex;
+justify-content:space-between;
+align-items:center
+}
+
+.wrap{
+max-width:1250px;
+margin:22px auto;
+padding:0 14px
+}
+
+.dash{
+display:grid;
+grid-template-columns:210px 1fr;
+gap:16px
+}
+
+.side{
+background:#17151b;
+border-radius:15px;
+padding:12px;
+min-height:650px
+}
+
+.side button{
+width:100%;
+border:0;
+background:transparent;
+color:#fff;
+text-align:left;
+padding:12px;
+border-radius:8px;
+cursor:pointer;
+margin-bottom:4px
+}
+
+.side button.active,
+.side button:hover{
+background:#f41470
+}
+
+.main{
+background:#fff;
+border-radius:15px;
+padding:22px
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px
+}
+
+.card{
+border:1px solid #eee;
+border-radius:12px;
+padding:17px
+}
+
+.card b{
+display:block;
+color:#f41470;
+font-size:25px;
+margin-top:5px
+}
+
+.table{
+width:100%;
+border-collapse:collapse
+}
+
+.table th,
+.table td{
+padding:10px;
+border-bottom:1px solid #eee;
+text-align:left
+}
+
+.table img{
+width:50px;
+height:60px;
+object-fit:cover;
+border-radius:6px
+}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:#0008;
+align-items:center;
+justify-content:center;
+padding:15px
+}
+
+.modal.show{
+display:flex
+}
+
+.modalbox{
+background:#fff;
+border-radius:16px;
+padding:22px;
+width:min(650px,100%);
+max-height:90vh;
+overflow:auto
+}
+
+.row2{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
+
+.order{
+border:1px solid #eee;
+padding:14px;
+border-radius:10px;
+margin:8px 0
+}
+
+.status{
+color:#f41470;
+font-weight:bold
+}
+
+.act{
+display:flex;
+gap:5px;
+flex-wrap:wrap
+}
+
+.notice{
+padding:12px;
+background:#fff7d9;
+border:1px solid #f1d97a;
+border-radius:10px;
+font-size:12px
+}
+
+.error{
+margin-top:10px;
+padding:10px;
+background:#ffe5e5;
+border:1px solid #ffb5b5;
+border-radius:8px;
+color:#b00000;
+display:none
+}
+
+.success{
+margin-top:10px;
+padding:10px;
+background:#e5ffe9;
+border:1px solid #a8e6b2;
+border-radius:8px;
+color:#08751b;
+display:none
+}
+
+@media(max-width:800px){
+.dash{
+grid-template-columns:1fr
+}
+
+.side{
+min-height:auto
+}
+
+.cards{
+grid-template-columns:repeat(2,1fr)
+}
+
+.row2{
+grid-template-columns:1fr
+}
+
+.table{
+font-size:11px;
+display:block;
+overflow:auto
+}
+
+header{
+padding:15px
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<b>SM Online Shop — Admin Panel</b>
+<button class="btn gray" onclick="logout()">Logout</button>
+</header>
+
+<!-- LOGIN -->
+<div id="login" class="login">
+
+<h2>🔐 Admin Login</h2>
+
+<label>Username</label>
+<input
+id="u"
+type="text"
+value="SMADMIN"
+autocomplete="username"
+>
+
+<label>Password</label>
+<input
+id="pw"
+type="password"
+value="SM2728"
+autocomplete="current-password"
+>
+
+<button
+class="btn"
+style="width:100%"
+onclick="login()"
+>
+Login
+</button>
+
+<div id="loginError" class="error"></div>
+<div id="loginSuccess" class="success"></div>
+
+</div>
+
+
+<!-- ADMIN APP -->
+<div id="app" class="wrap hidden">
+
+<div class="dash">
+
+<aside class="side">
+
+<button
+class="active"
+onclick="tab('dash',this)"
+>
+📊 Dashboard
+</button>
+
+<button onclick="tab('prod',this)">
+🛍 Products
+</button>
+
+<button onclick="tab('orders',this)">
+📦 Orders
+</button>
+
+<button onclick="tab('settings',this)">
+⚙ Store Settings
+</button>
+
+<a href="/" target="_blank" style="text-decoration:none">
+<button>
+🌐 View Store
+</button>
+</a>
+
+</aside>
+
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<section id="dash">
+
+<h2>Dashboard</h2>
+
+<div class="cards">
+
+<div class="card">
+Products
+<b id="sp">0</b>
+</div>
+
+<div class="card">
+Orders
+<b id="so">0</b>
+</div>
+
+<div class="card">
+Pending
+<b id="sPending">0</b>
+</div>
+
+<div class="card">
+Sales
+<b id="sales">৳0</b>
+</div>
+
+</div>
+
+<div class="notice" style="margin-top:18px">
+
+Payment gateways: Cash on Delivery is active.
+bKash, Nagad and Card/Bank require merchant
+credentials before live transactions.
+
+</div>
+
+</section>
+
+
+<!-- PRODUCTS -->
+<section id="prod" class="hidden">
+
+<h2>Products</h2>
+
+<button class="btn" onclick="openP()">
++ Add Product
+</button>
+
+<div style="overflow:auto;margin-top:15px">
+
+<table class="table">
+
+<thead>
+<tr>
+<th>Image</th>
+<th>Name</th>
+<th>Category</th>
+<th>Price</th>
+<th>Stock</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="rows"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- ORDERS -->
+<section id="orders" class="hidden">
+
+<h2>Orders</h2>
+
+<div id="olist">
+No orders yet.
+</div>
+
+</section>
+
+
+<!-- SETTINGS -->
+<section id="settings" class="hidden">
+
+<h2>Store Settings</h2>
+
+<label>Shop Name</label>
+<input id="sn">
+
+<label>Tagline</label>
+<input id="st">
+
+<div class="row2">
+
+<div>
+<label>Phone 1</label>
+<input id="ph1">
+</div>
+
+<div>
+<label>Phone 2</label>
+<input id="ph2">
+</div>
+
+</div>
+
+<label>Facebook Page</label>
+<input id="fb">
+
+<button
+class="btn"
+onclick="saveSettings()"
+>
+Save Settings
+</button>
+
+</section>
+
+</main>
+</div>
+</div>
+
+
+<!-- PRODUCT MODAL -->
+
+<div id="modal" class="modal">
+
+<div class="modalbox">
+
+<h2 id="mt">
+Product
+</h2>
+
+<label>Name</label>
+<input id="pn">
+
+<div class="row2">
+
+<div>
+<label>Category</label>
+<input id="pc">
+</div>
+
+<div>
+<label>Stock</label>
+<input id="ps" type="number">
+</div>
+
+</div>
+
+
+<div class="row2">
+
+<div>
+<label>Price</label>
+<input id="pp" type="number">
+</div>
+
+<div>
+<label>Old Price</label>
+<input id="po" type="number">
+</div>
+
+</div>
+
+
+<div class="row2">
+
+<div>
+<label>Discount %</label>
+<input id="pd" type="number">
+</div>
+
+<div>
+<label>Image URL</label>
+<input id="pi">
+</div>
+
+</div>
+
+
+<button class="btn" onclick="saveP()">
+Save Product
+</button>
+
+<button
+class="btn gray"
+onclick="closeModal()"
+>
+Cancel
+</button>
+
+</div>
+</div>
+
+
 <script>
-let token=localStorage.smToken||"", editId=null;
-async function api(url,opt={}){opt.headers={...(opt.headers||{}),Authorization:"Bearer "+token,"Content-Type":"application/json"};let r=await fetch(url,opt);if(r.status===401){logout();throw 0}return r}
-async function login(){let r=await fetch("/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u.value,password:pw.value})});let d=await r.json();if(!r.ok)return alert(d.error);token=d.token;localStorage.smToken=token;show()}
-function show(){login.classList.add("hidden");app.classList.remove("hidden");refresh()}
-function logout(){localStorage.removeItem("smToken");location.reload()}if(token)show();
-function tab(id,b){document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");document.querySelectorAll(".side button").forEach(x=>x.classList.remove("active"));b?.classList.add("active");refresh()}
-async function refresh(){let [p,o,s]=await Promise.all([api("/api/admin/products").then(x=>x.json()),api("/api/admin/orders").then(x=>x.json()),api("/api/store").then(x=>x.json())]);sp.textContent=p.length;so.textContent=o.length;sPending.textContent=o.filter(x=>x.status==="Pending").length;sales.textContent="৳"+o.reduce((a,x)=>a+x.total,0).toLocaleString();rows.innerHTML=p.map(x=>`<tr><td><img src="${x.image}"></td><td>${x.name}</td><td>${x.category}</td><td>৳${x.price}</td><td>${x.stock}</td><td class="act"><button class="btn" onclick='openP(${JSON.stringify(x)})'>Edit</button><button class="btn red" onclick="delP(${x.id})">Delete</button></td></tr>`).join("");olist.innerHTML=o.map(x=>`<div class="order"><b>${x.id}</b> — ${x.customer.name}<br>☎ ${x.customer.phone}<br>${x.customer.address}<br><b>৳${x.total.toLocaleString()}</b> — ${x.paymentMethod} — <span class="status">${x.status}</span><br><small>${x.items.map(i=>i.name+" × "+i.qty).join(", ")}</small></div>`).join("")||"<p>No orders yet.</p>";sn.value=s.settings.shopName;st.value=s.settings.tagline;ph1.value=s.settings.phone1;ph2.value=s.settings.phone2;fb.value=s.settings.facebook}
-function openP(p){editId=p?.id||null;mt.textContent=editId?"Edit Product":"Add Product";pn.value=p?.name||"";pc.value=p?.category||"Dresses";ps.value=p?.stock||0;pp.value=p?.price||"";po.value=p?.oldPrice||"";pd.value=p?.discount||0;pi.value=p?.image||"";modal.classList.add("show")}
-async function saveP(){let data={name:pn.value,category:pc.value,stock:+ps.value,price:+pp.value,oldPrice:+po.value,discount:+pd.value,image:pi.value};let r=await api(editId?"/api/admin/products/"+editId:"/api/admin/products",{method:editId?"PUT":"POST",body:JSON.stringify(data)});if(!r.ok)return alert((await r.json()).error);modal.classList.remove("show");refresh()}
-async function delP(id){if(!confirm("Delete this product?"))return;await api("/api/admin/products/"+id,{method:"DELETE"});refresh()}
-async function saveSettings(){let r=await api("/api/admin/settings",{method:"PUT",body:JSON.stringify({shopName:sn.value,tagline:st.value,phone1:ph1.value,phone2:ph2.value,facebook:fb.value})});alert(r.ok?"Saved":"Failed")}
-</script></body></html>
+
+let token = localStorage.getItem("smToken") || "";
+let editId = null;
+
+
+/* LOGIN */
+
+async function login(){
+
+const username =
+document.getElementById("u").value.trim();
+
+const password =
+document.getElementById("pw").value;
+
+const errorBox =
+document.getElementById("loginError");
+
+const successBox =
+document.getElementById("loginSuccess");
+
+errorBox.style.display="none";
+successBox.style.display="none";
+
+if(!username || !password){
+
+errorBox.textContent =
+"Username এবং Password দিন";
+
+errorBox.style.display="block";
+
+return;
+}
+
+try{
+
+const response = await fetch(
+"/api/admin/login",
+{
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+username:username,
+password:password
+})
+}
+);
+
+const text = await response.text();
+
+let data;
+
+try{
+data = JSON.parse(text);
+}
+catch{
+throw new Error(
+"Server থেকে সঠিক response পাওয়া যায়নি"
+);
+}
+
+if(!response.ok){
+
+errorBox.textContent =
+data.error || "Invalid login";
+
+errorBox.style.display="block";
+
+return;
+}
+
+if(!data.token){
+
+throw new Error(
+"Login token পাওয়া যায়নি"
+);
+}
+
+token=data.token;
+
+localStorage.setItem(
+"smToken",
+token
+);
+
+successBox.textContent =
+"Login successful!";
+
+successBox.style.display="block";
+
+setTimeout(()=>{
+
+document
+.getElementById("login")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+refresh();
+
+},500);
+
+}
+
+catch(error){
+
+console.error(error);
+
+errorBox.textContent =
+"Login error: "+error.message;
+
+errorBox.style.display="block";
+
+}
+
+}
+
+
+/* API */
+
+async function api(url,options={}){
+
+const headers={
+...(options.headers||{}),
+"Content-Type":"application/json",
+"Authorization":"Bearer "+token
+};
+
+const response=await fetch(
+url,
+{
+...options,
+headers:headers
+}
+);
+
+if(response.status===401){
+
+localStorage.removeItem("smToken");
+
+token="";
+
+document
+.getElementById("app")
+.classList.add("hidden");
+
+document
+.getElementById("login")
+.classList.remove("hidden");
+
+throw new Error(
+"Session expired. আবার Login করুন।"
+);
+
+}
+
+return response;
+
+}
+
+
+/* REFRESH */
+
+async function refresh(){
+
+try{
+
+const pResponse=
+await api("/api/admin/products");
+
+const oResponse=
+await api("/api/admin/orders");
+
+const sResponse=
+await api("/api/store");
+
+const products=
+await pResponse.json();
+
+const orders=
+await oResponse.json();
+
+const store=
+await sResponse.json();
+
+
+document.getElementById("sp")
+.textContent=products.length;
+
+document.getElementById("so")
+.textContent=orders.length;
+
+document.getElementById("sPending")
+.textContent=
+orders.filter(
+x=>x.status==="Pending"
+).length;
+
+
+const sales=
+orders.reduce(
+(total,x)=>
+total+Number(x.total||0),
+0
+);
+
+document.getElementById("sales")
+.textContent=
+"৳"+sales.toLocaleString();
+
+
+/* PRODUCTS */
+
+document.getElementById("rows")
+.innerHTML=
+products.map(x=>`
+
+<tr>
+
+<td>
+
+<img
+src="${escapeHtml(x.image||"")}"
+onerror="this.style.display='none'"
+>
+
+</td>
+
+<td>
+${escapeHtml(x.name)}
+</td>
+
+<td>
+${escapeHtml(x.category||"")}
+</td>
+
+<td>
+৳${Number(x.price||0).toLocaleString()}
+</td>
+
+<td>
+${Number(x.stock||0)}
+</td>
+
+<td class="act">
+
+<button
+class="btn"
+onclick="editProduct(${x.id})"
+>
+Edit
+</button>
+
+<button
+class="btn red"
+onclick="deleteProduct(${x.id})"
+>
+Delete
+</button>
+
+</td>
+
+</tr>
+
+`).join("");
+
+
+/* ORDERS */
+
+document.getElementById("olist")
+.innerHTML=
+
+orders.map(x=>`
+
+<div class="order">
+
+<b>${escapeHtml(x.id)}</b>
+
+—
+${escapeHtml(
+x.customer?.name||""
+)}
+
+<br>
+
+☎
+${escapeHtml(
+x.customer?.phone||""
+)}
+
+<br>
+
+${escapeHtml(
+x.customer?.address||""
+)}
+
+<br>
+
+<b>
+৳${Number(
+x.total||0
+).toLocaleString()}
+</b>
+
+—
+
+${escapeHtml(
+x.paymentMethod||""
+)}
+
+—
+
+<span class="status">
+${escapeHtml(
+x.status||""
+)}
+</span>
+
+<br>
+
+<small>
+
+${(x.items||[])
+.map(i=>
+escapeHtml(i.name)
++" × "+
+Number(i.qty||0)
+)
+.join(", ")}
+
+</small>
+
+</div>
+
+`).join("")
+||
+"<p>No orders yet.</p>";
+
+
+/* SETTINGS */
+
+const settings=
+store.settings||{};
+
+document.getElementById("sn")
+.value=settings.shopName||"";
+
+document.getElementById("st")
+.value=settings.tagline||"";
+
+document.getElementById("ph1")
+.value=settings.phone1||"";
+
+document.getElementById("ph2")
+.value=settings.phone2||"";
+
+document.getElementById("fb")
+.value=settings.facebook||"";
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert(error.message);
+
+}
+
+}
+
+
+/* ESCAPE HTML */
+
+function escapeHtml(value){
+
+return String(value??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* TABS */
+
+function tab(id,button){
+
+document
+.querySelectorAll("main section")
+.forEach(
+s=>s.classList.add("hidden")
+);
+
+document
+.getElementById(id)
+.classList.remove("hidden");
+
+document
+.querySelectorAll(".side button")
+.forEach(
+b=>b.classList.remove("active")
+);
+
+if(button){
+button.classList.add("active");
+}
+
+refresh();
+
+}
+
+
+/* PRODUCT OPEN */
+
+function openP(product){
+
+editId=
+product?.id||null;
+
+document.getElementById("mt")
+.textContent=
+editId
+?"Edit Product"
+:"Add Product";
+
+document.getElementById("pn")
+.value=product?.name||"";
+
+document.getElementById("pc")
+.value=product?.category||"Dresses";
+
+document.getElementById("ps")
+.value=product?.stock??0;
+
+document.getElementById("pp")
+.value=product?.price??"";
+
+document.getElementById("po")
+.value=product?.oldPrice??"";
+
+document.getElementById("pd")
+.value=product?.discount??0;
+
+document.getElementById("pi")
+.value=product?.image||"";
+
+document.getElementById("modal")
+.classList.add("show");
+
+}
+
+
+/* EDIT PRODUCT */
+
+async function editProduct(id){
+
+try{
+
+const response=
+await api("/api/admin/products");
+
+const products=
+await response.json();
+
+const product=
+products.find(
+x=>Number(x.id)===Number(id)
+);
+
+if(!product){
+
+alert("Product পাওয়া যায়নি");
+
+return;
+}
+
+openP(product);
+
+}
+
+catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* SAVE PRODUCT */
+
+async function saveP(){
+
+const data={
+
+name:
+document.getElementById("pn")
+.value.trim(),
+
+category:
+document.getElementById("pc")
+.value.trim(),
+
+stock:
+Number(
+document.getElementById("ps").value||0
+),
+
+price:
+Number(
+document.getElementById("pp").value||0
+),
+
+oldPrice:
+Number(
+document.getElementById("po").value||0
+),
+
+discount:
+Number(
+document.getElementById("pd").value||0
+),
+
+image:
+document.getElementById("pi")
+.value.trim()
+
+};
+
+
+if(!data.name||!data.price){
+
+alert(
+"Product name এবং price দিন"
+);
+
+return;
+}
+
+
+try{
+
+const url=
+editId
+?"/api/admin/products/"+editId
+:"/api/admin/products";
+
+const response=
+await api(
+url,
+{
+method:
+editId?"PUT":"POST",
+
+body:
+JSON.stringify(data)
+}
+);
+
+const result=
+await response.json();
+
+if(!response.ok){
+
+alert(
+result.error||"Save failed"
+);
+
+return;
+}
+
+closeModal();
+
+alert(
+editId
+?"Product updated successfully!"
+:"Product added successfully!"
+);
+
+refresh();
+
+}
+
+catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* DELETE */
+
+async function deleteProduct(id){
+
+if(!confirm(
+"এই product টি Delete করবেন?"
+)){
+return;
+}
+
+try{
+
+const response=
+await api(
+"/api/admin/products/"+id,
+{
+method:"DELETE"
+}
+);
+
+const result=
+await response.json();
+
+if(!response.ok){
+
+alert(
+result.error||"Delete failed"
+);
+
+return;
+}
+
+alert(
+"Product deleted successfully!"
+);
+
+refresh();
+
+}
+
+catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* SETTINGS */
+
+async function saveSettings(){
+
+const data={
+
+shopName:
+document.getElementById("sn")
+.value.trim(),
+
+tagline:
+document.getElementById("st")
+.value.trim(),
+
+phone1:
+document.getElementById("ph1")
+.value.trim(),
+
+phone2:
+document.getElementById("ph2")
+.value.trim(),
+
+facebook:
+document.getElementById("fb")
+.value.trim()
+
+};
+
+try{
+
+const response=
+await api(
+"/api/admin/settings",
+{
+method:"PUT",
+body:JSON.stringify(data)
+}
+);
+
+const result=
+await response.json();
+
+if(!response.ok){
+
+alert(
+result.error||"Save failed"
+);
+
+return;
+}
+
+alert(
+"Store settings saved successfully!"
+);
+
+}
+
+catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* CLOSE MODAL */
+
+function closeModal(){
+
+document
+.getElementById("modal")
+.classList.remove("show");
+
+}
+
+
+/* LOGOUT */
+
+async function logout(){
+
+try{
+
+if(token){
+
+await fetch(
+"/api/admin/logout",
+{
+method:"POST",
+
+headers:{
+"Authorization":
+"Bearer "+token
+}
+}
+);
+
+}
+
+}catch(error){
+
+console.log(error);
+
+}
+
+localStorage.removeItem(
+"smToken"
+);
+
+token="";
+
+location.reload();
+
+}
+
+
+/* ENTER KEY LOGIN */
+
+document.addEventListener(
+"DOMContentLoaded",
+function(){
+
+const username=
+document.getElementById("u");
+
+const password=
+document.getElementById("pw");
+
+username.addEventListener(
+"keydown",
+function(e){
+
+if(e.key==="Enter"){
+login();
+}
+
+});
+
+password.addEventListener(
+"keydown",
+function(e){
+
+if(e.key==="Enter"){
+login();
+}
+
+});
+
+
+/* EXISTING LOGIN SESSION */
+
+if(token){
+
+document
+.getElementById("login")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+refresh();
+
+}
+
+}
+);
+
+</script>
+
+</body>
+</html>
