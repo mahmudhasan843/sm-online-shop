@@ -1,3 +1,4 @@
+
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
@@ -8,103 +9,43 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
+
 app.use(express.static(path.join(__dirname, "public")));
 
 const DATA = path.join(__dirname, "data.json");
 
-const SECRET = process.env.SESSION_SECRET || "CHANGE_THIS_SECRET";
-const ADMIN_USER = process.env.ADMIN_USER || "SMADMIN";
-const ADMIN_PASS = process.env.ADMIN_PASS || "SM2728";
+const SECRET =
+  process.env.SESSION_SECRET || "CHANGE_THIS_SECRET";
 
-const defaultData = {
-  settings: {
-    shopName: "SM Online Shop",
-    tagline: "Style • Comfort • Confidence ♥",
-    phone1: "01827872334",
-    phone2: "01886995687",
-    facebook: "https://www.facebook.com/share/1Dr8FEmuoQ/",
-    currency: "BDT"
-  },
-  products: [
-    {
-      id: 1,
-      name: "Elegant Party Dress",
-      category: "Dresses",
-      price: 1550,
-      oldPrice: 1950,
-      discount: 20,
-      stock: 20,
-      image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=85"
-    },
-    {
-      id: 2,
-      name: "Floral Long Kurti",
-      category: "Tops",
-      price: 1450,
-      oldPrice: 1930,
-      discount: 25,
-      stock: 15,
-      image: "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=700&q=85"
-    },
-    {
-      id: 3,
-      name: "Luxury Embroidered Saree",
-      category: "Saree",
-      price: 1750,
-      oldPrice: 2130,
-      discount: 18,
-      stock: 12,
-      image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=85"
-    },
-    {
-      id: 4,
-      name: "Premium Chiffon Hijab",
-      category: "Hijab",
-      price: 550,
-      oldPrice: 700,
-      discount: 22,
-      stock: 30,
-      image: "https://images.unsplash.com/photo-1584187774001-0d7a5c5c0e44?auto=format&fit=crop&w=700&q=85"
-    },
-    {
-      id: 5,
-      name: "Stylish Hand Bag",
-      category: "Bags",
-      price: 1350,
-      oldPrice: 1730,
-      discount: 22,
-      stock: 18,
-      image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=85"
-    },
-    {
-      id: 6,
-      name: "Trendy Casual Shoes",
-      category: "Shoes",
-      price: 1299,
-      oldPrice: 1855,
-      discount: 30,
-      stock: 22,
-      image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
-    }
-  ],
-  orders: []
-};
+const ADMIN_USER =
+  process.env.ADMIN_USER || "SMADMIN";
 
-if (!fs.existsSync(DATA)) {
-  fs.writeFileSync(DATA, JSON.stringify(defaultData, null, 2));
-}
+const ADMIN_PASS =
+  process.env.ADMIN_PASS || "SM2728";
+
 
 function read() {
-  return JSON.parse(fs.readFileSync(DATA, "utf8"));
+  return JSON.parse(
+    fs.readFileSync(DATA, "utf8")
+  );
 }
 
+
 function write(data) {
-  fs.writeFileSync(DATA, JSON.stringify(data, null, 2));
+  fs.writeFileSync(
+    DATA,
+    JSON.stringify(data, null, 2)
+  );
 }
+
+
+/* LOGIN SESSIONS */
 
 const sessions = new Map();
 
+
 function makeToken(user) {
+
   const raw =
     user +
     "." +
@@ -113,335 +54,546 @@ function makeToken(user) {
     crypto.randomBytes(24).toString("hex");
 
   return (
-    crypto.createHmac("sha256", SECRET).update(raw).digest("hex") +
+    crypto
+      .createHmac("sha256", SECRET)
+      .update(raw)
+      .digest("hex") +
     "." +
     Buffer.from(user).toString("base64url")
   );
 }
 
-function auth(req, res, next) {
-  const header = req.headers.authorization || "";
 
-  const token = header.startsWith("Bearer ")
-    ? header.slice(7)
-    : "";
+function auth(req, res, next) {
+
+  const token =
+    req.headers.authorization?.replace(
+      "Bearer ",
+      ""
+    );
 
   if (!token || !sessions.has(token)) {
+
     return res.status(401).json({
       error: "Unauthorized"
     });
+
   }
 
   req.admin = sessions.get(token);
+
   next();
 }
 
-/* PUBLIC STORE */
+
+/* STORE */
 
 app.get("/api/store", (req, res) => {
+
   const data = read();
 
   res.json({
     settings: data.settings,
     products: data.products
   });
+
 });
+
 
 /* ADMIN LOGIN */
 
-app.post("/api/admin/login", (req, res) => {
-  const { username, password } = req.body || {};
+app.post(
+  "/api/admin/login",
+  (req, res) => {
 
-  if (
-    username !== ADMIN_USER ||
-    password !== ADMIN_PASS
-  ) {
-    return res.status(401).json({
-      error: "Invalid login"
+    const {
+      username,
+      password
+    } = req.body || {};
+
+    if (
+      username !== ADMIN_USER ||
+      password !== ADMIN_PASS
+    ) {
+
+      return res.status(401).json({
+        error: "Invalid username or password"
+      });
+
+    }
+
+    const token =
+      makeToken(username);
+
+    sessions.set(
+      token,
+      username
+    );
+
+    res.json({
+      token
     });
+
   }
+);
 
-  const token = makeToken(username);
 
-  sessions.set(token, username);
+/* LOGOUT */
 
-  res.json({
-    token
-  });
-});
+app.post(
+  "/api/admin/logout",
+  auth,
+  (req, res) => {
 
-/* ADMIN LOGOUT */
+    const token =
+      req.headers.authorization
+        .replace("Bearer ", "");
 
-app.post("/api/admin/logout", auth, (req, res) => {
-  const header = req.headers.authorization || "";
+    sessions.delete(token);
 
-  const token = header.startsWith("Bearer ")
-    ? header.slice(7)
-    : "";
+    res.json({
+      ok: true
+    });
 
-  sessions.delete(token);
+  }
+);
 
-  res.json({
-    ok: true
-  });
-});
 
 /* ADMIN ORDERS */
 
-app.get("/api/admin/orders", auth, (req, res) => {
-  res.json(read().orders);
-});
+app.get(
+  "/api/admin/orders",
+  auth,
+  (req, res) => {
 
-/* ADMIN PRODUCTS */
+    res.json(read().orders);
 
-app.get("/api/admin/products", auth, (req, res) => {
-  res.json(read().products);
-});
+  }
+);
+
+
+/* CHANGE ORDER STATUS */
+
+app.put(
+  "/api/admin/orders/:id/status",
+  auth,
+  (req, res) => {
+
+    const data = read();
+
+    const order =
+      data.orders.find(
+        x =>
+          String(x.id) ===
+          String(req.params.id)
+      );
+
+    if (!order) {
+
+      return res.status(404).json({
+        error: "Order not found"
+      });
+
+    }
+
+    const allowed = [
+      "Pending",
+      "Confirmed",
+      "Processing",
+      "Shipped",
+      "Delivered",
+      "Cancelled"
+    ];
+
+    const status =
+      req.body?.status;
+
+    if (!allowed.includes(status)) {
+
+      return res.status(400).json({
+        error: "Invalid status"
+      });
+
+    }
+
+    order.status = status;
+
+    order.updatedAt =
+      new Date().toISOString();
+
+    write(data);
+
+    res.json({
+      ok: true,
+      order
+    });
+
+  }
+);
+
+
+/* PRODUCTS */
+
+app.get(
+  "/api/admin/products",
+  auth,
+  (req, res) => {
+
+    res.json(read().products);
+
+  }
+);
+
 
 /* ADD PRODUCT */
 
-app.post("/api/admin/products", auth, (req, res) => {
-  const data = read();
+app.post(
+  "/api/admin/products",
+  auth,
+  (req, res) => {
 
-  const product = {
-    ...req.body
-  };
+    const data = read();
 
-  if (
-    !product.name ||
-    product.price == null ||
-    product.price === ""
-  ) {
-    return res.status(400).json({
-      error: "Name and price required"
-    });
+    const p = req.body || {};
+
+    if (!p.name || !p.price) {
+
+      return res.status(400).json({
+        error:
+          "Name and price required"
+      });
+
+    }
+
+    p.id = Date.now();
+
+    p.price =
+      Number(p.price);
+
+    p.oldPrice =
+      Number(
+        p.oldPrice || p.price
+      );
+
+    p.stock =
+      Number(p.stock || 0);
+
+    p.discount =
+      Number(p.discount || 0);
+
+    data.products.push(p);
+
+    write(data);
+
+    res.json(p);
+
   }
+);
 
-  product.id = Date.now();
-  product.price = Number(product.price);
-  product.oldPrice = Number(
-    product.oldPrice || product.price
-  );
-  product.stock = Number(product.stock || 0);
-  product.discount = Number(product.discount || 0);
-
-  data.products.push(product);
-
-  write(data);
-
-  res.json(product);
-});
 
 /* EDIT PRODUCT */
 
-app.put("/api/admin/products/:id", auth, (req, res) => {
-  const data = read();
+app.put(
+  "/api/admin/products/:id",
+  auth,
+  (req, res) => {
 
-  const id = Number(req.params.id);
+    const data = read();
 
-  const index = data.products.findIndex(
-    product => product.id === id
-  );
+    const id =
+      Number(req.params.id);
 
-  if (index < 0) {
-    return res.status(404).json({
-      error: "Not found"
-    });
-  }
+    const index =
+      data.products.findIndex(
+        x => x.id === id
+      );
 
-  data.products[index] = {
-    ...data.products[index],
-    ...req.body,
-    id
-  };
+    if (index < 0) {
 
-  for (
-    const key of [
+      return res.status(404).json({
+        error: "Product not found"
+      });
+
+    }
+
+    data.products[index] = {
+      ...data.products[index],
+      ...req.body,
+      id
+    };
+
+    [
       "price",
       "oldPrice",
       "stock",
       "discount"
-    ]
-  ) {
-    if (data.products[index][key] != null) {
-      data.products[index][key] =
-        Number(data.products[index][key]);
-    }
+    ].forEach(key => {
+
+      if (
+        data.products[index][key] != null
+      ) {
+
+        data.products[index][key] =
+          Number(
+            data.products[index][key]
+          );
+
+      }
+
+    });
+
+    write(data);
+
+    res.json(
+      data.products[index]
+    );
+
   }
+);
 
-  write(data);
-
-  res.json(data.products[index]);
-});
 
 /* DELETE PRODUCT */
 
-app.delete("/api/admin/products/:id", auth, (req, res) => {
-  const data = read();
+app.delete(
+  "/api/admin/products/:id",
+  auth,
+  (req, res) => {
 
-  const id = Number(req.params.id);
+    const data = read();
 
-  data.products = data.products.filter(
-    product => product.id !== id
-  );
+    const id =
+      Number(req.params.id);
 
-  write(data);
+    data.products =
+      data.products.filter(
+        x => x.id !== id
+      );
 
-  res.json({
-    ok: true
-  });
-});
+    write(data);
 
-/* UPDATE SETTINGS */
-
-app.put("/api/admin/settings", auth, (req, res) => {
-  const data = read();
-
-  data.settings = {
-    ...data.settings,
-    ...req.body
-  };
-
-  write(data);
-
-  res.json(data.settings);
-});
-
-/* CREATE ORDER */
-
-app.post("/api/orders", (req, res) => {
-  const data = read();
-
-  const {
-    customer,
-    items,
-    paymentMethod
-  } = req.body || {};
-
-  if (
-    !customer?.name ||
-    !customer?.phone ||
-    !customer?.address ||
-    !Array.isArray(items) ||
-    !items.length
-  ) {
-    return res.status(400).json({
-      error:
-        "Customer and order details are required"
+    res.json({
+      ok: true
     });
+
   }
+);
 
-  let total = 0;
 
-  const cleanItems = [];
+/* STORE SETTINGS */
 
-  for (const item of items) {
-    const product = data.products.find(
-      product =>
-        product.id === Number(item.id)
+app.put(
+  "/api/admin/settings",
+  auth,
+  (req, res) => {
+
+    const data = read();
+
+    data.settings = {
+      ...data.settings,
+      ...req.body
+    };
+
+    write(data);
+
+    res.json(
+      data.settings
     );
 
-    const quantity = Math.max(
-      1,
-      Number(item.qty || 1)
-    );
+  }
+);
+
+
+/* CUSTOMER ORDER */
+
+app.post(
+  "/api/orders",
+  (req, res) => {
+
+    const data = read();
+
+    const {
+      customer,
+      items,
+      paymentMethod
+    } = req.body || {};
 
     if (
-      !product ||
-      product.stock < quantity
+      !customer?.name ||
+      !customer?.phone ||
+      !customer?.address ||
+      !Array.isArray(items) ||
+      !items.length
     ) {
+
       return res.status(400).json({
         error:
-          `Out of stock: ${
-            product?.name || "product"
-          }`
+          "Customer and order details are required"
       });
+
     }
 
-    total += product.price * quantity;
+    let total = 0;
 
-    cleanItems.push({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      qty: quantity
+    const clean = [];
+
+    for (const item of items) {
+
+      const product =
+        data.products.find(
+          x =>
+            x.id ===
+            Number(item.id)
+        );
+
+      const qty =
+        Math.max(
+          1,
+          Number(item.qty || 1)
+        );
+
+      if (
+        !product ||
+        product.stock < qty
+      ) {
+
+        return res.status(400).json({
+          error:
+            "Out of stock: " +
+            (product?.name || "product")
+        });
+
+      }
+
+      total +=
+        product.price * qty;
+
+      clean.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        qty
+      });
+
+    }
+
+
+    const order = {
+
+      id:
+        "SM" +
+        Date.now(),
+
+      createdAt:
+        new Date().toISOString(),
+
+      customer,
+
+      items: clean,
+
+      total,
+
+      paymentMethod:
+        paymentMethod || "cod",
+
+      status:
+        "Pending"
+
+    };
+
+
+    data.orders.unshift(order);
+
+
+    clean.forEach(item => {
+
+      const product =
+        data.products.find(
+          x =>
+            x.id === item.id
+        );
+
+      if (product) {
+
+        product.stock -=
+          item.qty;
+
+      }
+
     });
+
+
+    write(data);
+
+    res.json({
+      ok: true,
+      orderId: order.id,
+      total
+    });
+
   }
+);
 
-  const order = {
-    id: "SM" + Date.now(),
-    createdAt:
-      new Date().toISOString(),
-    customer,
-    items: cleanItems,
-    total,
-    paymentMethod,
-    status: "Pending"
-  };
-
-  data.orders.unshift(order);
-
-  cleanItems.forEach(item => {
-    const product = data.products.find(
-      product =>
-        product.id === item.id
-    );
-
-    if (product) {
-      product.stock -= item.qty;
-    }
-  });
-
-  write(data);
-
-  res.json({
-    ok: true,
-    orderId: order.id,
-    total
-  });
-});
 
 /* PAYMENT PLACEHOLDER */
 
-app.post("/api/payment/create", (req, res) => {
-  const method = req.body?.method;
+app.post(
+  "/api/payment/create",
+  (req, res) => {
 
-  if (
-    !["bkash", "nagad", "card"]
-      .includes(method)
-  ) {
-    return res.status(400).json({
-      error: "Unsupported payment method"
+    const method =
+      req.body?.method;
+
+    if (
+      ![
+        "bkash",
+        "nagad",
+        "card"
+      ].includes(method)
+    ) {
+
+      return res.status(400).json({
+        error:
+          "Unsupported payment method"
+      });
+
+    }
+
+    res.status(501).json({
+      error:
+        method +
+        " payment gateway is not configured yet."
     });
+
   }
+);
 
-  res.status(501).json({
-    error:
-      `${method} gateway credentials are not configured. ` +
-      "Add provider credentials in .env and enable the adapter in server.js."
-  });
-});
 
-/* WEBSITE */
+/* FRONTEND */
 
-app.get("*", (req, res) => {
-  res.sendFile(
-    path.join(
-      __dirname,
-      "public",
-      "index.html"
-    )
-  );
-});
+app.get(
+  "*",
+  (req, res) => {
 
-/* START SERVER */
+    res.sendFile(
+      path.join(
+        __dirname,
+        "public",
+        "index.html"
+      )
+    );
+
+  }
+);
+
 
 app.listen(
   PORT,
-  "0.0.0.0",
   () => {
+
     console.log(
-      `SM Online Shop running on port ${PORT}`
+      "SM Online Shop running on port " +
+      PORT
     );
+
   }
 );
