@@ -3,243 +3,317 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SM Online Shop - Admin</title>
+<title>SM Online Shop — Admin</title>
 
 <style>
 *{box-sizing:border-box}
+
 body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f5f5f7;
-color:#18151b
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f5f5f7;
+ color:#18151b;
 }
-.hidden{display:none!important}
+
+button,input,select{
+ font-family:inherit;
+}
 
 .login{
-max-width:390px;
-margin:80px auto;
-background:#fff;
-padding:30px;
-border-radius:18px;
-box-shadow:0 20px 50px #0002
+ max-width:400px;
+ margin:80px auto;
+ background:#fff;
+ padding:30px;
+ border-radius:18px;
+ box-shadow:0 20px 50px #0002;
 }
 
 .login h2{
-margin-top:0
+ margin-top:0;
 }
 
-input{
-width:100%;
-padding:12px;
-margin:6px 0 14px;
-border:1px solid #ddd;
-border-radius:8px;
-font-size:15px
+.login input,
+.form input{
+ width:100%;
+ padding:12px;
+ margin:7px 0 15px;
+ border:1px solid #ddd;
+ border-radius:8px;
+ outline:none;
+}
+
+.login input:focus,
+.form input:focus{
+ border-color:#f41470;
 }
 
 .btn{
-border:0;
-background:#f41470;
-color:#fff;
-padding:11px 16px;
-border-radius:8px;
-font-weight:bold;
-cursor:pointer
+ border:0;
+ background:#f41470;
+ color:#fff;
+ padding:10px 15px;
+ border-radius:8px;
+ font-weight:bold;
+ cursor:pointer;
 }
 
-.btn.gray{background:#777}
-.btn.red{background:#d52f46}
+.btn.gray{
+ background:#777;
+}
+
+.btn.red{
+ background:#d52f46;
+}
+
+.btn.green{
+ background:#159447;
+}
+
+.btn.blue{
+ background:#2878d8;
+}
+
+.hidden{
+ display:none!important;
+}
 
 header{
-background:#17151b;
-color:#fff;
-padding:17px 5%;
-display:flex;
-justify-content:space-between;
-align-items:center
+ background:#17151b;
+ color:#fff;
+ padding:16px 5%;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+}
+
+header b{
+ font-size:18px;
 }
 
 .wrap{
-max-width:1250px;
-margin:22px auto;
-padding:0 14px
+ max-width:1250px;
+ margin:22px auto;
+ padding:0 14px;
 }
 
 .dash{
-display:grid;
-grid-template-columns:210px 1fr;
-gap:16px
+ display:grid;
+ grid-template-columns:210px 1fr;
+ gap:16px;
 }
 
 .side{
-background:#17151b;
-border-radius:15px;
-padding:12px;
-min-height:650px
+ background:#17151b;
+ border-radius:15px;
+ padding:12px;
+ min-height:650px;
 }
 
 .side button{
-width:100%;
-border:0;
-background:transparent;
-color:#fff;
-text-align:left;
-padding:12px;
-border-radius:8px;
-cursor:pointer;
-margin-bottom:4px
+ width:100%;
+ border:0;
+ background:transparent;
+ color:#fff;
+ text-align:left;
+ padding:12px;
+ border-radius:8px;
+ cursor:pointer;
+ margin-bottom:4px;
 }
 
 .side button.active,
 .side button:hover{
-background:#f41470
+ background:#f41470;
 }
 
 .main{
-background:#fff;
-border-radius:15px;
-padding:22px
+ background:#fff;
+ border-radius:15px;
+ padding:22px;
+ min-height:650px;
 }
 
 .cards{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:12px
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:12px;
 }
 
 .card{
-border:1px solid #eee;
-border-radius:12px;
-padding:17px
+ border:1px solid #eee;
+ border-radius:12px;
+ padding:17px;
 }
 
 .card b{
-display:block;
-color:#f41470;
-font-size:25px;
-margin-top:5px
+ display:block;
+ color:#f41470;
+ font-size:25px;
+ margin-top:5px;
 }
 
 .table{
-width:100%;
-border-collapse:collapse
+ width:100%;
+ border-collapse:collapse;
 }
 
 .table th,
 .table td{
-padding:10px;
-border-bottom:1px solid #eee;
-text-align:left
+ padding:10px;
+ border-bottom:1px solid #eee;
+ text-align:left;
 }
 
 .table img{
-width:50px;
-height:60px;
-object-fit:cover;
-border-radius:6px
+ width:50px;
+ height:60px;
+ object-fit:cover;
+ border-radius:6px;
 }
 
 .modal{
-display:none;
-position:fixed;
-inset:0;
-background:#0008;
-align-items:center;
-justify-content:center;
-padding:15px
+ display:none;
+ position:fixed;
+ inset:0;
+ background:#0008;
+ align-items:center;
+ justify-content:center;
+ padding:15px;
+ z-index:1000;
 }
 
 .modal.show{
-display:flex
+ display:flex;
 }
 
 .modalbox{
-background:#fff;
-border-radius:16px;
-padding:22px;
-width:min(650px,100%);
-max-height:90vh;
-overflow:auto
+ background:#fff;
+ border-radius:16px;
+ padding:22px;
+ width:min(650px,100%);
+ max-height:90vh;
+ overflow:auto;
 }
 
 .row2{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:12px;
 }
 
 .order{
-border:1px solid #eee;
-padding:14px;
-border-radius:10px;
-margin:8px 0
+ border:1px solid #eee;
+ padding:15px;
+ border-radius:12px;
+ margin:10px 0;
+}
+
+.order h3{
+ margin:0 0 8px;
 }
 
 .status{
-color:#f41470;
-font-weight:bold
+ color:#f41470;
+ font-weight:bold;
+}
+
+.order-actions{
+ display:flex;
+ gap:6px;
+ flex-wrap:wrap;
+ margin-top:12px;
+ align-items:center;
+}
+
+.order-actions select{
+ padding:9px;
+ border:1px solid #ddd;
+ border-radius:7px;
 }
 
 .act{
-display:flex;
-gap:5px;
-flex-wrap:wrap
+ display:flex;
+ gap:5px;
+ flex-wrap:wrap;
+}
+
+.form label{
+ font-size:12px;
+ font-weight:bold;
 }
 
 .notice{
-padding:12px;
-background:#fff7d9;
-border:1px solid #f1d97a;
-border-radius:10px;
-font-size:12px
-}
-
-.error{
-margin-top:10px;
-padding:10px;
-background:#ffe5e5;
-border:1px solid #ffb5b5;
-border-radius:8px;
-color:#b00000;
-display:none
+ padding:12px;
+ background:#fff7d9;
+ border:1px solid #f1d97a;
+ border-radius:10px;
+ font-size:12px;
+ margin-top:18px;
 }
 
 .success{
-margin-top:10px;
-padding:10px;
-background:#e5ffe9;
-border:1px solid #a8e6b2;
-border-radius:8px;
-color:#08751b;
-display:none
+ padding:10px;
+ background:#e9fff0;
+ border:1px solid #9cddb1;
+ border-radius:8px;
+ margin-bottom:15px;
+}
+
+.empty{
+ text-align:center;
+ padding:30px;
+ color:#777;
 }
 
 @media(max-width:800px){
-.dash{
-grid-template-columns:1fr
+
+ .dash{
+  grid-template-columns:1fr;
+ }
+
+ .side{
+  min-height:auto;
+ }
+
+ .cards{
+  grid-template-columns:repeat(2,1fr);
+ }
+
+ .row2{
+  grid-template-columns:1fr;
+ }
+
+ .table{
+  font-size:11px;
+  display:block;
+  overflow:auto;
+ }
+
+ header b{
+  font-size:14px;
+ }
+
+ .main{
+  padding:15px;
+ }
+
 }
 
-.side{
-min-height:auto
-}
+@media(max-width:450px){
 
-.cards{
-grid-template-columns:repeat(2,1fr)
-}
+ .cards{
+  grid-template-columns:1fr 1fr;
+ }
 
-.row2{
-grid-template-columns:1fr
-}
+ .card{
+  padding:12px;
+ }
 
-.table{
-font-size:11px;
-display:block;
-overflow:auto
-}
+ .card b{
+  font-size:20px;
+ }
 
-header{
-padding:15px
-}
 }
 </style>
 </head>
@@ -251,82 +325,78 @@ padding:15px
 <button class="btn gray" onclick="logout()">Logout</button>
 </header>
 
+
 <!-- LOGIN -->
+
 <div id="login" class="login">
 
 <h2>🔐 Admin Login</h2>
 
 <label>Username</label>
-<input
-id="u"
-type="text"
-value="SMADMIN"
-autocomplete="username"
->
+<input id="u" value="SMADMIN">
 
 <label>Password</label>
-<input
-id="pw"
-type="password"
-value="SM2728"
-autocomplete="current-password"
->
+<input id="pw" type="password" value="SM2728">
 
-<button
-class="btn"
-style="width:100%"
-onclick="login()"
->
+<button class="btn" onclick="login()">
 Login
 </button>
-
-<div id="loginError" class="error"></div>
-<div id="loginSuccess" class="success"></div>
 
 </div>
 
 
 <!-- ADMIN APP -->
+
 <div id="app" class="wrap hidden">
 
 <div class="dash">
 
+<!-- SIDEBAR -->
+
 <aside class="side">
 
-<button
-class="active"
-onclick="tab('dash',this)"
->
+<button class="active"
+onclick="tab('dash',this)">
 📊 Dashboard
 </button>
 
-<button onclick="tab('prod',this)">
+<button
+onclick="tab('prod',this)">
 🛍 Products
 </button>
 
-<button onclick="tab('orders',this)">
+<button
+onclick="tab('orders',this)">
 📦 Orders
 </button>
 
-<button onclick="tab('settings',this)">
+<button
+onclick="tab('settings',this)">
 ⚙ Store Settings
 </button>
 
-<a href="/" target="_blank" style="text-decoration:none">
+<a href="/" target="_blank"
+style="text-decoration:none">
+
 <button>
 🌐 View Store
 </button>
+
 </a>
 
 </aside>
 
 
+<!-- MAIN -->
+
 <main class="main">
 
+
 <!-- DASHBOARD -->
+
 <section id="dash">
 
-<h2>Dashboard</h2>
+<h2>📊 Dashboard</h2>
 
 <div class="cards">
 
@@ -352,23 +422,23 @@ Sales
 
 </div>
 
-<div class="notice" style="margin-top:18px">
-
-Payment gateways: Cash on Delivery is active.
-bKash, Nagad and Card/Bank require merchant
-credentials before live transactions.
-
+<div class="notice">
+💳 Cash on Delivery is active.
+bKash, Nagad and Card payment require
+merchant credentials before live transactions.
 </div>
 
 </section>
 
 
 <!-- PRODUCTS -->
+
 <section id="prod" class="hidden">
 
-<h2>Products</h2>
+<h2>🛍 Products</h2>
 
-<button class="btn" onclick="openP()">
+<button class="btn"
+onclick="openP()">
 + Add Product
 </button>
 
@@ -377,6 +447,7 @@ credentials before live transactions.
 <table class="table">
 
 <thead>
+
 <tr>
 <th>Image</th>
 <th>Name</th>
@@ -385,9 +456,11 @@ credentials before live transactions.
 <th>Stock</th>
 <th>Action</th>
 </tr>
+
 </thead>
 
-<tbody id="rows"></tbody>
+<tbody id="rows">
+</tbody>
 
 </table>
 
@@ -397,21 +470,24 @@ credentials before live transactions.
 
 
 <!-- ORDERS -->
+
 <section id="orders" class="hidden">
 
-<h2>Orders</h2>
+<h2>📦 Orders</h2>
 
 <div id="olist">
-No orders yet.
 </div>
 
 </section>
 
 
 <!-- SETTINGS -->
+
 <section id="settings" class="hidden">
 
-<h2>Store Settings</h2>
+<h2>⚙ Store Settings</h2>
+
+<div class="form">
 
 <label>Shop Name</label>
 <input id="sn">
@@ -436,16 +512,17 @@ No orders yet.
 <label>Facebook Page</label>
 <input id="fb">
 
-<button
-class="btn"
-onclick="saveSettings()"
->
+<button class="btn"
+onclick="saveSettings()">
 Save Settings
 </button>
+
+</div>
 
 </section>
 
 </main>
+
 </div>
 </div>
 
@@ -459,6 +536,8 @@ Save Settings
 <h2 id="mt">
 Product
 </h2>
+
+<div class="form">
 
 <label>Name</label>
 <input id="pn">
@@ -477,7 +556,6 @@ Product
 
 </div>
 
-
 <div class="row2">
 
 <div>
@@ -491,7 +569,6 @@ Product
 </div>
 
 </div>
-
 
 <div class="row2">
 
@@ -507,186 +584,187 @@ Product
 
 </div>
 
+<br>
 
-<button class="btn" onclick="saveP()">
+<button class="btn"
+onclick="saveP()">
 Save Product
 </button>
 
-<button
-class="btn gray"
-onclick="closeModal()"
->
+<button class="btn gray"
+onclick="closeModal()">
 Cancel
 </button>
 
+</div>
 </div>
 </div>
 
 
 <script>
 
-let token = localStorage.getItem("smToken") || "";
+let token =
+localStorage.smToken || "";
+
 let editId = null;
+
+
+/* API */
+
+async function api(url,opt={}){
+
+ opt.headers={
+  ...(opt.headers||{}),
+  Authorization:
+   "Bearer "+token,
+  "Content-Type":
+   "application/json"
+ };
+
+ const r =
+  await fetch(url,opt);
+
+ if(r.status===401){
+
+  logout();
+
+  throw new Error(
+   "Session expired"
+  );
+
+ }
+
+ return r;
+}
 
 
 /* LOGIN */
 
 async function login(){
 
-const username =
-document.getElementById("u").value.trim();
+ try{
 
-const password =
-document.getElementById("pw").value;
+  const r =
+   await fetch(
+    "/api/admin/login",
+    {
+     method:"POST",
+     headers:{
+      "Content-Type":
+       "application/json"
+     },
+     body:JSON.stringify({
+      username:
+       document.getElementById("u").value,
+      password:
+       document.getElementById("pw").value
+     })
+    }
+   );
 
-const errorBox =
-document.getElementById("loginError");
+  const d =
+   await r.json();
 
-const successBox =
-document.getElementById("loginSuccess");
+  if(!r.ok){
 
-errorBox.style.display="none";
-successBox.style.display="none";
+   alert(
+    d.error ||
+    "Login failed"
+   );
 
-if(!username || !password){
+   return;
+  }
 
-errorBox.textContent =
-"Username এবং Password দিন";
+  token=d.token;
 
-errorBox.style.display="block";
+  localStorage.smToken =
+   token;
 
-return;
-}
+  show();
 
-try{
+ }catch(e){
 
-const response = await fetch(
-"/api/admin/login",
-{
-method:"POST",
+  alert(
+   "Login error: "+
+   e.message
+  );
 
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-username:username,
-password:password
-})
-}
-);
-
-const text = await response.text();
-
-let data;
-
-try{
-data = JSON.parse(text);
-}
-catch{
-throw new Error(
-"Server থেকে সঠিক response পাওয়া যায়নি"
-);
-}
-
-if(!response.ok){
-
-errorBox.textContent =
-data.error || "Invalid login";
-
-errorBox.style.display="block";
-
-return;
-}
-
-if(!data.token){
-
-throw new Error(
-"Login token পাওয়া যায়নি"
-);
-}
-
-token=data.token;
-
-localStorage.setItem(
-"smToken",
-token
-);
-
-successBox.textContent =
-"Login successful!";
-
-successBox.style.display="block";
-
-setTimeout(()=>{
-
-document
-.getElementById("login")
-.classList.add("hidden");
-
-document
-.getElementById("app")
-.classList.remove("hidden");
-
-refresh();
-
-},500);
-
-}
-
-catch(error){
-
-console.error(error);
-
-errorBox.textContent =
-"Login error: "+error.message;
-
-errorBox.style.display="block";
-
-}
+ }
 
 }
 
 
-/* API */
+/* SHOW ADMIN */
 
-async function api(url,options={}){
+function show(){
 
-const headers={
-...(options.headers||{}),
-"Content-Type":"application/json",
-"Authorization":"Bearer "+token
-};
+ document
+  .getElementById("login")
+  .classList.add("hidden");
 
-const response=await fetch(
-url,
-{
-...options,
-headers:headers
-}
-);
+ document
+  .getElementById("app")
+  .classList.remove("hidden");
 
-if(response.status===401){
-
-localStorage.removeItem("smToken");
-
-token="";
-
-document
-.getElementById("app")
-.classList.add("hidden");
-
-document
-.getElementById("login")
-.classList.remove("hidden");
-
-throw new Error(
-"Session expired. আবার Login করুন।"
-);
+ refresh();
 
 }
 
-return response;
+
+/* LOGOUT */
+
+function logout(){
+
+ localStorage.removeItem(
+  "smToken"
+ );
+
+ token="";
+
+ location.reload();
+
+}
+
+
+/* AUTO LOGIN */
+
+if(token){
+
+ show();
+
+}
+
+
+/* TAB */
+
+function tab(id,b){
+
+ document
+  .querySelectorAll(
+   "main section"
+  )
+  .forEach(
+   s =>
+    s.classList.add("hidden")
+  );
+
+ document
+  .getElementById(id)
+  .classList.remove("hidden");
+
+ document
+  .querySelectorAll(
+   ".side button"
+  )
+  .forEach(
+   x =>
+    x.classList.remove("active")
+  );
+
+ if(b)
+  b.classList.add("active");
+
+ refresh();
 
 }
 
@@ -695,67 +773,87 @@ return response;
 
 async function refresh(){
 
-try{
+ try{
 
-const pResponse=
-await api("/api/admin/products");
+  const [
+   products,
+   orders,
+   store
+  ] = await Promise.all([
 
-const oResponse=
-await api("/api/admin/orders");
+   api(
+    "/api/admin/products"
+   ).then(
+    x=>x.json()
+   ),
 
-const sResponse=
-await api("/api/store");
+   api(
+    "/api/admin/orders"
+   ).then(
+    x=>x.json()
+   ),
 
-const products=
-await pResponse.json();
+   api(
+    "/api/store"
+   ).then(
+    x=>x.json()
+   )
 
-const orders=
-await oResponse.json();
-
-const store=
-await sResponse.json();
-
-
-document.getElementById("sp")
-.textContent=products.length;
-
-document.getElementById("so")
-.textContent=orders.length;
-
-document.getElementById("sPending")
-.textContent=
-orders.filter(
-x=>x.status==="Pending"
-).length;
+  ]);
 
 
-const sales=
-orders.reduce(
-(total,x)=>
-total+Number(x.total||0),
-0
-);
+  /* DASHBOARD */
 
-document.getElementById("sales")
-.textContent=
-"৳"+sales.toLocaleString();
+  document
+   .getElementById("sp")
+   .textContent =
+   products.length;
+
+  document
+   .getElementById("so")
+   .textContent =
+   orders.length;
+
+  document
+   .getElementById("sPending")
+   .textContent =
+   orders.filter(
+    x =>
+     x.status==="Pending"
+   ).length;
+
+  document
+   .getElementById("sales")
+   .textContent =
+   "৳"+
+   orders
+    .filter(
+     x =>
+      x.status!=="Cancelled"
+    )
+    .reduce(
+     (a,x)=>
+      a+Number(x.total||0),
+     0
+    )
+    .toLocaleString();
 
 
-/* PRODUCTS */
+  /* PRODUCTS */
 
-document.getElementById("rows")
-.innerHTML=
-products.map(x=>`
+  document
+   .getElementById("rows")
+   .innerHTML =
+   products.map(
+    x => `
 
 <tr>
 
 <td>
-
 <img
 src="${escapeHtml(x.image||"")}"
 onerror="this.style.display='none'"
 >
-
 </td>
 
 <td>
@@ -774,468 +872,327 @@ ${escapeHtml(x.category||"")}
 ${Number(x.stock||0)}
 </td>
 
-<td class="act">
+<td>
+
+<div class="act">
 
 <button
 class="btn"
-onclick="editProduct(${x.id})"
->
+onclick='openP(${JSON.stringify(x)})'>
 Edit
 </button>
 
 <button
 class="btn red"
-onclick="deleteProduct(${x.id})"
->
+onclick="delP(${x.id})">
 Delete
 </button>
+
+</div>
 
 </td>
 
 </tr>
 
-`).join("");
+`
+   ).join("");
 
 
-/* ORDERS */
+  /* ORDERS */
 
-document.getElementById("olist")
-.innerHTML=
+  document
+   .getElementById("olist")
+   .innerHTML =
+   orders.length
+   ?
+   orders.map(
+    x =>
+     orderHTML(x)
+   ).join("")
+   :
+   `<div class="empty">
+    📦 No orders yet.
+   </div>`;
 
-orders.map(x=>`
+
+  /* SETTINGS */
+
+  document
+   .getElementById("sn")
+   .value =
+   store.settings.shopName||"";
+
+  document
+   .getElementById("st")
+   .value =
+   store.settings.tagline||"";
+
+  document
+   .getElementById("ph1")
+   .value =
+   store.settings.phone1||"";
+
+  document
+   .getElementById("ph2")
+   .value =
+   store.settings.phone2||"";
+
+  document
+   .getElementById("fb")
+   .value =
+   store.settings.facebook||"";
+
+
+ }catch(e){
+
+  console.error(e);
+
+ }
+
+}
+
+
+/* ORDER HTML */
+
+function orderHTML(x){
+
+ const statuses=[
+  "Pending",
+  "Confirmed",
+  "Processing",
+  "Shipped",
+  "Delivered",
+  "Cancelled"
+ ];
+
+ return `
 
 <div class="order">
 
-<b>${escapeHtml(x.id)}</b>
-
-—
-${escapeHtml(
-x.customer?.name||""
-)}
-
-<br>
-
-☎
-${escapeHtml(
-x.customer?.phone||""
-)}
-
-<br>
-
-${escapeHtml(
-x.customer?.address||""
-)}
-
-<br>
+<h3>
+🧾 ${escapeHtml(x.id)}
+</h3>
 
 <b>
-৳${Number(
-x.total||0
+👤 ${escapeHtml(
+ x.customer?.name||""
+)}
+</b>
+
+<br>
+
+☎ ${escapeHtml(
+ x.customer?.phone||""
+)}
+
+<br>
+
+📍 ${escapeHtml(
+ x.customer?.address||""
+)}
+
+<br><br>
+
+<b>
+💰 ৳${Number(
+ x.total||0
 ).toLocaleString()}
 </b>
 
-—
+<br>
 
-${escapeHtml(
-x.paymentMethod||""
-)}
-
-—
-
-<span class="status">
-${escapeHtml(
-x.status||""
-)}
-</span>
+💳 ${
+ escapeHtml(
+  x.paymentMethod||"COD"
+ )
+}
 
 <br>
 
-<small>
+📅 ${
+ x.createdAt
+ ?
+ new Date(
+  x.createdAt
+ ).toLocaleString()
+ :
+ ""
+}
 
-${(x.items||[])
-.map(i=>
-escapeHtml(i.name)
-+" × "+
-Number(i.qty||0)
+<br><br>
+
+🛍 <b>Products:</b>
+
+<br>
+
+${
+ (x.items||[])
+ .map(
+  i =>
+   escapeHtml(
+    i.name
+   )+
+   " × "+
+   Number(i.qty||1)
+ )
+ .join("<br>")
+}
+
+<div class="order-actions">
+
+<b>
+Status:
+</b>
+
+<select
+onchange="
+changeOrderStatus(
+'${x.id}',
+this.value
 )
-.join(", ")}
+">
 
-</small>
+${
+ statuses.map(
+  s =>
+   `<option
+    value="${s}"
+    ${
+     x.status===s
+     ?
+     "selected"
+     :
+     ""
+    }
+   >
+    ${s}
+   </option>`
+ ).join("")
+}
+
+</select>
 
 </div>
 
-`).join("")
-||
-"<p>No orders yet.</p>";
+</div>
 
-
-/* SETTINGS */
-
-const settings=
-store.settings||{};
-
-document.getElementById("sn")
-.value=settings.shopName||"";
-
-document.getElementById("st")
-.value=settings.tagline||"";
-
-document.getElementById("ph1")
-.value=settings.phone1||"";
-
-document.getElementById("ph2")
-.value=settings.phone2||"";
-
-document.getElementById("fb")
-.value=settings.facebook||"";
-
-}
-
-catch(error){
-
-console.error(error);
-
-alert(error.message);
-
-}
+`;
 
 }
 
 
-/* ESCAPE HTML */
+/* CHANGE ORDER STATUS */
 
-function escapeHtml(value){
+async function changeOrderStatus(
+ orderId,
+ status
+){
 
-return String(value??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+ try{
 
-}
+  const r =
+   await api(
+    "/api/admin/orders/"+
+    encodeURIComponent(
+     orderId
+    )+
+    "/status",
+    {
+     method:"PUT",
+     body:JSON.stringify({
+      status
+     })
+    }
+   );
 
+  const d =
+   await r.json();
 
-/* TABS */
+  if(!r.ok){
 
-function tab(id,button){
+   alert(
+    d.error ||
+    "Status update failed"
+   );
 
-document
-.querySelectorAll("main section")
-.forEach(
-s=>s.classList.add("hidden")
-);
+   return;
 
-document
-.getElementById(id)
-.classList.remove("hidden");
+  }
 
-document
-.querySelectorAll(".side button")
-.forEach(
-b=>b.classList.remove("active")
-);
+  alert(
+   "Order status changed to: "+
+   status
+  );
 
-if(button){
-button.classList.add("active");
-}
+  refresh();
 
-refresh();
+ }catch(e){
 
-}
+  alert(
+   "Error: "+
+   e.message
+  );
 
-
-/* PRODUCT OPEN */
-
-function openP(product){
-
-editId=
-product?.id||null;
-
-document.getElementById("mt")
-.textContent=
-editId
-?"Edit Product"
-:"Add Product";
-
-document.getElementById("pn")
-.value=product?.name||"";
-
-document.getElementById("pc")
-.value=product?.category||"Dresses";
-
-document.getElementById("ps")
-.value=product?.stock??0;
-
-document.getElementById("pp")
-.value=product?.price??"";
-
-document.getElementById("po")
-.value=product?.oldPrice??"";
-
-document.getElementById("pd")
-.value=product?.discount??0;
-
-document.getElementById("pi")
-.value=product?.image||"";
-
-document.getElementById("modal")
-.classList.add("show");
+ }
 
 }
 
 
-/* EDIT PRODUCT */
-
-async function editProduct(id){
-
-try{
-
-const response=
-await api("/api/admin/products");
-
-const products=
-await response.json();
-
-const product=
-products.find(
-x=>Number(x.id)===Number(id)
-);
-
-if(!product){
-
-alert("Product পাওয়া যায়নি");
-
-return;
-}
-
-openP(product);
-
-}
-
-catch(error){
-
-alert(error.message);
-
-}
-
-}
-
-
-/* SAVE PRODUCT */
-
-async function saveP(){
-
-const data={
-
-name:
-document.getElementById("pn")
-.value.trim(),
-
-category:
-document.getElementById("pc")
-.value.trim(),
-
-stock:
-Number(
-document.getElementById("ps").value||0
-),
-
-price:
-Number(
-document.getElementById("pp").value||0
-),
-
-oldPrice:
-Number(
-document.getElementById("po").value||0
-),
-
-discount:
-Number(
-document.getElementById("pd").value||0
-),
-
-image:
-document.getElementById("pi")
-.value.trim()
-
-};
-
-
-if(!data.name||!data.price){
-
-alert(
-"Product name এবং price দিন"
-);
-
-return;
-}
-
-
-try{
-
-const url=
-editId
-?"/api/admin/products/"+editId
-:"/api/admin/products";
-
-const response=
-await api(
-url,
-{
-method:
-editId?"PUT":"POST",
-
-body:
-JSON.stringify(data)
-}
-);
-
-const result=
-await response.json();
-
-if(!response.ok){
-
-alert(
-result.error||"Save failed"
-);
-
-return;
-}
-
-closeModal();
-
-alert(
-editId
-?"Product updated successfully!"
-:"Product added successfully!"
-);
-
-refresh();
-
-}
-
-catch(error){
-
-alert(error.message);
-
-}
-
-}
-
-
-/* DELETE */
-
-async function deleteProduct(id){
-
-if(!confirm(
-"এই product টি Delete করবেন?"
-)){
-return;
-}
-
-try{
-
-const response=
-await api(
-"/api/admin/products/"+id,
-{
-method:"DELETE"
-}
-);
-
-const result=
-await response.json();
-
-if(!response.ok){
-
-alert(
-result.error||"Delete failed"
-);
-
-return;
-}
-
-alert(
-"Product deleted successfully!"
-);
-
-refresh();
-
-}
-
-catch(error){
-
-alert(error.message);
-
-}
-
-}
-
-
-/* SETTINGS */
-
-async function saveSettings(){
-
-const data={
-
-shopName:
-document.getElementById("sn")
-.value.trim(),
-
-tagline:
-document.getElementById("st")
-.value.trim(),
-
-phone1:
-document.getElementById("ph1")
-.value.trim(),
-
-phone2:
-document.getElementById("ph2")
-.value.trim(),
-
-facebook:
-document.getElementById("fb")
-.value.trim()
-
-};
-
-try{
-
-const response=
-await api(
-"/api/admin/settings",
-{
-method:"PUT",
-body:JSON.stringify(data)
-}
-);
-
-const result=
-await response.json();
-
-if(!response.ok){
-
-alert(
-result.error||"Save failed"
-);
-
-return;
-}
-
-alert(
-"Store settings saved successfully!"
-);
-
-}
-
-catch(error){
-
-alert(error.message);
-
-}
+/* OPEN PRODUCT */
+
+function openP(p){
+
+ editId =
+  p?.id || null;
+
+ document
+  .getElementById("mt")
+  .textContent =
+  editId
+  ?
+  "Edit Product"
+  :
+  "Add Product";
+
+ document
+  .getElementById("pn")
+  .value =
+  p?.name || "";
+
+ document
+  .getElementById("pc")
+  .value =
+  p?.category ||
+  "Dresses";
+
+ document
+  .getElementById("ps")
+  .value =
+  p?.stock || 0;
+
+ document
+  .getElementById("pp")
+  .value =
+  p?.price || "";
+
+ document
+  .getElementById("po")
+  .value =
+  p?.oldPrice || "";
+
+ document
+  .getElementById("pd")
+  .value =
+  p?.discount || 0;
+
+ document
+  .getElementById("pi")
+  .value =
+  p?.image || "";
+
+ document
+  .getElementById("modal")
+  .classList.add("show");
 
 }
 
@@ -1244,103 +1201,254 @@ alert(error.message);
 
 function closeModal(){
 
-document
-.getElementById("modal")
-.classList.remove("show");
+ document
+  .getElementById("modal")
+  .classList.remove(
+   "show"
+  );
 
 }
 
 
-/* LOGOUT */
+/* SAVE PRODUCT */
 
-async function logout(){
+async function saveP(){
 
-try{
+ const data={
 
-if(token){
+  name:
+   document.getElementById("pn")
+   .value,
 
-await fetch(
-"/api/admin/logout",
-{
-method:"POST",
+  category:
+   document.getElementById("pc")
+   .value,
 
-headers:{
-"Authorization":
-"Bearer "+token
+  stock:
+   Number(
+    document.getElementById("ps")
+    .value
+   ),
+
+  price:
+   Number(
+    document.getElementById("pp")
+    .value
+   ),
+
+  oldPrice:
+   Number(
+    document.getElementById("po")
+    .value
+   ),
+
+  discount:
+   Number(
+    document.getElementById("pd")
+    .value
+   ),
+
+  image:
+   document.getElementById("pi")
+   .value
+
+ };
+
+
+ try{
+
+  const r =
+   await api(
+    editId
+    ?
+    "/api/admin/products/"+
+     editId
+    :
+    "/api/admin/products",
+    {
+     method:
+      editId
+      ?
+      "PUT"
+      :
+      "POST",
+
+     body:
+      JSON.stringify(data)
+    }
+   );
+
+  const d =
+   await r.json();
+
+  if(!r.ok){
+
+   alert(
+    d.error ||
+    "Save failed"
+   );
+
+   return;
+  }
+
+  closeModal();
+
+  refresh();
+
+  alert(
+   editId
+   ?
+   "Product updated!"
+   :
+   "Product added!"
+  );
+
+ }catch(e){
+
+  alert(e.message);
+
+ }
+
 }
-}
-);
+
+
+/* DELETE PRODUCT */
+
+async function delP(id){
+
+ if(
+  !confirm(
+   "Delete this product?"
+  )
+ )
+ return;
+
+ try{
+
+  const r =
+   await api(
+    "/api/admin/products/"+
+    id,
+    {
+     method:"DELETE"
+    }
+   );
+
+  if(!r.ok){
+
+   alert(
+    "Delete failed"
+   );
+
+   return;
+
+  }
+
+  refresh();
+
+  alert(
+   "Product deleted!"
+  );
+
+ }catch(e){
+
+  alert(e.message);
+
+ }
 
 }
 
-}catch(error){
 
-console.log(error);
+/* SAVE SETTINGS */
+
+async function saveSettings(){
+
+ try{
+
+  const r =
+   await api(
+    "/api/admin/settings",
+    {
+     method:"PUT",
+
+     body:
+      JSON.stringify({
+
+       shopName:
+        document
+         .getElementById("sn")
+         .value,
+
+       tagline:
+        document
+         .getElementById("st")
+         .value,
+
+       phone1:
+        document
+         .getElementById("ph1")
+         .value,
+
+       phone2:
+        document
+         .getElementById("ph2")
+         .value,
+
+       facebook:
+        document
+         .getElementById("fb")
+         .value
+
+      })
+    }
+   );
+
+  if(r.ok){
+
+   alert(
+    "Store settings saved!"
+   );
+
+  }else{
+
+   alert(
+    "Save failed"
+   );
+
+  }
+
+ }catch(e){
+
+  alert(e.message);
+
+ }
 
 }
 
-localStorage.removeItem(
-"smToken"
-);
 
-token="";
+/* SECURITY */
 
-location.reload();
+function escapeHtml(value){
 
-}
+ return String(
+  value ?? ""
+ )
+ .replace(
+  /[&<>"']/g,
+  function(m){
 
+   return {
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+   }[m];
 
-/* ENTER KEY LOGIN */
-
-document.addEventListener(
-"DOMContentLoaded",
-function(){
-
-const username=
-document.getElementById("u");
-
-const password=
-document.getElementById("pw");
-
-username.addEventListener(
-"keydown",
-function(e){
-
-if(e.key==="Enter"){
-login();
-}
-
-});
-
-password.addEventListener(
-"keydown",
-function(e){
-
-if(e.key==="Enter"){
-login();
-}
-
-});
-
-
-/* EXISTING LOGIN SESSION */
-
-if(token){
-
-document
-.getElementById("login")
-.classList.add("hidden");
-
-document
-.getElementById("app")
-.classList.remove("hidden");
-
-refresh();
+  }
+ );
 
 }
-
-}
-);
 
 </script>
 
