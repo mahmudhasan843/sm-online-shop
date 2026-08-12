@@ -1,1456 +1,911 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SM Online Shop — Admin</title>
-
-<style>
-*{box-sizing:border-box}
-
-body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#f5f5f7;
- color:#18151b;
-}
-
-button,input,select{
- font-family:inherit;
-}
-
-.login{
- max-width:400px;
- margin:80px auto;
- background:#fff;
- padding:30px;
- border-radius:18px;
- box-shadow:0 20px 50px #0002;
-}
-
-.login h2{
- margin-top:0;
-}
-
-.login input,
-.form input{
- width:100%;
- padding:12px;
- margin:7px 0 15px;
- border:1px solid #ddd;
- border-radius:8px;
- outline:none;
-}
-
-.login input:focus,
-.form input:focus{
- border-color:#f41470;
-}
-
-.btn{
- border:0;
- background:#f41470;
- color:#fff;
- padding:10px 15px;
- border-radius:8px;
- font-weight:bold;
- cursor:pointer;
-}
-
-.btn.gray{
- background:#777;
-}
-
-.btn.red{
- background:#d52f46;
-}
-
-.btn.green{
- background:#159447;
-}
-
-.btn.blue{
- background:#2878d8;
-}
-
-.hidden{
- display:none!important;
-}
-
-header{
- background:#17151b;
- color:#fff;
- padding:16px 5%;
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:10px;
-}
-
-header b{
- font-size:18px;
-}
-
-.wrap{
- max-width:1250px;
- margin:22px auto;
- padding:0 14px;
-}
-
-.dash{
- display:grid;
- grid-template-columns:210px 1fr;
- gap:16px;
-}
-
-.side{
- background:#17151b;
- border-radius:15px;
- padding:12px;
- min-height:650px;
-}
-
-.side button{
- width:100%;
- border:0;
- background:transparent;
- color:#fff;
- text-align:left;
- padding:12px;
- border-radius:8px;
- cursor:pointer;
- margin-bottom:4px;
-}
-
-.side button.active,
-.side button:hover{
- background:#f41470;
-}
-
-.main{
- background:#fff;
- border-radius:15px;
- padding:22px;
- min-height:650px;
-}
-
-.cards{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:12px;
-}
-
-.card{
- border:1px solid #eee;
- border-radius:12px;
- padding:17px;
-}
-
-.card b{
- display:block;
- color:#f41470;
- font-size:25px;
- margin-top:5px;
-}
-
-.table{
- width:100%;
- border-collapse:collapse;
-}
-
-.table th,
-.table td{
- padding:10px;
- border-bottom:1px solid #eee;
- text-align:left;
-}
-
-.table img{
- width:50px;
- height:60px;
- object-fit:cover;
- border-radius:6px;
-}
-
-.modal{
- display:none;
- position:fixed;
- inset:0;
- background:#0008;
- align-items:center;
- justify-content:center;
- padding:15px;
- z-index:1000;
-}
-
-.modal.show{
- display:flex;
-}
-
-.modalbox{
- background:#fff;
- border-radius:16px;
- padding:22px;
- width:min(650px,100%);
- max-height:90vh;
- overflow:auto;
-}
-
-.row2{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:12px;
-}
-
-.order{
- border:1px solid #eee;
- padding:15px;
- border-radius:12px;
- margin:10px 0;
-}
-
-.order h3{
- margin:0 0 8px;
-}
-
-.status{
- color:#f41470;
- font-weight:bold;
-}
-
-.order-actions{
- display:flex;
- gap:6px;
- flex-wrap:wrap;
- margin-top:12px;
- align-items:center;
-}
-
-.order-actions select{
- padding:9px;
- border:1px solid #ddd;
- border-radius:7px;
-}
-
-.act{
- display:flex;
- gap:5px;
- flex-wrap:wrap;
-}
-
-.form label{
- font-size:12px;
- font-weight:bold;
-}
-
-.notice{
- padding:12px;
- background:#fff7d9;
- border:1px solid #f1d97a;
- border-radius:10px;
- font-size:12px;
- margin-top:18px;
-}
-
-.success{
- padding:10px;
- background:#e9fff0;
- border:1px solid #9cddb1;
- border-radius:8px;
- margin-bottom:15px;
-}
-
-.empty{
- text-align:center;
- padding:30px;
- color:#777;
-}
-
-@media(max-width:800px){
-
- .dash{
-  grid-template-columns:1fr;
- }
-
- .side{
-  min-height:auto;
- }
-
- .cards{
-  grid-template-columns:repeat(2,1fr);
- }
-
- .row2{
-  grid-template-columns:1fr;
- }
-
- .table{
-  font-size:11px;
-  display:block;
-  overflow:auto;
- }
-
- header b{
-  font-size:14px;
- }
-
- .main{
-  padding:15px;
- }
-
-}
-
-@media(max-width:450px){
-
- .cards{
-  grid-template-columns:1fr 1fr;
- }
-
- .card{
-  padding:12px;
- }
-
- .card b{
-  font-size:20px;
- }
-
-}
-</style>
-</head>
-
-<body>
-
-<header>
-<b>SM Online Shop — Admin Panel</b>
-<button class="btn gray" onclick="logout()">Logout</button>
-</header>
-
-
-<!-- LOGIN -->
-
-<div id="login" class="login">
-
-<h2>🔐 Admin Login</h2>
-
-<label>Username</label>
-<input id="u" value="SMADMIN">
-
-<label>Password</label>
-<input id="pw" type="password" value="SM2728">
-
-<button class="btn" onclick="login()">
-Login
-</button>
-
-</div>
-
-
-<!-- ADMIN APP -->
-
-<div id="app" class="wrap hidden">
-
-<div class="dash">
-
-<!-- SIDEBAR -->
-
-<aside class="side">
-
-<button class="active"
-onclick="tab('dash',this)">
-📊 Dashboard
-</button>
-
-<button
-onclick="tab('prod',this)">
-🛍 Products
-</button>
-
-<button
-onclick="tab('orders',this)">
-📦 Orders
-</button>
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
+const crypto = require("crypto");
 
-<button
-onclick="tab('settings',this)">
-⚙ Store Settings
-</button>
+const app = express();
 
-<a href="/" target="_blank"
-style="text-decoration:none">
+const PORT = process.env.PORT || 3000;
 
-<button>
-🌐 View Store
-</button>
 
-</a>
+/* =====================================
+   BODY SIZE
+   Image compressed Base64 data রাখার জন্য
+===================================== */
 
-</aside>
+app.use(express.json({
+  limit: "3mb"
+}));
 
+app.use(express.urlencoded({
+  extended: true,
+  limit: "3mb"
+}));
 
-<!-- MAIN -->
 
-<main class="main">
+/* =====================================
+   PUBLIC
+===================================== */
 
+app.use(
+  express.static(
+    path.join(__dirname, "public")
+  )
+);
 
-<!-- DASHBOARD -->
 
-<section id="dash">
+/* =====================================
+   DATA FILE
+===================================== */
 
-<h2>📊 Dashboard</h2>
+const DATA =
+  path.join(__dirname, "data.json");
 
-<div class="cards">
 
-<div class="card">
-Products
-<b id="sp">0</b>
-</div>
+const SECRET =
+  process.env.SESSION_SECRET ||
+  "CHANGE_THIS_SECRET";
 
-<div class="card">
-Orders
-<b id="so">0</b>
-</div>
 
-<div class="card">
-Pending
-<b id="sPending">0</b>
-</div>
+const ADMIN_USER =
+  process.env.ADMIN_USER ||
+  "SMADMIN";
 
-<div class="card">
-Sales
-<b id="sales">৳0</b>
-</div>
 
-</div>
+const ADMIN_PASS =
+  process.env.ADMIN_PASS ||
+  "SM2728";
 
-<div class="notice">
-💳 Cash on Delivery is active.
-bKash, Nagad and Card payment require
-merchant credentials before live transactions.
-</div>
 
-</section>
+/* =====================================
+   DEFAULT DATA
+===================================== */
 
+const defaultData = {
 
-<!-- PRODUCTS -->
+  settings: {
 
-<section id="prod" class="hidden">
+    shopName: "SM Online Shop",
 
-<h2>🛍 Products</h2>
+    tagline:
+      "Style • Comfort • Confidence ♥",
 
-<button class="btn"
-onclick="openP()">
-+ Add Product
-</button>
+    phone1: "01827872334",
 
-<div style="overflow:auto;margin-top:15px">
+    phone2: "01886995687",
 
-<table class="table">
+    facebook:
+      "https://www.facebook.com/",
 
-<thead>
+    currency: "BDT"
 
-<tr>
-<th>Image</th>
-<th>Name</th>
-<th>Category</th>
-<th>Price</th>
-<th>Stock</th>
-<th>Action</th>
-</tr>
+  },
 
-</thead>
 
-<tbody id="rows">
-</tbody>
+  products: [
 
-</table>
-
-</div>
-
-</section>
-
-
-<!-- ORDERS -->
-
-<section id="orders" class="hidden">
-
-<h2>📦 Orders</h2>
-
-<div id="olist">
-</div>
-
-</section>
-
-
-<!-- SETTINGS -->
-
-<section id="settings" class="hidden">
-
-<h2>⚙ Store Settings</h2>
-
-<div class="form">
-
-<label>Shop Name</label>
-<input id="sn">
-
-<label>Tagline</label>
-<input id="st">
-
-<div class="row2">
-
-<div>
-<label>Phone 1</label>
-<input id="ph1">
-</div>
-
-<div>
-<label>Phone 2</label>
-<input id="ph2">
-</div>
-
-</div>
-
-<label>Facebook Page</label>
-<input id="fb">
-
-<button class="btn"
-onclick="saveSettings()">
-Save Settings
-</button>
-
-</div>
-
-</section>
-
-</main>
-
-</div>
-</div>
-
-
-<!-- PRODUCT MODAL -->
-
-<div id="modal" class="modal">
-
-<div class="modalbox">
-
-<h2 id="mt">
-Product
-</h2>
-
-<div class="form">
-
-<label>Name</label>
-<input id="pn">
-
-<div class="row2">
-
-<div>
-<label>Category</label>
-<input id="pc">
-</div>
-
-<div>
-<label>Stock</label>
-<input id="ps" type="number">
-</div>
-
-</div>
-
-<div class="row2">
-
-<div>
-<label>Price</label>
-<input id="pp" type="number">
-</div>
-
-<div>
-<label>Old Price</label>
-<input id="po" type="number">
-</div>
-
-</div>
-
-<div class="row2">
-
-<div>
-<label>Discount %</label>
-<input id="pd" type="number">
-</div>
-
-<div>
-<label>Image URL</label>
-<input id="pi">
-</div>
-
-</div>
-
-<br>
-
-<button class="btn"
-onclick="saveP()">
-Save Product
-</button>
-
-<button class="btn gray"
-onclick="closeModal()">
-Cancel
-</button>
-
-</div>
-</div>
-</div>
-
-
-<script>
-
-let token =
-localStorage.smToken || "";
-
-let editId = null;
-
-
-/* API */
-
-async function api(url,opt={}){
-
- opt.headers={
-  ...(opt.headers||{}),
-  Authorization:
-   "Bearer "+token,
-  "Content-Type":
-   "application/json"
- };
-
- const r =
-  await fetch(url,opt);
-
- if(r.status===401){
-
-  logout();
-
-  throw new Error(
-   "Session expired"
-  );
-
- }
-
- return r;
-}
-
-
-/* LOGIN */
-
-async function login(){
-
- try{
-
-  const r =
-   await fetch(
-    "/api/admin/login",
     {
-     method:"POST",
-     headers:{
-      "Content-Type":
-       "application/json"
-     },
-     body:JSON.stringify({
-      username:
-       document.getElementById("u").value,
-      password:
-       document.getElementById("pw").value
-     })
+      id: 1,
+      name: "Elegant Party Dress",
+      category: "Dresses",
+      price: 1550,
+      oldPrice: 1950,
+      discount: 20,
+      stock: 20,
+      image:
+        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=85"
+    },
+
+    {
+      id: 2,
+      name: "Floral Long Kurti",
+      category: "Tops",
+      price: 1450,
+      oldPrice: 1930,
+      discount: 25,
+      stock: 15,
+      image:
+        "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=700&q=85"
+    },
+
+    {
+      id: 3,
+      name: "Luxury Embroidered Saree",
+      category: "Saree",
+      price: 1750,
+      oldPrice: 2130,
+      discount: 18,
+      stock: 12,
+      image:
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=85"
+    },
+
+    {
+      id: 4,
+      name: "Premium Chiffon Hijab",
+      category: "Hijab",
+      price: 550,
+      oldPrice: 700,
+      discount: 22,
+      stock: 30,
+      image:
+        "https://images.unsplash.com/photo-1584187774001-0d7a5c5c0e44?auto=format&fit=crop&w=700&q=85"
+    },
+
+    {
+      id: 5,
+      name: "Stylish Hand Bag",
+      category: "Bags",
+      price: 1350,
+      oldPrice: 1730,
+      discount: 22,
+      stock: 18,
+      image:
+        "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=85"
+    },
+
+    {
+      id: 6,
+      name: "Trendy Casual Shoes",
+      category: "Shoes",
+      price: 1299,
+      oldPrice: 1855,
+      discount: 30,
+      stock: 22,
+      image:
+        "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
     }
-   );
 
-  const d =
-   await r.json();
-
-  if(!r.ok){
-
-   alert(
-    d.error ||
-    "Login failed"
-   );
-
-   return;
-  }
-
-  token=d.token;
-
-  localStorage.smToken =
-   token;
-
-  show();
-
- }catch(e){
-
-  alert(
-   "Login error: "+
-   e.message
-  );
-
- }
-
-}
+  ],
 
 
-/* SHOW ADMIN */
+  orders: []
 
-function show(){
-
- document
-  .getElementById("login")
-  .classList.add("hidden");
-
- document
-  .getElementById("app")
-  .classList.remove("hidden");
-
- refresh();
-
-}
+};
 
 
-/* LOGOUT */
+/* =====================================
+   CREATE DATA FILE IF NOT EXISTS
+===================================== */
 
-function logout(){
+if(!fs.existsSync(DATA)){
 
- localStorage.removeItem(
-  "smToken"
- );
-
- token="";
-
- location.reload();
-
-}
-
-
-/* AUTO LOGIN */
-
-if(token){
-
- show();
-
-}
-
-
-/* TAB */
-
-function tab(id,b){
-
- document
-  .querySelectorAll(
-   "main section"
-  )
-  .forEach(
-   s =>
-    s.classList.add("hidden")
-  );
-
- document
-  .getElementById(id)
-  .classList.remove("hidden");
-
- document
-  .querySelectorAll(
-   ".side button"
-  )
-  .forEach(
-   x =>
-    x.classList.remove("active")
-  );
-
- if(b)
-  b.classList.add("active");
-
- refresh();
-
-}
-
-
-/* REFRESH */
-
-async function refresh(){
-
- try{
-
-  const [
-   products,
-   orders,
-   store
-  ] = await Promise.all([
-
-   api(
-    "/api/admin/products"
-   ).then(
-    x=>x.json()
-   ),
-
-   api(
-    "/api/admin/orders"
-   ).then(
-    x=>x.json()
-   ),
-
-   api(
-    "/api/store"
-   ).then(
-    x=>x.json()
-   )
-
-  ]);
-
-
-  /* DASHBOARD */
-
-  document
-   .getElementById("sp")
-   .textContent =
-   products.length;
-
-  document
-   .getElementById("so")
-   .textContent =
-   orders.length;
-
-  document
-   .getElementById("sPending")
-   .textContent =
-   orders.filter(
-    x =>
-     x.status==="Pending"
-   ).length;
-
-  document
-   .getElementById("sales")
-   .textContent =
-   "৳"+
-   orders
-    .filter(
-     x =>
-      x.status!=="Cancelled"
+  fs.writeFileSync(
+    DATA,
+    JSON.stringify(
+      defaultData,
+      null,
+      2
     )
-    .reduce(
-     (a,x)=>
-      a+Number(x.total||0),
-     0
+  );
+
+}
+
+
+/* =====================================
+   READ / WRITE
+===================================== */
+
+function read(){
+
+  try{
+
+    return JSON.parse(
+      fs.readFileSync(
+        DATA,
+        "utf8"
+      )
+    );
+
+  }catch(error){
+
+    console.error(
+      "DATA READ ERROR:",
+      error
+    );
+
+    return defaultData;
+
+  }
+
+}
+
+
+function write(data){
+
+  fs.writeFileSync(
+    DATA,
+    JSON.stringify(
+      data,
+      null,
+      2
     )
-    .toLocaleString();
-
-
-  /* PRODUCTS */
-
-  document
-   .getElementById("rows")
-   .innerHTML =
-   products.map(
-    x => `
-
-<tr>
-
-<td>
-<img
-src="${escapeHtml(x.image||"")}"
-onerror="this.style.display='none'"
->
-</td>
-
-<td>
-${escapeHtml(x.name)}
-</td>
-
-<td>
-${escapeHtml(x.category||"")}
-</td>
-
-<td>
-৳${Number(x.price||0).toLocaleString()}
-</td>
-
-<td>
-${Number(x.stock||0)}
-</td>
-
-<td>
-
-<div class="act">
-
-<button
-class="btn"
-onclick='openP(${JSON.stringify(x)})'>
-Edit
-</button>
-
-<button
-class="btn red"
-onclick="delP(${x.id})">
-Delete
-</button>
-
-</div>
-
-</td>
-
-</tr>
-
-`
-   ).join("");
-
-
-  /* ORDERS */
-
-  document
-   .getElementById("olist")
-   .innerHTML =
-   orders.length
-   ?
-   orders.map(
-    x =>
-     orderHTML(x)
-   ).join("")
-   :
-   `<div class="empty">
-    📦 No orders yet.
-   </div>`;
-
-
-  /* SETTINGS */
-
-  document
-   .getElementById("sn")
-   .value =
-   store.settings.shopName||"";
-
-  document
-   .getElementById("st")
-   .value =
-   store.settings.tagline||"";
-
-  document
-   .getElementById("ph1")
-   .value =
-   store.settings.phone1||"";
-
-  document
-   .getElementById("ph2")
-   .value =
-   store.settings.phone2||"";
-
-  document
-   .getElementById("fb")
-   .value =
-   store.settings.facebook||"";
-
-
- }catch(e){
-
-  console.error(e);
-
- }
-
-}
-
-
-/* ORDER HTML */
-
-function orderHTML(x){
-
- const statuses=[
-  "Pending",
-  "Confirmed",
-  "Processing",
-  "Shipped",
-  "Delivered",
-  "Cancelled"
- ];
-
- return `
-
-<div class="order">
-
-<h3>
-🧾 ${escapeHtml(x.id)}
-</h3>
-
-<b>
-👤 ${escapeHtml(
- x.customer?.name||""
-)}
-</b>
-
-<br>
-
-☎ ${escapeHtml(
- x.customer?.phone||""
-)}
-
-<br>
-
-📍 ${escapeHtml(
- x.customer?.address||""
-)}
-
-<br><br>
-
-<b>
-💰 ৳${Number(
- x.total||0
-).toLocaleString()}
-</b>
-
-<br>
-
-💳 ${
- escapeHtml(
-  x.paymentMethod||"COD"
- )
-}
-
-<br>
-
-📅 ${
- x.createdAt
- ?
- new Date(
-  x.createdAt
- ).toLocaleString()
- :
- ""
-}
-
-<br><br>
-
-🛍 <b>Products:</b>
-
-<br>
-
-${
- (x.items||[])
- .map(
-  i =>
-   escapeHtml(
-    i.name
-   )+
-   " × "+
-   Number(i.qty||1)
- )
- .join("<br>")
-}
-
-<div class="order-actions">
-
-<b>
-Status:
-</b>
-
-<select
-onchange="
-changeOrderStatus(
-'${x.id}',
-this.value
-)
-">
-
-${
- statuses.map(
-  s =>
-   `<option
-    value="${s}"
-    ${
-     x.status===s
-     ?
-     "selected"
-     :
-     ""
-    }
-   >
-    ${s}
-   </option>`
- ).join("")
-}
-
-</select>
-
-</div>
-
-</div>
-
-`;
-
-}
-
-
-/* CHANGE ORDER STATUS */
-
-async function changeOrderStatus(
- orderId,
- status
-){
-
- try{
-
-  const r =
-   await api(
-    "/api/admin/orders/"+
-    encodeURIComponent(
-     orderId
-    )+
-    "/status",
-    {
-     method:"PUT",
-     body:JSON.stringify({
-      status
-     })
-    }
-   );
-
-  const d =
-   await r.json();
-
-  if(!r.ok){
-
-   alert(
-    d.error ||
-    "Status update failed"
-   );
-
-   return;
-
-  }
-
-  alert(
-   "Order status changed to: "+
-   status
-  );
-
-  refresh();
-
- }catch(e){
-
-  alert(
-   "Error: "+
-   e.message
-  );
-
- }
-
-}
-
-
-/* OPEN PRODUCT */
-
-function openP(p){
-
- editId =
-  p?.id || null;
-
- document
-  .getElementById("mt")
-  .textContent =
-  editId
-  ?
-  "Edit Product"
-  :
-  "Add Product";
-
- document
-  .getElementById("pn")
-  .value =
-  p?.name || "";
-
- document
-  .getElementById("pc")
-  .value =
-  p?.category ||
-  "Dresses";
-
- document
-  .getElementById("ps")
-  .value =
-  p?.stock || 0;
-
- document
-  .getElementById("pp")
-  .value =
-  p?.price || "";
-
- document
-  .getElementById("po")
-  .value =
-  p?.oldPrice || "";
-
- document
-  .getElementById("pd")
-  .value =
-  p?.discount || 0;
-
- document
-  .getElementById("pi")
-  .value =
-  p?.image || "";
-
- document
-  .getElementById("modal")
-  .classList.add("show");
-
-}
-
-
-/* CLOSE MODAL */
-
-function closeModal(){
-
- document
-  .getElementById("modal")
-  .classList.remove(
-   "show"
   );
 
 }
 
 
-/* SAVE PRODUCT */
+/* =====================================
+   ADMIN SESSIONS
+===================================== */
 
-async function saveP(){
-
- const data={
-
-  name:
-   document.getElementById("pn")
-   .value,
-
-  category:
-   document.getElementById("pc")
-   .value,
-
-  stock:
-   Number(
-    document.getElementById("ps")
-    .value
-   ),
-
-  price:
-   Number(
-    document.getElementById("pp")
-    .value
-   ),
-
-  oldPrice:
-   Number(
-    document.getElementById("po")
-    .value
-   ),
-
-  discount:
-   Number(
-    document.getElementById("pd")
-    .value
-   ),
-
-  image:
-   document.getElementById("pi")
-   .value
-
- };
+const sessions = new Map();
 
 
- try{
+function makeToken(user){
 
-  const r =
-   await api(
-    editId
-    ?
-    "/api/admin/products/"+
-     editId
-    :
-    "/api/admin/products",
-    {
-     method:
-      editId
-      ?
-      "PUT"
-      :
-      "POST",
+  const raw =
+    user +
+    "." +
+    Date.now() +
+    "." +
+    crypto
+      .randomBytes(24)
+      .toString("hex");
 
-     body:
-      JSON.stringify(data)
-    }
-   );
 
-  const d =
-   await r.json();
+  const hash =
+    crypto
+      .createHmac(
+        "sha256",
+        SECRET
+      )
+      .update(raw)
+      .digest("hex");
 
-  if(!r.ok){
 
-   alert(
-    d.error ||
-    "Save failed"
-   );
-
-   return;
-  }
-
-  closeModal();
-
-  refresh();
-
-  alert(
-   editId
-   ?
-   "Product updated!"
-   :
-   "Product added!"
+  return (
+    hash +
+    "." +
+    Buffer
+      .from(user)
+      .toString("base64url")
   );
 
- }catch(e){
+}
 
-  alert(e.message);
 
- }
+/* =====================================
+   AUTH
+===================================== */
+
+function auth(req,res,next){
+
+  const token =
+    req.headers.authorization
+      ?.replace("Bearer ","");
+
+
+  if(
+    !token ||
+    !sessions.has(token)
+  ){
+
+    return res
+      .status(401)
+      .json({
+        error:"Unauthorized"
+      });
+
+  }
+
+
+  req.admin =
+    sessions.get(token);
+
+
+  next();
 
 }
 
 
-/* DELETE PRODUCT */
+/* =====================================
+   STORE API
+===================================== */
 
-async function delP(id){
+app.get(
+  "/api/store",
+  (req,res)=>{
 
- if(
-  !confirm(
-   "Delete this product?"
-  )
- )
- return;
+    const d = read();
 
- try{
+    res.json({
 
-  const r =
-   await api(
-    "/api/admin/products/"+
-    id,
-    {
-     method:"DELETE"
+      settings:d.settings,
+
+      products:d.products
+
+    });
+
+  }
+);
+
+
+/* =====================================
+   ADMIN LOGIN
+===================================== */
+
+app.post(
+  "/api/admin/login",
+  (req,res)=>{
+
+    const {
+      username,
+      password
+    } = req.body || {};
+
+
+    if(
+      username !== ADMIN_USER ||
+      password !== ADMIN_PASS
+    ){
+
+      return res
+        .status(401)
+        .json({
+          error:"Invalid username or password"
+        });
+
     }
-   );
 
-  if(!r.ok){
 
-   alert(
-    "Delete failed"
-   );
+    const token =
+      makeToken(username);
 
-   return;
+
+    sessions.set(
+      token,
+      username
+    );
+
+
+    res.json({
+      token
+    });
 
   }
-
-  refresh();
-
-  alert(
-   "Product deleted!"
-  );
-
- }catch(e){
-
-  alert(e.message);
-
- }
-
-}
+);
 
 
-/* SAVE SETTINGS */
+/* =====================================
+   ADMIN LOGOUT
+===================================== */
 
-async function saveSettings(){
+app.post(
+  "/api/admin/logout",
+  auth,
+  (req,res)=>{
 
- try{
+    const token =
+      req.headers.authorization
+        .replace("Bearer ","");
 
-  const r =
-   await api(
-    "/api/admin/settings",
-    {
-     method:"PUT",
 
-     body:
-      JSON.stringify({
+    sessions.delete(token);
 
-       shopName:
-        document
-         .getElementById("sn")
-         .value,
 
-       tagline:
-        document
-         .getElementById("st")
-         .value,
+    res.json({
+      ok:true
+    });
 
-       phone1:
-        document
-         .getElementById("ph1")
-         .value,
+  }
+);
 
-       phone2:
-        document
-         .getElementById("ph2")
-         .value,
 
-       facebook:
-        document
-         .getElementById("fb")
-         .value
+/* =====================================
+   ADMIN ORDERS
+===================================== */
 
-      })
+app.get(
+  "/api/admin/orders",
+  auth,
+  (req,res)=>{
+
+    res.json(
+      read().orders
+    );
+
+  }
+);
+
+
+/* =====================================
+   ADMIN PRODUCTS
+===================================== */
+
+app.get(
+  "/api/admin/products",
+  auth,
+  (req,res)=>{
+
+    res.json(
+      read().products
+    );
+
+  }
+);
+
+
+/* =====================================
+   ADD PRODUCT
+===================================== */
+
+app.post(
+  "/api/admin/products",
+  auth,
+  (req,res)=>{
+
+    const d = read();
+
+    const p = req.body || {};
+
+
+    if(
+      !p.name ||
+      p.price === undefined ||
+      p.price === ""
+    ){
+
+      return res
+        .status(400)
+        .json({
+          error:"Name and price required"
+        });
+
     }
-   );
 
-  if(r.ok){
 
-   alert(
-    "Store settings saved!"
-   );
+    p.id =
+      Date.now();
 
-  }else{
 
-   alert(
-    "Save failed"
-   );
+    p.price =
+      Number(p.price);
+
+
+    p.oldPrice =
+      Number(
+        p.oldPrice ||
+        p.price
+      );
+
+
+    p.stock =
+      Number(
+        p.stock || 0
+      );
+
+
+    p.discount =
+      Number(
+        p.discount || 0
+      );
+
+
+    p.category =
+      p.category || "Other";
+
+
+    /*
+      Image can be:
+      - Base64 image from phone
+      - Existing URL
+    */
+
+    p.image =
+      p.image || "";
+
+
+    d.products.push(p);
+
+
+    write(d);
+
+
+    res.json(p);
 
   }
-
- }catch(e){
-
-  alert(e.message);
-
- }
-
-}
+);
 
 
-/* SECURITY */
+/* =====================================
+   EDIT PRODUCT
+===================================== */
 
-function escapeHtml(value){
+app.put(
+  "/api/admin/products/:id",
+  auth,
+  (req,res)=>{
 
- return String(
-  value ?? ""
- )
- .replace(
-  /[&<>"']/g,
-  function(m){
+    const d = read();
 
-   return {
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#039;"
-   }[m];
+    const id =
+      Number(req.params.id);
+
+
+    const index =
+      d.products.findIndex(
+        x => x.id === id
+      );
+
+
+    if(index < 0){
+
+      return res
+        .status(404)
+        .json({
+          error:"Product not found"
+        });
+
+    }
+
+
+    const oldProduct =
+      d.products[index];
+
+
+    const update =
+      req.body || {};
+
+
+    /*
+      If new image is not sent,
+      keep old image.
+    */
+
+    if(
+      !update.image &&
+      oldProduct.image
+    ){
+
+      update.image =
+        oldProduct.image;
+
+    }
+
+
+    d.products[index] = {
+
+      ...oldProduct,
+
+      ...update,
+
+      id:id
+
+    };
+
+
+    for(
+      const key of [
+        "price",
+        "oldPrice",
+        "stock",
+        "discount"
+      ]
+    ){
+
+      if(
+        d.products[index][key] !==
+        undefined
+      ){
+
+        d.products[index][key] =
+          Number(
+            d.products[index][key]
+          );
+
+      }
+
+    }
+
+
+    write(d);
+
+
+    res.json(
+      d.products[index]
+    );
 
   }
- );
+);
 
-}
 
-</script>
+/* =====================================
+   DELETE PRODUCT
+===================================== */
 
-</body>
-</html>
+app.delete(
+  "/api/admin/products/:id",
+  auth,
+  (req,res)=>{
+
+    const d = read();
+
+    const id =
+      Number(req.params.id);
+
+
+    d.products =
+      d.products.filter(
+        x => x.id !== id
+      );
+
+
+    write(d);
+
+
+    res.json({
+      ok:true
+    });
+
+  }
+);
+
+
+/* =====================================
+   STORE SETTINGS
+===================================== */
+
+app.put(
+  "/api/admin/settings",
+  auth,
+  (req,res)=>{
+
+    const d = read();
+
+
+    d.settings = {
+
+      ...d.settings,
+
+      ...(req.body || {})
+
+    };
+
+
+    write(d);
+
+
+    res.json(
+      d.settings
+    );
+
+  }
+);
+
+
+/* =====================================
+   CREATE ORDER
+===================================== */
+
+app.post(
+  "/api/orders",
+  (req,res)=>{
+
+    const d = read();
+
+
+    const {
+      customer,
+      items,
+      paymentMethod
+    } = req.body || {};
+
+
+    if(
+      !customer?.name ||
+      !customer?.phone ||
+      !customer?.address ||
+      !Array.isArray(items) ||
+      !items.length
+    ){
+
+      return res
+        .status(400)
+        .json({
+          error:
+            "Customer and order details are required"
+        });
+
+    }
+
+
+    let total = 0;
+
+    const clean = [];
+
+
+    for(
+      const item of items
+    ){
+
+      const p =
+        d.products.find(
+          x =>
+            x.id ===
+            Number(item.id)
+        );
+
+
+      const q =
+        Math.max(
+          1,
+          Number(
+            item.qty || 1
+          )
+        );
+
+
+      if(
+        !p ||
+        p.stock < q
+      ){
+
+        return res
+          .status(400)
+          .json({
+            error:
+              `Out of stock: ${
+                p?.name || "product"
+              }`
+          });
+
+      }
+
+
+      total +=
+        p.price * q;
+
+
+      clean.push({
+
+        id:p.id,
+
+        name:p.name,
+
+        price:p.price,
+
+        qty:q
+
+      });
+
+    }
+
+
+    const order = {
+
+      id:
+        "SM" +
+        Date.now(),
+
+      createdAt:
+        new Date()
+          .toISOString(),
+
+      customer,
+
+      items:clean,
+
+      total,
+
+      paymentMethod:
+        paymentMethod || "cod",
+
+      status:"Pending"
+
+    };
+
+
+    d.orders.unshift(order);
+
+
+    clean.forEach(x=>{
+
+      const p =
+        d.products.find(
+          y => y.id === x.id
+        );
+
+
+      if(p){
+
+        p.stock -= x.qty;
+
+      }
+
+    });
+
+
+    write(d);
+
+
+    res.json({
+
+      ok:true,
+
+      orderId:order.id,
+
+      total
+
+    });
+
+  }
+);
+
+
+/* =====================================
+   PAYMENT ADAPTER
+===================================== */
+
+app.post(
+  "/api/payment/create",
+  (req,res)=>{
+
+    const method =
+      req.body?.method;
+
+
+    if(
+      ![
+        "bkash",
+        "nagad",
+        "card"
+      ].includes(method)
+    ){
+
+      return res
+        .status(400)
+        .json({
+          error:
+            "Unsupported payment method"
+        });
+
+    }
+
+
+    res
+      .status(501)
+      .json({
+        error:
+          `${method} gateway credentials are not configured.`
+      });
+
+  }
+);
+
+
+/* =====================================
+   FALLBACK
+===================================== */
+
+app.get(
+  "*",
+  (req,res)=>{
+
+    res.sendFile(
+      path.join(
+        __dirname,
+        "public",
+        "index.html"
+      )
+    );
+
+  }
+);
+
+
+/* =====================================
+   START
+===================================== */
+
+app.listen(
+  PORT,
+  "0.0.0.0",
+  ()=>{
+
+    console.log(
+      `SM Online Shop running on port ${PORT}`
+    );
+
+  }
+);
