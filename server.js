@@ -4,178 +4,156 @@ const fs = require("fs");
 const crypto = require("crypto");
 
 const app = express();
+
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: "3mb" }));
 app.use(express.urlencoded({ extended: true, limit: "3mb" }));
 
-const PUBLIC = path.join(__dirname, "public");
-const DATA = path.join(__dirname, "data.json");
-
-app.use(express.static(PUBLIC));
+const PUBLIC_DIR = path.join(__dirname, "public");
+const DATA_FILE = path.join(__dirname, "data.json");
 
 const ADMIN_USER = process.env.ADMIN_USER || "SMADMIN";
-const ADMIN_PASS = process.env.ADMIN_PASS || "CHANGE_THIS_PASSWORD";
+const ADMIN_PASS = process.env.ADMIN_PASS || "SM2728";
 const SESSION_SECRET =
   process.env.SESSION_SECRET || "CHANGE_THIS_SESSION_SECRET";
 
 /* =========================
-   DEFAULT STORE DATA
+   CREATE DATA FILE
 ========================= */
 
-const defaultData = {
+const DEFAULT_DATA = {
   settings: {
     shopName: "SM Online Shop",
-    tagline: "Style • Comfort • Confidence",
-    phone1: "0127872334",
-    phone2: "01886995687",
+    tagline: "Style • Comfort • Confidence ❤️",
+    phone1: "0182787234",
+    phone2: "0188995687",
     facebook: "https://www.facebook.com/",
-    currency: "BDT",
-    address: "Hazrat Shahjalal Road, Konapara, Demra, Dhaka-1362"
+    currency: "BDT"
   },
-
-  products: [
-    {
-      id: 1,
-      name: "Elegant Party Dress",
-      category: "Dresses",
-      price: 1550,
-      oldPrice: 1950,
-      discount: 20,
-      stock: 15,
-      image:
-        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=85"
-    },
-    {
-      id: 2,
-      name: "Floral Long Kurti",
-      category: "Tops",
-      price: 1450,
-      oldPrice: 1930,
-      discount: 25,
-      stock: 15,
-      image:
-        "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=700&q=85"
-    },
-    {
-      id: 3,
-      name: "Luxury Embroidered Saree",
-      category: "Saree",
-      price: 1750,
-      oldPrice: 2100,
-      discount: 18,
-      stock: 12,
-      image:
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=85"
-    },
-    {
-      id: 4,
-      name: "Premium Chiffon Hijab",
-      category: "Hijab",
-      price: 550,
-      oldPrice: 700,
-      discount: 22,
-      stock: 30,
-      image:
-        "https://images.unsplash.com/photo-1584187774001-0d7a5c5c0e44?auto=format&fit=crop&w=700&q=85"
-    },
-    {
-      id: 5,
-      name: "Category Bag",
-      category: "Bags",
-      price: 1350,
-      oldPrice: 1730,
-      discount: 22,
-      stock: 18,
-      image:
-        "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=85"
-    },
-    {
-      id: 6,
-      name: "Trendy Casual Shoes",
-      category: "Shoes",
-      price: 1299,
-      oldPrice: 1855,
-      discount: 30,
-      stock: 22,
-      image:
-        "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
-    }
-  ],
-
+  products: [],
   orders: []
 };
 
-/* =========================
-   DATA FILE
-========================= */
-
-if (!fs.existsSync(DATA)) {
-  fs.writeFileSync(DATA, JSON.stringify(defaultData, null, 2));
+if (!fs.existsSync(DATA_FILE)) {
+  fs.writeFileSync(
+    DATA_FILE,
+    JSON.stringify(DEFAULT_DATA, null, 2),
+    "utf8"
+  );
 }
+
+/* =========================
+   DATA FUNCTIONS
+========================= */
 
 function readData() {
   try {
-    return JSON.parse(fs.readFileSync(DATA, "utf8"));
+    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
   } catch (error) {
     console.error("DATA READ ERROR:", error);
-    return JSON.parse(JSON.stringify(defaultData));
+    return DEFAULT_DATA;
   }
 }
 
 function writeData(data) {
-  fs.writeFileSync(DATA, JSON.stringify(data, null, 2));
+  fs.writeFileSync(
+    DATA_FILE,
+    JSON.stringify(data, null, 2),
+    "utf8"
+  );
 }
 
 /* =========================
-   ADMIN SESSIONS
+   COOKIE AUTH
 ========================= */
 
-const sessions = new Map();
+function createToken(username) {
+  const payload = Buffer.from(
+    JSON.stringify({
+      username,
+      created: Date.now()
+    })
+  ).toString("base64url");
 
-function makeToken(user) {
-  const raw =
-    user +
-    "." +
-    Date.now() +
-    "." +
-    crypto.randomBytes(24).toString("hex");
-
-  return crypto
+  const signature = crypto
     .createHmac("sha256", SESSION_SECRET)
-    .update(raw)
-    .digest("hex");
+    .update(payload)
+    .digest("base64url");
+
+  return `${payload}.${signature}`;
+}
+
+function verifyToken(token) {
+  try {
+    if (!token) return null;
+
+    const parts = token.split(".");
+    if (parts.length !== 2) return null;
+
+    const payload = parts[0];
+    const signature = parts[1];
+
+    const expected = crypto
+      .createHmac("sha256", SESSION_SECRET)
+      .update(payload)
+      .digest("base64url");
+
+    if (signature.length !== expected.length) return null;
+
+    if (
+      !crypto.timingSafeEqual(
+        Buffer.from(signature),
+        Buffer.from(expected)
+      )
+    ) {
+      return null;
+    }
+
+    const data = JSON.parse(
+      Buffer.from(payload, "base64url").toString("utf8")
+    );
+
+    if (!data.username) return null;
+
+    if (data.username !== ADMIN_USER) return null;
+
+    return data;
+  } catch (error) {
+    return null;
+  }
+}
+
+function getCookie(req, name) {
+  const cookies = req.headers.cookie || "";
+
+  const parts = cookies.split(";");
+
+  for (const part of parts) {
+    const item = part.trim();
+
+    if (item.startsWith(name + "=")) {
+      return decodeURIComponent(
+        item.substring(name.length + 1)
+      );
+    }
+  }
+
+  return null;
 }
 
 function auth(req, res, next) {
-  const header = req.headers.authorization || "";
+  const token = getCookie(req, "sm_admin_session");
 
-  if (!header.startsWith("Bearer ")) {
+  const user = verifyToken(token);
+
+  if (!user) {
     return res.status(401).json({
       error: "Unauthorized"
     });
   }
 
-  const token = header.replace("Bearer ", "").trim();
-
-  if (!token || !sessions.has(token)) {
-    return res.status(401).json({
-      error: "Session expired"
-    });
-  }
-
-  const session = sessions.get(token);
-
-  if (session.expires < Date.now()) {
-    sessions.delete(token);
-
-    return res.status(401).json({
-      error: "Session expired"
-    });
-  }
-
-  req.admin = session.user;
-  req.token = token;
+  req.admin = user;
 
   next();
 }
@@ -198,27 +176,39 @@ app.get("/api/store", (req, res) => {
 ========================= */
 
 app.post("/api/admin/login", (req, res) => {
-  const username = String(req.body.username || "");
+  const username = String(req.body.username || "").trim();
   const password = String(req.body.password || "");
 
-  if (username !== ADMIN_USER || password !== ADMIN_PASS) {
+  if (
+    username !== ADMIN_USER ||
+    password !== ADMIN_PASS
+  ) {
     return res.status(401).json({
       error: "Invalid username or password"
     });
   }
 
-  const token = makeToken(username);
+  const token = createToken(username);
 
-  sessions.set(token, {
-    user: username,
-    created: Date.now(),
-    expires: Date.now() + 1000 * 60 * 60 * 24
-  });
+  res.setHeader(
+    "Set-Cookie",
+    `sm_admin_session=${encodeURIComponent(token)}; HttpOnly; Path=/; SameSite=Lax; Max-Age=604800`
+  );
 
   res.json({
     ok: true,
-    token: token,
-    username: username
+    message: "Login successful"
+  });
+});
+
+/* =========================
+   CHECK LOGIN
+========================= */
+
+app.get("/api/admin/me", auth, (req, res) => {
+  res.json({
+    ok: true,
+    username: req.admin.username
   });
 });
 
@@ -226,47 +216,14 @@ app.post("/api/admin/login", (req, res) => {
    ADMIN LOGOUT
 ========================= */
 
-app.post("/api/admin/logout", auth, (req, res) => {
-  sessions.delete(req.token);
+app.post("/api/admin/logout", (req, res) => {
+  res.setHeader(
+    "Set-Cookie",
+    "sm_admin_session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0"
+  );
 
   res.json({
     ok: true
-  });
-});
-
-/* =========================
-   ADMIN CHECK
-========================= */
-
-app.get("/api/admin/check", auth, (req, res) => {
-  res.json({
-    ok: true,
-    username: req.admin
-  });
-});
-
-/* =========================
-   ADMIN DASHBOARD
-========================= */
-
-app.get("/api/admin/dashboard", auth, (req, res) => {
-  const data = readData();
-
-  const orders = Array.isArray(data.orders) ? data.orders : [];
-
-  const pending = orders.filter(
-    (order) => order.status === "Pending"
-  ).length;
-
-  const sales = orders.reduce((sum, order) => {
-    return sum + Number(order.total || 0);
-  }, 0);
-
-  res.json({
-    products: data.products.length,
-    orders: orders.length,
-    pending: pending,
-    sales: sales
   });
 });
 
@@ -283,52 +240,6 @@ app.get("/api/admin/orders", auth, (req, res) => {
 });
 
 /* =========================
-   UPDATE ORDER STATUS
-========================= */
-
-app.put("/api/admin/orders/:id", auth, (req, res) => {
-  const data = readData();
-
-  const id = String(req.params.id);
-
-  const order = data.orders.find(
-    (item) => String(item.id) === id
-  );
-
-  if (!order) {
-    return res.status(404).json({
-      error: "Order not found"
-    });
-  }
-
-  const status = String(req.body.status || "");
-
-  const allowed = [
-    "Pending",
-    "Confirmed",
-    "Processing",
-    "Shipped",
-    "Delivered",
-    "Cancelled"
-  ];
-
-  if (!allowed.includes(status)) {
-    return res.status(400).json({
-      error: "Invalid order status"
-    });
-  }
-
-  order.status = status;
-
-  writeData(data);
-
-  res.json({
-    ok: true,
-    order
-  });
-});
-
-/* =========================
    ADMIN PRODUCTS
 ========================= */
 
@@ -336,7 +247,7 @@ app.get("/api/admin/products", auth, (req, res) => {
   const data = readData();
 
   res.json({
-    products: data.products
+    products: data.products || []
   });
 });
 
@@ -349,7 +260,11 @@ app.post("/api/admin/products", auth, (req, res) => {
 
   const p = req.body || {};
 
-  if (!p.name || p.price === undefined) {
+  if (
+    !p.name ||
+    p.price === undefined ||
+    p.price === ""
+  ) {
     return res.status(400).json({
       error: "Product name and price are required"
     });
@@ -357,22 +272,12 @@ app.post("/api/admin/products", auth, (req, res) => {
 
   const product = {
     id: Date.now(),
-
     name: String(p.name),
-
+    price: Number(p.price),
+    oldPrice: Number(p.oldPrice || p.price),
+    discount: Number(p.discount || 0),
+    stock: Number(p.stock || 0),
     category: String(p.category || "Other"),
-
-    price: Number(p.price) || 0,
-
-    oldPrice:
-      p.oldPrice !== undefined
-        ? Number(p.oldPrice)
-        : Number(p.price) || 0,
-
-    discount: Number(p.discount) || 0,
-
-    stock: Number(p.stock) || 0,
-
     image: String(p.image || "")
   };
 
@@ -396,10 +301,10 @@ app.put("/api/admin/products/:id", auth, (req, res) => {
   const id = Number(req.params.id);
 
   const index = data.products.findIndex(
-    (product) => Number(product.id) === id
+    p => Number(p.id) === id
   );
 
-  if (index < 0) {
+  if (index === -1) {
     return res.status(404).json({
       error: "Product not found"
     });
@@ -407,54 +312,33 @@ app.put("/api/admin/products/:id", auth, (req, res) => {
 
   const oldProduct = data.products[index];
 
-  const update = req.body || {};
-
-  const product = {
+  data.products[index] = {
     ...oldProduct,
-
-    name:
-      update.name !== undefined
-        ? String(update.name)
-        : oldProduct.name,
-
-    category:
-      update.category !== undefined
-        ? String(update.category)
-        : oldProduct.category,
-
+    ...req.body,
+    id: oldProduct.id,
     price:
-      update.price !== undefined
-        ? Number(update.price)
+      req.body.price !== undefined
+        ? Number(req.body.price)
         : oldProduct.price,
-
     oldPrice:
-      update.oldPrice !== undefined
-        ? Number(update.oldPrice)
+      req.body.oldPrice !== undefined
+        ? Number(req.body.oldPrice)
         : oldProduct.oldPrice,
-
-    discount:
-      update.discount !== undefined
-        ? Number(update.discount)
-        : oldProduct.discount,
-
     stock:
-      update.stock !== undefined
-        ? Number(update.stock)
+      req.body.stock !== undefined
+        ? Number(req.body.stock)
         : oldProduct.stock,
-
-    image:
-      update.image !== undefined
-        ? String(update.image)
-        : oldProduct.image
+    discount:
+      req.body.discount !== undefined
+        ? Number(req.body.discount)
+        : oldProduct.discount
   };
-
-  data.products[index] = product;
 
   writeData(data);
 
   res.json({
     ok: true,
-    product
+    product: data.products[index]
   });
 });
 
@@ -467,13 +351,13 @@ app.delete("/api/admin/products/:id", auth, (req, res) => {
 
   const id = Number(req.params.id);
 
-  const before = data.products.length;
+  const oldLength = data.products.length;
 
   data.products = data.products.filter(
-    (product) => Number(product.id) !== id
+    p => Number(p.id) !== id
   );
 
-  if (data.products.length === before) {
+  if (data.products.length === oldLength) {
     return res.status(404).json({
       error: "Product not found"
     });
@@ -526,9 +410,8 @@ app.post("/api/orders", (req, res) => {
     ? req.body.items
     : [];
 
-  const paymentMethod = String(
-    req.body.paymentMethod || "cod"
-  );
+  const paymentMethod =
+    req.body.paymentMethod || "cod";
 
   if (
     !customer.name ||
@@ -543,11 +426,11 @@ app.post("/api/orders", (req, res) => {
 
   let total = 0;
 
-  const orderItems = [];
+  const cleanItems = [];
 
   for (const item of items) {
     const product = data.products.find(
-      (p) => Number(p.id) === Number(item.id)
+      p => Number(p.id) === Number(item.id)
     );
 
     if (!product) {
@@ -556,64 +439,60 @@ app.post("/api/orders", (req, res) => {
       });
     }
 
-    const qty = Math.max(1, Number(item.qty) || 1);
+    const qty = Math.max(
+      1,
+      Number(item.qty || 1)
+    );
 
-    if (Number(product.stock) < qty) {
+    if (product.stock < qty) {
       return res.status(400).json({
         error: `Out of stock: ${product.name}`
       });
     }
 
-    const itemTotal = Number(product.price) * qty;
+    total += Number(product.price) * qty;
 
-    total += itemTotal;
-
-    orderItems.push({
+    cleanItems.push({
       id: product.id,
       name: product.name,
       price: product.price,
-      qty: qty
+      qty
     });
 
-    product.stock = Number(product.stock) - qty;
+    product.stock -= qty;
   }
 
   const order = {
     id: "SM" + Date.now(),
     createdAt: new Date().toISOString(),
-
     customer: {
       name: String(customer.name),
       phone: String(customer.phone),
       address: String(customer.address)
     },
-
-    items: orderItems,
-
-    paymentMethod: paymentMethod,
-
+    items: cleanItems,
+    paymentMethod,
     status: "Pending",
-
-    total: total
+    total
   };
 
-  data.orders.push(order);
+  data.orders.unshift(order);
 
   writeData(data);
 
   res.json({
     ok: true,
     orderId: order.id,
-    total: total
+    total
   });
 });
 
 /* =========================
-   PAYMENT ADAPTER
+   PAYMENT
 ========================= */
 
 app.post("/api/payment/create", (req, res) => {
-  const method = String(req.body.method || "").toLowerCase();
+  const method = req.body.method;
 
   if (!["bkash", "nagad", "card"].includes(method)) {
     return res.status(400).json({
@@ -621,9 +500,9 @@ app.post("/api/payment/create", (req, res) => {
     });
   }
 
-  res.status(501).json({
+  return res.status(501).json({
     error:
-      "Payment gateway credentials are not configured. Cash on Delivery is currently active."
+      `${method} payment gateway credentials are not configured.`
   });
 });
 
@@ -631,20 +510,26 @@ app.post("/api/payment/create", (req, res) => {
    ADMIN PAGE
 ========================= */
 
-app.get("/admin", (req, res) => {
-  res.sendFile(path.join(PUBLIC, "admin.html"));
+app.get("/admin.html", (req, res) => {
+  res.sendFile(
+    path.join(PUBLIC_DIR, "admin.html")
+  );
 });
 
-app.get("/admin.html", (req, res) => {
-  res.sendFile(path.join(PUBLIC, "admin.html"));
-});
+/* =========================
+   STATIC FILES
+========================= */
+
+app.use(express.static(PUBLIC_DIR));
 
 /* =========================
    FALLBACK
 ========================= */
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(PUBLIC, "index.html"));
+  res.sendFile(
+    path.join(PUBLIC_DIR, "index.html")
+  );
 });
 
 /* =========================
