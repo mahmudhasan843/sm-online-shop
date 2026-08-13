@@ -1,7 +1,14 @@
 {
-  "name":"sm-online-shop",
-  "version":"1.0.0",
-  "private":true,
-  "scripts":{"start":"node server.js","dev":"node server.js"},
-  "dependencies":{"express":"^4.21.2"}
+  "name": "sm-online-shop",
+  "version": "1.0.0",
+  "description": "SM Online Shop",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cloudinary": "^2.7.0",
+    "express": "^5.1.0",
+    "multer": "^2.0.2"
+  }
 }
