@@ -4,166 +4,207 @@ const fs = require("fs");
 const crypto = require("crypto");
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json({ limit: "3mb" }));
-app.use(express.urlencoded({ extended: true, limit: "3mb" }));
+/* ================= BODY ================= */
 
-const PUBLIC_DIR = path.join(__dirname, "public");
-const DATA_FILE = path.join(__dirname, "data.json");
+app.use(express.json({ limit: "8mb" }));
+app.use(express.urlencoded({ extended: true, limit: "8mb" }));
 
-const ADMIN_USER = process.env.ADMIN_USER || "SMADMIN";
-const ADMIN_PASS = process.env.ADMIN_PASS || "SM2728";
-const SESSION_SECRET =
-  process.env.SESSION_SECRET || "CHANGE_THIS_SESSION_SECRET";
+/* ================= PUBLIC ================= */
 
-/* =========================
-   CREATE DATA FILE
-========================= */
+app.use(express.static(path.join(__dirname, "public")));
 
-const DEFAULT_DATA = {
+/* ================= DATA ================= */
+
+const DATA = path.join(__dirname, "data.json");
+
+const SECRET =
+  process.env.SESSION_SECRET ||
+  "SM_ONLINE_SHOP_CHANGE_THIS_SECRET_2026";
+
+const ADMIN_USER =
+  process.env.ADMIN_USER ||
+  "SMADMIN";
+
+const ADMIN_PASS =
+  process.env.ADMIN_PASS ||
+  "SM2728";
+
+/* ================= DEFAULT DATA ================= */
+
+const defaultData = {
   settings: {
     shopName: "SM Online Shop",
-    tagline: "Style • Comfort • Confidence ❤️",
-    phone1: "0182787234",
-    phone2: "0188995687",
+    tagline: "Style • Comfort • Confidence ♥",
+    phone1: "01827872334",
+    phone2: "01886995687",
     facebook: "https://www.facebook.com/",
     currency: "BDT"
   },
-  products: [],
+
+  products: [
+    {
+      id: 1,
+      name: "Elegant Party Dress",
+      category: "Dresses",
+      price: 1550,
+      oldPrice: 1950,
+      discount: 20,
+      stock: 20,
+      image:
+        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=85"
+    },
+
+    {
+      id: 2,
+      name: "Floral Long Kurti",
+      category: "Tops",
+      price: 1450,
+      oldPrice: 1930,
+      discount: 25,
+      stock: 15,
+      image:
+        "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=700&q=85"
+    },
+
+    {
+      id: 3,
+      name: "Luxury Embroidered Saree",
+      category: "Saree",
+      price: 1750,
+      oldPrice: 2130,
+      discount: 18,
+      stock: 12,
+      image:
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=85"
+    },
+
+    {
+      id: 4,
+      name: "Premium Chiffon Hijab",
+      category: "Hijab",
+      price: 550,
+      oldPrice: 700,
+      discount: 22,
+      stock: 30,
+      image:
+        "https://images.unsplash.com/photo-1584187774001-0d7a5c5c0e44?auto=format&fit=crop&w=700&q=85"
+    },
+
+    {
+      id: 5,
+      name: "Stylish Hand Bag",
+      category: "Bags",
+      price: 1350,
+      oldPrice: 1730,
+      discount: 22,
+      stock: 18,
+      image:
+        "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=85"
+    },
+
+    {
+      id: 6,
+      name: "Trendy Casual Shoes",
+      category: "Shoes",
+      price: 1299,
+      oldPrice: 1855,
+      discount: 30,
+      stock: 22,
+      image:
+        "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
+    }
+  ],
+
   orders: []
 };
 
-if (!fs.existsSync(DATA_FILE)) {
+/* ================= DATA FILE ================= */
+
+if (!fs.existsSync(DATA)) {
   fs.writeFileSync(
-    DATA_FILE,
-    JSON.stringify(DEFAULT_DATA, null, 2),
-    "utf8"
+    DATA,
+    JSON.stringify(defaultData, null, 2)
   );
 }
 
-/* =========================
-   DATA FUNCTIONS
-========================= */
-
-function readData() {
+function read() {
   try {
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+    return JSON.parse(
+      fs.readFileSync(DATA, "utf8")
+    );
   } catch (error) {
     console.error("DATA READ ERROR:", error);
-    return DEFAULT_DATA;
+    return defaultData;
   }
 }
 
-function writeData(data) {
+function write(data) {
   fs.writeFileSync(
-    DATA_FILE,
-    JSON.stringify(data, null, 2),
-    "utf8"
+    DATA,
+    JSON.stringify(data, null, 2)
   );
 }
 
-/* =========================
-   COOKIE AUTH
-========================= */
+/* ================= SESSION ================= */
 
-function createToken(username) {
-  const payload = Buffer.from(
-    JSON.stringify({
-      username,
-      created: Date.now()
-    })
-  ).toString("base64url");
+const sessions = new Map();
 
-  const signature = crypto
-    .createHmac("sha256", SESSION_SECRET)
-    .update(payload)
-    .digest("base64url");
+function makeToken(user) {
+  const raw =
+    user +
+    "." +
+    Date.now() +
+    "." +
+    crypto.randomBytes(24).toString("hex");
 
-  return `${payload}.${signature}`;
+  const hash = crypto
+    .createHmac("sha256", SECRET)
+    .update(raw)
+    .digest("hex");
+
+  return (
+    hash +
+    "." +
+    Buffer.from(user).toString("base64url")
+  );
 }
 
-function verifyToken(token) {
-  try {
-    if (!token) return null;
+function getToken(req) {
+  const header =
+    req.headers.authorization || "";
 
-    const parts = token.split(".");
-    if (parts.length !== 2) return null;
-
-    const payload = parts[0];
-    const signature = parts[1];
-
-    const expected = crypto
-      .createHmac("sha256", SESSION_SECRET)
-      .update(payload)
-      .digest("base64url");
-
-    if (signature.length !== expected.length) return null;
-
-    if (
-      !crypto.timingSafeEqual(
-        Buffer.from(signature),
-        Buffer.from(expected)
-      )
-    ) {
-      return null;
-    }
-
-    const data = JSON.parse(
-      Buffer.from(payload, "base64url").toString("utf8")
-    );
-
-    if (!data.username) return null;
-
-    if (data.username !== ADMIN_USER) return null;
-
-    return data;
-  } catch (error) {
-    return null;
-  }
-}
-
-function getCookie(req, name) {
-  const cookies = req.headers.cookie || "";
-
-  const parts = cookies.split(";");
-
-  for (const part of parts) {
-    const item = part.trim();
-
-    if (item.startsWith(name + "=")) {
-      return decodeURIComponent(
-        item.substring(name.length + 1)
-      );
-    }
+  if (!header.startsWith("Bearer ")) {
+    return "";
   }
 
-  return null;
+  return header.slice(7);
 }
 
 function auth(req, res, next) {
-  const token = getCookie(req, "sm_admin_session");
+  const token = getToken(req);
 
-  const user = verifyToken(token);
-
-  if (!user) {
-    return res.status(401).json({
-      error: "Unauthorized"
-    });
+  if (
+    !token ||
+    !sessions.has(token)
+  ) {
+    return res
+      .status(401)
+      .json({
+        error: "Unauthorized"
+      });
   }
 
-  req.admin = user;
+  req.admin = sessions.get(token);
 
   next();
 }
 
-/* =========================
-   STORE API
-========================= */
+/* ================= STORE API ================= */
 
 app.get("/api/store", (req, res) => {
-  const data = readData();
+  const data = read();
 
   res.json({
     settings: data.settings,
@@ -171,373 +212,551 @@ app.get("/api/store", (req, res) => {
   });
 });
 
-/* =========================
-   ADMIN LOGIN
-========================= */
+/* ================= ADMIN LOGIN ================= */
 
-app.post("/api/admin/login", (req, res) => {
-  const username = String(req.body.username || "").trim();
-  const password = String(req.body.password || "");
+app.post(
+  "/api/admin/login",
+  (req, res) => {
+    const {
+      username,
+      password
+    } = req.body || {};
 
-  if (
-    username !== ADMIN_USER ||
-    password !== ADMIN_PASS
-  ) {
-    return res.status(401).json({
-      error: "Invalid username or password"
-    });
-  }
+    if (
+      username !== ADMIN_USER ||
+      password !== ADMIN_PASS
+    ) {
+      return res
+        .status(401)
+        .json({
+          error: "Invalid username or password"
+        });
+    }
 
-  const token = createToken(username);
+    const token =
+      makeToken(username);
 
-  res.setHeader(
-    "Set-Cookie",
-    `sm_admin_session=${encodeURIComponent(token)}; HttpOnly; Path=/; SameSite=Lax; Max-Age=604800`
-  );
-
-  res.json({
-    ok: true,
-    message: "Login successful"
-  });
-});
-
-/* =========================
-   CHECK LOGIN
-========================= */
-
-app.get("/api/admin/me", auth, (req, res) => {
-  res.json({
-    ok: true,
-    username: req.admin.username
-  });
-});
-
-/* =========================
-   ADMIN LOGOUT
-========================= */
-
-app.post("/api/admin/logout", (req, res) => {
-  res.setHeader(
-    "Set-Cookie",
-    "sm_admin_session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0"
-  );
-
-  res.json({
-    ok: true
-  });
-});
-
-/* =========================
-   ADMIN ORDERS
-========================= */
-
-app.get("/api/admin/orders", auth, (req, res) => {
-  const data = readData();
-
-  res.json({
-    orders: data.orders || []
-  });
-});
-
-/* =========================
-   ADMIN PRODUCTS
-========================= */
-
-app.get("/api/admin/products", auth, (req, res) => {
-  const data = readData();
-
-  res.json({
-    products: data.products || []
-  });
-});
-
-/* =========================
-   ADD PRODUCT
-========================= */
-
-app.post("/api/admin/products", auth, (req, res) => {
-  const data = readData();
-
-  const p = req.body || {};
-
-  if (
-    !p.name ||
-    p.price === undefined ||
-    p.price === ""
-  ) {
-    return res.status(400).json({
-      error: "Product name and price are required"
-    });
-  }
-
-  const product = {
-    id: Date.now(),
-    name: String(p.name),
-    price: Number(p.price),
-    oldPrice: Number(p.oldPrice || p.price),
-    discount: Number(p.discount || 0),
-    stock: Number(p.stock || 0),
-    category: String(p.category || "Other"),
-    image: String(p.image || "")
-  };
-
-  data.products.push(product);
-
-  writeData(data);
-
-  res.json({
-    ok: true,
-    product
-  });
-});
-
-/* =========================
-   EDIT PRODUCT
-========================= */
-
-app.put("/api/admin/products/:id", auth, (req, res) => {
-  const data = readData();
-
-  const id = Number(req.params.id);
-
-  const index = data.products.findIndex(
-    p => Number(p.id) === id
-  );
-
-  if (index === -1) {
-    return res.status(404).json({
-      error: "Product not found"
-    });
-  }
-
-  const oldProduct = data.products[index];
-
-  data.products[index] = {
-    ...oldProduct,
-    ...req.body,
-    id: oldProduct.id,
-    price:
-      req.body.price !== undefined
-        ? Number(req.body.price)
-        : oldProduct.price,
-    oldPrice:
-      req.body.oldPrice !== undefined
-        ? Number(req.body.oldPrice)
-        : oldProduct.oldPrice,
-    stock:
-      req.body.stock !== undefined
-        ? Number(req.body.stock)
-        : oldProduct.stock,
-    discount:
-      req.body.discount !== undefined
-        ? Number(req.body.discount)
-        : oldProduct.discount
-  };
-
-  writeData(data);
-
-  res.json({
-    ok: true,
-    product: data.products[index]
-  });
-});
-
-/* =========================
-   DELETE PRODUCT
-========================= */
-
-app.delete("/api/admin/products/:id", auth, (req, res) => {
-  const data = readData();
-
-  const id = Number(req.params.id);
-
-  const oldLength = data.products.length;
-
-  data.products = data.products.filter(
-    p => Number(p.id) !== id
-  );
-
-  if (data.products.length === oldLength) {
-    return res.status(404).json({
-      error: "Product not found"
-    });
-  }
-
-  writeData(data);
-
-  res.json({
-    ok: true
-  });
-});
-
-/* =========================
-   STORE SETTINGS
-========================= */
-
-app.get("/api/admin/settings", auth, (req, res) => {
-  const data = readData();
-
-  res.json({
-    settings: data.settings
-  });
-});
-
-app.put("/api/admin/settings", auth, (req, res) => {
-  const data = readData();
-
-  data.settings = {
-    ...data.settings,
-    ...(req.body || {})
-  };
-
-  writeData(data);
-
-  res.json({
-    ok: true,
-    settings: data.settings
-  });
-});
-
-/* =========================
-   CREATE ORDER
-========================= */
-
-app.post("/api/orders", (req, res) => {
-  const data = readData();
-
-  const customer = req.body.customer || {};
-  const items = Array.isArray(req.body.items)
-    ? req.body.items
-    : [];
-
-  const paymentMethod =
-    req.body.paymentMethod || "cod";
-
-  if (
-    !customer.name ||
-    !customer.phone ||
-    !customer.address ||
-    items.length === 0
-  ) {
-    return res.status(400).json({
-      error: "Customer and order information are required"
-    });
-  }
-
-  let total = 0;
-
-  const cleanItems = [];
-
-  for (const item of items) {
-    const product = data.products.find(
-      p => Number(p.id) === Number(item.id)
+    sessions.set(
+      token,
+      username
     );
 
-    if (!product) {
-      return res.status(400).json({
-        error: "Product not found"
+    res.json({
+      ok: true,
+      token
+    });
+  }
+);
+
+/* ================= ADMIN ME ================= */
+
+app.get(
+  "/api/admin/me",
+  auth,
+  (req, res) => {
+    res.json({
+      ok: true,
+      username: req.admin
+    });
+  }
+);
+
+/* ================= LOGOUT ================= */
+
+app.post(
+  "/api/admin/logout",
+  auth,
+  (req, res) => {
+    const token = getToken(req);
+
+    sessions.delete(token);
+
+    res.json({
+      ok: true
+    });
+  }
+);
+
+/* ================= DASHBOARD ================= */
+
+app.get(
+  "/api/admin/dashboard",
+  auth,
+  (req, res) => {
+    const data = read();
+
+    const products =
+      data.products.length;
+
+    const orders =
+      data.orders.length;
+
+    const pending =
+      data.orders.filter(
+        order =>
+          order.status === "Pending"
+      ).length;
+
+    const sales =
+      data.orders
+        .filter(
+          order =>
+            order.status !== "Cancelled"
+        )
+        .reduce(
+          (sum, order) =>
+            sum +
+            Number(order.total || 0),
+          0
+        );
+
+    res.json({
+      products,
+      orders,
+      pending,
+      sales
+    });
+  }
+);
+
+/* ================= PRODUCTS ================= */
+
+app.get(
+  "/api/admin/products",
+  auth,
+  (req, res) => {
+    res.json(
+      read().products
+    );
+  }
+);
+
+/* ================= ADD PRODUCT ================= */
+
+app.post(
+  "/api/admin/products",
+  auth,
+  (req, res) => {
+    const data = read();
+
+    const product = {
+      ...req.body
+    };
+
+    if (
+      !product.name ||
+      product.price == null ||
+      product.price === ""
+    ) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Product name and price are required"
+        });
+    }
+
+    product.id = Date.now();
+
+    product.price =
+      Number(product.price);
+
+    product.oldPrice =
+      Number(
+        product.oldPrice ||
+        product.price
+      );
+
+    product.stock =
+      Number(
+        product.stock || 0
+      );
+
+    product.discount =
+      Number(
+        product.discount || 0
+      );
+
+    product.category =
+      product.category || "";
+
+    product.image =
+      product.image || "";
+
+    data.products.push(product);
+
+    write(data);
+
+    res.json(product);
+  }
+);
+
+/* ================= EDIT PRODUCT ================= */
+
+app.put(
+  "/api/admin/products/:id",
+  auth,
+  (req, res) => {
+    const data = read();
+
+    const id =
+      Number(req.params.id);
+
+    const index =
+      data.products.findIndex(
+        product =>
+          product.id === id
+      );
+
+    if (index < 0) {
+      return res
+        .status(404)
+        .json({
+          error:
+            "Product not found"
+        });
+    }
+
+    data.products[index] = {
+      ...data.products[index],
+      ...req.body,
+      id
+    };
+
+    for (
+      const key of [
+        "price",
+        "oldPrice",
+        "stock",
+        "discount"
+      ]
+    ) {
+      if (
+        data.products[index][key] != null
+      ) {
+        data.products[index][key] =
+          Number(
+            data.products[index][key]
+          );
+      }
+    }
+
+    write(data);
+
+    res.json(
+      data.products[index]
+    );
+  }
+);
+
+/* ================= DELETE PRODUCT ================= */
+
+app.delete(
+  "/api/admin/products/:id",
+  auth,
+  (req, res) => {
+    const data = read();
+
+    const id =
+      Number(req.params.id);
+
+    data.products =
+      data.products.filter(
+        product =>
+          product.id !== id
+      );
+
+    write(data);
+
+    res.json({
+      ok: true
+    });
+  }
+);
+
+/* ================= ORDERS ================= */
+
+app.get(
+  "/api/admin/orders",
+  auth,
+  (req, res) => {
+    res.json(
+      read().orders
+    );
+  }
+);
+
+/* ================= UPDATE ORDER ================= */
+
+app.put(
+  "/api/admin/orders/:id",
+  auth,
+  (req, res) => {
+    const data = read();
+
+    const id =
+      String(req.params.id);
+
+    const order =
+      data.orders.find(
+        item =>
+          String(item.id) === id
+      );
+
+    if (!order) {
+      return res
+        .status(404)
+        .json({
+          error:
+            "Order not found"
+        });
+    }
+
+    const allowed = [
+      "Pending",
+      "Confirmed",
+      "Delivered",
+      "Cancelled"
+    ];
+
+    if (
+      !allowed.includes(
+        req.body.status
+      )
+    ) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Invalid order status"
+        });
+    }
+
+    order.status =
+      req.body.status;
+
+    write(data);
+
+    res.json({
+      ok: true,
+      order
+    });
+  }
+);
+
+/* ================= STORE SETTINGS ================= */
+
+app.get(
+  "/api/admin/settings",
+  auth,
+  (req, res) => {
+    res.json(
+      read().settings
+    );
+  }
+);
+
+app.put(
+  "/api/admin/settings",
+  auth,
+  (req, res) => {
+    const data = read();
+
+    data.settings = {
+      ...data.settings,
+      ...req.body
+    };
+
+    write(data);
+
+    res.json(
+      data.settings
+    );
+  }
+);
+
+/* ================= CREATE CUSTOMER ORDER ================= */
+
+app.post(
+  "/api/orders",
+  (req, res) => {
+    const data = read();
+
+    const {
+      customer,
+      items,
+      paymentMethod
+    } = req.body || {};
+
+    if (
+      !customer?.name ||
+      !customer?.phone ||
+      !customer?.address ||
+      !Array.isArray(items) ||
+      !items.length
+    ) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Customer and order details are required"
+        });
+    }
+
+    let total = 0;
+
+    const cleanItems = [];
+
+    for (
+      const item of items
+    ) {
+      const product =
+        data.products.find(
+          product =>
+            product.id ===
+            Number(item.id)
+        );
+
+      const quantity =
+        Math.max(
+          1,
+          Number(
+            item.qty || 1
+          )
+        );
+
+      if (
+        !product ||
+        product.stock < quantity
+      ) {
+        return res
+          .status(400)
+          .json({
+            error:
+              `Out of stock: ${
+                product?.name ||
+                "product"
+              }`
+          });
+      }
+
+      total +=
+        product.price *
+        quantity;
+
+      cleanItems.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        qty: quantity
       });
     }
 
-    const qty = Math.max(
-      1,
-      Number(item.qty || 1)
+    const order = {
+      id:
+        "SM" +
+        Date.now(),
+
+      createdAt:
+        new Date().toISOString(),
+
+      customer,
+
+      items:
+        cleanItems,
+
+      total,
+
+      paymentMethod:
+        paymentMethod ||
+        "cod",
+
+      status:
+        "Pending"
+    };
+
+    data.orders.unshift(
+      order
     );
 
-    if (product.stock < qty) {
-      return res.status(400).json({
-        error: `Out of stock: ${product.name}`
-      });
+    cleanItems.forEach(
+      item => {
+        const product =
+          data.products.find(
+            p =>
+              p.id === item.id
+          );
+
+        if (product) {
+          product.stock -=
+            item.qty;
+        }
+      }
+    );
+
+    write(data);
+
+    res.json({
+      ok: true,
+      orderId: order.id,
+      total
+    });
+  }
+);
+
+/* ================= PAYMENT ================= */
+
+app.post(
+  "/api/payment/create",
+  (req, res) => {
+    const method =
+      req.body?.method;
+
+    if (
+      ![
+        "bkash",
+        "nagad",
+        "card"
+      ].includes(method)
+    ) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Unsupported payment method"
+        });
     }
 
-    total += Number(product.price) * qty;
-
-    cleanItems.push({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      qty
-    });
-
-    product.stock -= qty;
-  }
-
-  const order = {
-    id: "SM" + Date.now(),
-    createdAt: new Date().toISOString(),
-    customer: {
-      name: String(customer.name),
-      phone: String(customer.phone),
-      address: String(customer.address)
-    },
-    items: cleanItems,
-    paymentMethod,
-    status: "Pending",
-    total
-  };
-
-  data.orders.unshift(order);
-
-  writeData(data);
-
-  res.json({
-    ok: true,
-    orderId: order.id,
-    total
-  });
-});
-
-/* =========================
-   PAYMENT
-========================= */
-
-app.post("/api/payment/create", (req, res) => {
-  const method = req.body.method;
-
-  if (!["bkash", "nagad", "card"].includes(method)) {
-    return res.status(400).json({
-      error: "Unsupported payment method"
+    res.status(501).json({
+      error:
+        `${method} gateway credentials are not configured.`
     });
   }
+);
 
-  return res.status(501).json({
-    error:
-      `${method} payment gateway credentials are not configured.`
-  });
-});
+/* ================= FALLBACK ================= */
 
-/* =========================
-   ADMIN PAGE
-========================= */
+app.get(
+  "*",
+  (req, res) => {
+    res.sendFile(
+      path.join(
+        __dirname,
+        "public",
+        "index.html"
+      )
+    );
+  }
+);
 
-app.get("/admin.html", (req, res) => {
-  res.sendFile(
-    path.join(PUBLIC_DIR, "admin.html")
-  );
-});
+/* ================= START ================= */
 
-/* =========================
-   STATIC FILES
-========================= */
-
-app.use(express.static(PUBLIC_DIR));
-
-/* =========================
-   FALLBACK
-========================= */
-
-app.get("*", (req, res) => {
-  res.sendFile(
-    path.join(PUBLIC_DIR, "index.html")
-  );
-});
-
-/* =========================
-   START SERVER
-========================= */
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(
-    `SM Online Shop running on port ${PORT}`
-  );
-});
+app.listen(
+  PORT,
+  "0.0.0.0",
+  () => {
+    console.log(
+      `SM Online Shop running on port ${PORT}`
+    );
+  }
+);
