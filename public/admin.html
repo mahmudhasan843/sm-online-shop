@@ -1,360 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<title>SM Online Shop - Admin Panel</title>
 
-  <title>SM Online Shop — Admin Panel</title>
+<style>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+*{
+  box-sizing:border-box;
+}
 
-    body {
-      margin: 0;
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-      background: #f4f5f7;
-      color: #222;
-    }
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f4f5f7;
+  color:#222;
+}
 
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
+.topbar{
+  height:62px;
+  background:#17141c;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 25px;
+}
 
-    .topbar {
-      height: 60px;
-      background: #17131b;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 22px;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
+.topbar h2{
+  font-size:18px;
+  margin:0;
+}
 
-    .brand {
-      font-size: 18px;
-      font-weight: bold;
-    }
+button{
+  border:0;
+  cursor:pointer;
+  border-radius:7px;
+  padding:11px 16px;
+  font-weight:bold;
+}
 
-    .logout-btn {
-      background: #777;
-      color: white;
-      border: 0;
-      padding: 9px 15px;
-      border-radius: 7px;
-      cursor: pointer;
-    }
+.logout{
+  background:#777;
+  color:white;
+}
 
-    .layout {
-      display: flex;
-      min-height: calc(100vh - 60px);
-    }
+.layout{
+  display:flex;
+  min-height:calc(100vh - 62px);
+}
 
-    .sidebar {
-      width: 220px;
-      background: #17131b;
-      color: white;
-      padding: 20px 12px;
-    }
+.sidebar{
+  width:220px;
+  background:#17141c;
+  color:white;
+  padding:20px 12px;
+}
 
-    .nav-btn {
-      width: 100%;
-      border: 0;
-      background: transparent;
-      color: white;
-      padding: 13px 12px;
-      margin-bottom: 6px;
-      text-align: left;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+.menu{
+  padding:13px;
+  border-radius:8px;
+  margin-bottom:8px;
+  cursor:pointer;
+}
 
-    .nav-btn:hover,
-    .nav-btn.active {
-      background: #ed1268;
-    }
+.menu:hover,
+.menu.active{
+  background:#f20b73;
+}
 
-    .main {
-      flex: 1;
-      padding: 24px;
-      overflow-x: auto;
-    }
+.main{
+  flex:1;
+  padding:25px;
+}
 
-    .page {
-      display: none;
-    }
+.section{
+  display:none;
+}
 
-    .page.active {
-      display: block;
-    }
+.section.active{
+  display:block;
+}
 
-    .login-screen {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      background: #17131b;
-    }
+.card{
+  background:white;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+}
 
-    .login-box {
-      width: 100%;
-      max-width: 420px;
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow:
-        0 10px 40px rgba(0, 0, 0, 0.25);
-    }
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
 
-    .login-box h1 {
-      margin-top: 0;
-      text-align: center;
-    }
+.stat{
+  background:white;
+  border-radius:12px;
+  padding:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+}
 
-    .login-box p {
-      text-align: center;
-      color: #666;
-    }
+.stat h3{
+  margin:0 0 10px;
+  font-size:15px;
+  color:#666;
+}
 
-    .field {
-      margin-bottom: 15px;
-    }
+.stat strong{
+  color:#e90068;
+  font-size:28px;
+}
 
-    .field label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
+table{
+  width:100%;
+  border-collapse:collapse;
+}
 
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 11px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      outline: none;
-    }
+th,td{
+  text-align:left;
+  padding:12px;
+  border-bottom:1px solid #eee;
+}
 
-    .field textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
+th{
+  background:#fafafa;
+}
 
-    .primary-btn {
-      width: 100%;
-      border: 0;
-      background: #ed1268;
-      color: white;
-      padding: 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+input,
+select,
+textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:7px;
+  margin-top:6px;
+  margin-bottom:14px;
+  font-size:15px;
+}
 
-    .error {
-      color: #d00000;
-      margin-top: 12px;
-      text-align: center;
-    }
+label{
+  font-weight:bold;
+}
 
-    .success {
-      color: #008000;
-      margin-top: 12px;
-      text-align: center;
-    }
+.primary{
+  background:#e90068;
+  color:white;
+}
 
-    .cards {
-      display: grid;
-      grid-template-columns:
-        repeat(4, minmax(150px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
+.danger{
+  background:#dc3545;
+  color:white;
+}
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow:
-        0 2px 10px rgba(0, 0, 0, 0.06);
-    }
+.gray{
+  background:#777;
+  color:white;
+}
 
-    .card-title {
-      color: #666;
-      margin-bottom: 8px;
-    }
+.login-screen{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#17141c;
+  padding:20px;
+}
 
-    .card-value {
-      font-size: 27px;
-      font-weight: bold;
-      color: #ed1268;
-    }
+.login-box{
+  background:white;
+  width:100%;
+  max-width:400px;
+  border-radius:15px;
+  padding:30px;
+}
 
-    .panel {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow:
-        0 2px 10px rgba(0, 0, 0, 0.06);
-    }
+.login-box h1{
+  margin-top:0;
+  text-align:center;
+}
 
-    .panel h2 {
-      margin-top: 0;
-    }
+.login-box button{
+  width:100%;
+  margin-top:5px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
-    }
+.error{
+  background:#ffe5e5;
+  color:#b00020;
+  padding:10px;
+  border-radius:7px;
+  margin-bottom:15px;
+  display:none;
+}
 
-    th,
-    td {
-      border-bottom: 1px solid #eee;
-      padding: 12px 8px;
-      text-align: left;
-    }
+.success{
+  background:#e3f8e8;
+  color:#087a25;
+  padding:10px;
+  border-radius:7px;
+  margin-bottom:15px;
+  display:none;
+}
 
-    th {
-      background: #fafafa;
-    }
+.product-image{
+  width:55px;
+  height:55px;
+  object-fit:cover;
+  border-radius:7px;
+}
 
-    .table-wrap {
-      overflow-x: auto;
-    }
+.actions button{
+  margin-right:5px;
+  margin-bottom:5px;
+}
 
-    .small-btn {
-      border: 0;
-      padding: 7px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin: 2px;
-    }
+@media(max-width:800px){
 
-    .edit-btn {
-      background: #eee;
-    }
+  .layout{
+    flex-direction:column;
+  }
 
-    .delete-btn {
-      background: #ffe1e1;
-      color: #b00000;
-    }
+  .sidebar{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+  }
 
-    .status {
-      padding: 5px 9px;
-      border-radius: 15px;
-      background: #fff1b8;
-      display: inline-block;
-    }
+  .menu{
+    white-space:nowrap;
+    margin-right:5px;
+  }
 
-    .product-form {
-      display: grid;
-      grid-template-columns:
-        repeat(2, minmax(200px, 1fr));
-      gap: 12px;
-    }
+  .main{
+    padding:15px;
+  }
 
-    .full {
-      grid-column: 1 / -1;
-    }
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-    .form-actions {
-      grid-column: 1 / -1;
-      display: flex;
-      gap: 10px;
-    }
+  table{
+    min-width:700px;
+  }
 
-    .form-actions button {
-      width: auto;
-      padding-left: 20px;
-      padding-right: 20px;
-    }
+  .table-wrap{
+    overflow-x:auto;
+  }
+}
 
-    .secondary-btn {
-      border: 1px solid #ccc;
-      background: white;
-      padding: 11px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .mobile-menu {
-      display: none;
-      background: #ed1268;
-      color: white;
-      border: 0;
-      padding: 8px 12px;
-      border-radius: 7px;
-    }
-
-    @media (max-width: 800px) {
-      .sidebar {
-        width: 180px;
-      }
-
-      .cards {
-        grid-template-columns:
-          repeat(2, 1fr);
-      }
-
-      .product-form {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .layout {
-        display: block;
-      }
-
-      .sidebar {
-        width: 100%;
-        display: none;
-      }
-
-      .sidebar.open {
-        display: block;
-      }
-
-      .mobile-menu {
-        display: block;
-      }
-
-      .main {
-        padding: 15px;
-      }
-
-      .cards {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .topbar {
-        padding: 0 12px;
-      }
-    }
-  </style>
+</style>
 </head>
 
 <body>
 
-<!-- ================= LOGIN ================= -->
+<!-- =========================
+     LOGIN
+========================= -->
 
 <div id="loginScreen" class="login-screen">
 
@@ -362,73 +268,50 @@
 
     <h1>🔐 Admin Login</h1>
 
-    <p>SM Online Shop</p>
+    <div id="loginError" class="error">
+      Invalid username or password
+    </div>
 
-    <form id="loginForm">
+    <label>Username</label>
+    <input
+      id="username"
+      type="text"
+      placeholder="Admin username"
+      autocomplete="username"
+    >
 
-      <div class="field">
-        <label>Username</label>
+    <label>Password</label>
+    <input
+      id="password"
+      type="password"
+      placeholder="Admin password"
+      autocomplete="current-password"
+    >
 
-        <input
-          id="username"
-          type="text"
-          placeholder="Enter username"
-          required
-        >
-      </div>
-
-      <div class="field">
-        <label>Password</label>
-
-        <input
-          id="password"
-          type="password"
-          placeholder="Enter password"
-          required
-        >
-      </div>
-
-      <button
-        class="primary-btn"
-        type="submit"
-      >
-        Login
-      </button>
-
-      <div
-        id="loginMessage"
-        class="error"
-      ></div>
-
-    </form>
+    <button
+      class="primary"
+      onclick="login()"
+    >
+      Login
+    </button>
 
   </div>
 
 </div>
 
 
-<!-- ================= ADMIN APP ================= -->
+<!-- =========================
+     ADMIN APP
+========================= -->
 
-<div
-  id="adminApp"
-  style="display:none;"
->
+<div id="adminApp" style="display:none">
 
   <div class="topbar">
 
-    <div class="brand">
-      SM Online Shop — Admin Panel
-    </div>
+    <h2>SM Online Shop — Admin Panel</h2>
 
     <button
-      class="mobile-menu"
-      onclick="toggleSidebar()"
-    >
-      ☰
-    </button>
-
-    <button
-      class="logout-btn"
+      class="logout"
       onclick="logout()"
     >
       Logout
@@ -441,284 +324,173 @@
 
     <!-- SIDEBAR -->
 
-    <aside
-      id="sidebar"
-      class="sidebar"
-    >
+    <div class="sidebar">
 
-      <button
-        class="nav-btn active"
-        onclick="showPage('dashboard', this)"
+      <div
+        class="menu active"
+        onclick="showSection('dashboard',this)"
       >
         📊 Dashboard
-      </button>
+      </div>
 
-      <button
-        class="nav-btn"
-        onclick="showPage('products', this)"
+      <div
+        class="menu"
+        onclick="showSection('products',this)"
       >
         🛍 Products
-      </button>
+      </div>
 
-      <button
-        class="nav-btn"
-        onclick="showPage('orders', this)"
+      <div
+        class="menu"
+        onclick="showSection('orders',this)"
       >
         📦 Orders
-      </button>
+      </div>
 
-      <button
-        class="nav-btn"
-        onclick="showPage('settings', this)"
+      <div
+        class="menu"
+        onclick="showSection('settings',this)"
       >
         ⚙ Store Settings
-      </button>
+      </div>
 
-      <button
-        class="nav-btn"
-        onclick="window.open('/', '_blank')"
+      <div
+        class="menu"
+        onclick="viewStore()"
       >
         🌐 View Store
-      </button>
+      </div>
 
-    </aside>
+    </div>
 
 
     <!-- MAIN -->
 
-    <main class="main">
+    <div class="main">
 
 
-      <!-- ================= DASHBOARD ================= -->
+      <!-- DASHBOARD -->
 
-      <section
+      <div
         id="dashboard"
-        class="page active"
+        class="section active"
       >
 
         <h1>📊 Dashboard</h1>
 
         <div class="cards">
 
-          <div class="card">
-            <div class="card-title">
-              Products
-            </div>
-
-            <div
-              id="productCount"
-              class="card-value"
-            >
-              0
-            </div>
+          <div class="stat">
+            <h3>Products</h3>
+            <strong id="productCount">0</strong>
           </div>
 
-
-          <div class="card">
-            <div class="card-title">
-              Orders
-            </div>
-
-            <div
-              id="orderCount"
-              class="card-value"
-            >
-              0
-            </div>
+          <div class="stat">
+            <h3>Orders</h3>
+            <strong id="orderCount">0</strong>
           </div>
 
-
-          <div class="card">
-            <div class="card-title">
-              Pending
-            </div>
-
-            <div
-              id="pendingCount"
-              class="card-value"
-            >
-              0
-            </div>
+          <div class="stat">
+            <h3>Pending</h3>
+            <strong id="pendingCount">0</strong>
           </div>
 
-
-          <div class="card">
-            <div class="card-title">
-              Sales
-            </div>
-
-            <div
-              id="salesCount"
-              class="card-value"
-            >
-              ৳0
-            </div>
+          <div class="stat">
+            <h3>Sales</h3>
+            <strong id="salesTotal">৳0</strong>
           </div>
 
         </div>
 
+        <br>
 
-        <div class="panel">
+        <div class="card">
 
-          <h2>Welcome 👋</h2>
-
-          <p>
-            এখান থেকে আপনার পুরো online shop
-            পরিচালনা করতে পারবেন।
-          </p>
+          <b>💳 Payment gateways</b>
 
           <p>
-            Products → পণ্য যোগ/পরিবর্তন/মুছে ফেলুন
-          </p>
-
-          <p>
-            Orders → Customer order দেখুন
-          </p>
-
-          <p>
-            Store Settings → Shop information পরিবর্তন করুন
+            Cash on Delivery is active.
+            bKash, Nagad and Card/Bank require
+            merchant credentials before live transactions.
           </p>
 
         </div>
 
-      </section>
+      </div>
 
 
-      <!-- ================= PRODUCTS ================= -->
+      <!-- PRODUCTS -->
 
-      <section
+      <div
         id="products"
-        class="page"
+        class="section"
       >
 
         <h1>🛍 Products</h1>
 
+        <div class="card">
 
-        <div class="panel">
+          <h2>Add Product</h2>
 
-          <h2 id="productFormTitle">
-            Add New Product
-          </h2>
-
-          <form
-            id="productForm"
-            class="product-form"
+          <label>Product Name</label>
+          <input
+            id="pName"
+            placeholder="Product name"
           >
 
-            <input
-              type="hidden"
-              id="productId"
-            >
+          <label>Price</label>
+          <input
+            id="pPrice"
+            type="number"
+            placeholder="Price"
+          >
 
+          <label>Old Price</label>
+          <input
+            id="pOldPrice"
+            type="number"
+            placeholder="Old price"
+          >
 
-            <div class="field">
-              <label>Product Name</label>
+          <label>Stock</label>
+          <input
+            id="pStock"
+            type="number"
+            placeholder="Stock"
+          >
 
-              <input
-                id="productName"
-                required
-              >
-            </div>
+          <label>Discount %</label>
+          <input
+            id="pDiscount"
+            type="number"
+            placeholder="Discount"
+          >
 
+          <label>Category</label>
+          <input
+            id="pCategory"
+            placeholder="Category"
+          >
 
-            <div class="field">
-              <label>Category</label>
+          <label>Image URL</label>
+          <input
+            id="pImage"
+            placeholder="Image URL"
+          >
 
-              <input
-                id="productCategory"
-                placeholder="Dresses"
-              >
-            </div>
-
-
-            <div class="field">
-              <label>Price</label>
-
-              <input
-                id="productPrice"
-                type="number"
-                min="0"
-                required
-              >
-            </div>
-
-
-            <div class="field">
-              <label>Old Price</label>
-
-              <input
-                id="productOldPrice"
-                type="number"
-                min="0"
-              >
-            </div>
-
-
-            <div class="field">
-              <label>Discount %</label>
-
-              <input
-                id="productDiscount"
-                type="number"
-                min="0"
-              >
-            </div>
-
-
-            <div class="field">
-              <label>Stock</label>
-
-              <input
-                id="productStock"
-                type="number"
-                min="0"
-                required
-              >
-            </div>
-
-
-            <div class="field full">
-              <label>Image URL</label>
-
-              <input
-                id="productImage"
-                placeholder="https://..."
-              >
-            </div>
-
-
-            <div class="form-actions">
-
-              <button
-                class="primary-btn"
-                type="submit"
-              >
-                Save Product
-              </button>
-
-              <button
-                type="button"
-                class="secondary-btn"
-                onclick="resetProductForm()"
-              >
-                Clear
-              </button>
-
-            </div>
-
-          </form>
-
-          <div
-            id="productMessage"
-            class="success"
-          ></div>
+          <button
+            class="primary"
+            onclick="addProduct()"
+          >
+            + Add Product
+          </button>
 
         </div>
 
 
-        <div class="panel">
+        <div class="card">
 
-          <h2>All Products</h2>
+          <h2>Product List</h2>
 
           <div class="table-wrap">
 
@@ -727,19 +499,17 @@
               <thead>
 
                 <tr>
-                  <th>ID</th>
+                  <th>Image</th>
                   <th>Name</th>
-                  <th>Category</th>
                   <th>Price</th>
                   <th>Stock</th>
+                  <th>Category</th>
                   <th>Action</th>
                 </tr>
 
               </thead>
 
-              <tbody
-                id="productsTable"
-              ></tbody>
+              <tbody id="productTable"></tbody>
 
             </table>
 
@@ -747,19 +517,19 @@
 
         </div>
 
-      </section>
+      </div>
 
 
-      <!-- ================= ORDERS ================= -->
+      <!-- ORDERS -->
 
-      <section
+      <div
         id="orders"
-        class="page"
+        class="section"
       >
 
         <h1>📦 Orders</h1>
 
-        <div class="panel">
+        <div class="card">
 
           <div class="table-wrap">
 
@@ -774,14 +544,12 @@
                   <th>Total</th>
                   <th>Payment</th>
                   <th>Status</th>
-                  <th>Action</th>
+                  <th>Date</th>
                 </tr>
 
               </thead>
 
-              <tbody
-                id="ordersTable"
-              ></tbody>
+              <tbody id="orderTable"></tbody>
 
             </table>
 
@@ -789,99 +557,58 @@
 
         </div>
 
-      </section>
+      </div>
 
 
-      <!-- ================= SETTINGS ================= -->
+      <!-- SETTINGS -->
 
-      <section
+      <div
         id="settings"
-        class="page"
+        class="section"
       >
 
         <h1>⚙ Store Settings</h1>
 
+        <div
+          id="settingsMessage"
+          class="success"
+        >
+          Settings saved successfully
+        </div>
 
-        <div class="panel">
+        <div class="card">
 
-          <form id="settingsForm">
+          <label>Shop Name</label>
+          <input id="shopName">
 
-            <div class="field">
-              <label>Shop Name</label>
+          <label>Tagline</label>
+          <input id="tagline">
 
-              <input
-                id="shopName"
-              >
-            </div>
+          <label>Phone 1</label>
+          <input id="phone1">
 
+          <label>Phone 2</label>
+          <input id="phone2">
 
-            <div class="field">
-              <label>Tagline</label>
+          <label>Facebook</label>
+          <input id="facebook">
 
-              <input
-                id="tagline"
-              >
-            </div>
+          <label>Currency</label>
+          <input id="currency">
 
-
-            <div class="field">
-              <label>Phone 1</label>
-
-              <input
-                id="phone1"
-              >
-            </div>
-
-
-            <div class="field">
-              <label>Phone 2</label>
-
-              <input
-                id="phone2"
-              >
-            </div>
-
-
-            <div class="field">
-              <label>Facebook URL</label>
-
-              <input
-                id="facebook"
-              >
-            </div>
-
-
-            <div class="field">
-              <label>Currency</label>
-
-              <input
-                id="currency"
-                value="BDT"
-              >
-            </div>
-
-
-            <button
-              class="primary-btn"
-              type="submit"
-            >
-              Save Settings
-            </button>
-
-          </form>
-
-
-          <div
-            id="settingsMessage"
-            class="success"
-          ></div>
+          <button
+            class="primary"
+            onclick="saveSettings()"
+          >
+            Save Settings
+          </button>
 
         </div>
 
-      </section>
+      </div>
 
 
-    </main>
+    </div>
 
   </div>
 
@@ -890,866 +617,595 @@
 
 <script>
 
-  // ===================================
-  // LOGIN CHECK
-  // ===================================
+/* =========================
+   API HELPER
+========================= */
 
-  async function checkLogin() {
+async function api(url, options = {}) {
 
-    try {
-
-      const response =
-        await fetch("/api/admin/me");
-
-      if (response.ok) {
-
-        showAdmin();
-
-      } else {
-
-        showLogin();
-
+  const response = await fetch(
+    url,
+    {
+      credentials:"same-origin",
+      ...options,
+      headers:{
+        "Content-Type":"application/json",
+        ...(options.headers || {})
       }
+    }
+  );
 
-    } catch (error) {
+  let data = {};
+
+  try{
+    data = await response.json();
+  }catch(e){}
+
+  if(!response.ok){
+
+    if(response.status === 401){
 
       showLogin();
 
     }
 
-  }
-
-
-  function showLogin() {
-
-    document.getElementById(
-      "loginScreen"
-    ).style.display = "flex";
-
-    document.getElementById(
-      "adminApp"
-    ).style.display = "none";
+    throw new Error(
+      data.error || "Request failed"
+    );
 
   }
 
+  return data;
+}
 
-  function showAdmin() {
 
-    document.getElementById(
-      "loginScreen"
-    ).style.display = "none";
+/* =========================
+   LOGIN
+========================= */
 
-    document.getElementById(
-      "adminApp"
-    ).style.display = "block";
+async function login(){
 
-    loadDashboard();
+  const username =
+    document.getElementById("username").value.trim();
 
+  const password =
+    document.getElementById("password").value;
+
+  const error =
+    document.getElementById("loginError");
+
+  error.style.display="none";
+
+  if(!username || !password){
+
+    error.innerText =
+      "Username and password দিন";
+
+    error.style.display="block";
+
+    return;
   }
 
+  try{
 
-  // ===================================
-  // LOGIN
-  // ===================================
-
-  document
-    .getElementById("loginForm")
-    .addEventListener(
-      "submit",
-      async function (event) {
-
-        event.preventDefault();
-
-        const username =
-          document.getElementById(
-            "username"
-          ).value.trim();
-
-        const password =
-          document.getElementById(
-            "password"
-          ).value;
-
-        const message =
-          document.getElementById(
-            "loginMessage"
-          );
-
-        message.textContent =
-          "Logging in...";
-
-        try {
-
-          const response =
-            await fetch(
-              "/api/admin/login",
-              {
-                method: "POST",
-
-                headers: {
-                  "Content-Type":
-                    "application/json"
-                },
-
-                body: JSON.stringify({
-                  username,
-                  password
-                })
-              }
-            );
-
-          const data =
-            await response.json();
-
-          if (!response.ok) {
-
-            message.textContent =
-              data.error ||
-              "Login failed";
-
-            return;
-          }
-
-          message.textContent = "";
-
-          showAdmin();
-
-        } catch (error) {
-
-          message.textContent =
-            "Server connection error";
-
-        }
-
+    await api(
+      "/api/admin/login",
+      {
+        method:"POST",
+        body:JSON.stringify({
+          username,
+          password
+        })
       }
     );
 
+    await checkLogin();
 
-  // ===================================
-  // LOGOUT
-  // ===================================
+  }catch(e){
 
-  async function logout() {
+    error.innerText =
+      e.message || "Login failed";
+
+    error.style.display="block";
+
+  }
+
+}
+
+
+/* =========================
+   CHECK LOGIN
+========================= */
+
+async function checkLogin(){
+
+  try{
+
+    await api("/api/admin/me");
+
+    document.getElementById(
+      "loginScreen"
+    ).style.display="none";
+
+    document.getElementById(
+      "adminApp"
+    ).style.display="block";
+
+    await loadAll();
+
+  }catch(e){
+
+    showLogin();
+
+  }
+
+}
+
+
+/* =========================
+   SHOW LOGIN
+========================= */
+
+function showLogin(){
+
+  document.getElementById(
+    "adminApp"
+  ).style.display="none";
+
+  document.getElementById(
+    "loginScreen"
+  ).style.display="flex";
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout(){
+
+  try{
 
     await fetch(
       "/api/admin/logout",
       {
-        method: "POST"
+        method:"POST",
+        credentials:"same-origin"
       }
     );
 
-    showLogin();
+  }catch(e){}
 
-    document.getElementById(
-      "password"
-    ).value = "";
+  showLogin();
 
-  }
+}
 
 
-  // ===================================
-  // NAVIGATION
-  // ===================================
+/* =========================
+   SECTION
+========================= */
 
-  function showPage(
-    pageId,
-    button
-  ) {
+function showSection(
+  section,
+  element
+){
 
-    document
-      .querySelectorAll(".page")
-      .forEach(
-        (page) =>
-          page.classList.remove(
-            "active"
-          )
-      );
+  document
+    .querySelectorAll(".section")
+    .forEach(x =>
+      x.classList.remove("active")
+    );
 
-    document
-      .getElementById(pageId)
-      .classList.add("active");
+  document.getElementById(
+    section
+  ).classList.add("active");
 
+  document
+    .querySelectorAll(".menu")
+    .forEach(x =>
+      x.classList.remove("active")
+    );
 
-    document
-      .querySelectorAll(".nav-btn")
-      .forEach(
-        (btn) =>
-          btn.classList.remove(
-            "active"
-          )
-      );
+  if(element){
 
-    if (button) {
-      button.classList.add("active");
-    }
-
-
-    if (pageId === "dashboard") {
-      loadDashboard();
-    }
-
-    if (pageId === "products") {
-      loadProducts();
-    }
-
-    if (pageId === "orders") {
-      loadOrders();
-    }
-
-    if (pageId === "settings") {
-      loadSettings();
-    }
+    element.classList.add("active");
 
   }
 
-
-  function toggleSidebar() {
-
-    document
-      .getElementById("sidebar")
-      .classList.toggle("open");
-
+  if(section === "products"){
+    loadProducts();
   }
 
+  if(section === "orders"){
+    loadOrders();
+  }
 
-  // ===================================
-  // DASHBOARD
-  // ===================================
+  if(section === "settings"){
+    loadSettings();
+  }
 
-  async function loadDashboard() {
+}
 
-    const response =
-      await fetch(
-        "/api/admin/dashboard"
-      );
 
-    if (response.status === 401) {
-      showLogin();
-      return;
-    }
+/* =========================
+   LOAD ALL
+========================= */
+
+async function loadAll(){
+
+  await loadProducts();
+  await loadOrders();
+  await loadSettings();
+
+}
+
+
+/* =========================
+   PRODUCTS
+========================= */
+
+async function loadProducts(){
+
+  try{
 
     const data =
-      await response.json();
+      await api("/api/admin/products");
+
+    const products =
+      data.products || [];
 
     document.getElementById(
       "productCount"
-    ).textContent = data.products;
+    ).innerText = products.length;
+
+    const table =
+      document.getElementById(
+        "productTable"
+      );
+
+    table.innerHTML="";
+
+    products.forEach(p => {
+
+      const tr =
+        document.createElement("tr");
+
+      tr.innerHTML=`
+
+        <td>
+          ${
+            p.image
+            ?
+            `<img
+              class="product-image"
+              src="${escapeHtml(p.image)}"
+            >`
+            :
+            "—"
+          }
+        </td>
+
+        <td>${escapeHtml(p.name)}</td>
+
+        <td>৳${Number(p.price || 0).toLocaleString()}</td>
+
+        <td>${Number(p.stock || 0)}</td>
+
+        <td>${escapeHtml(p.category || "")}</td>
+
+        <td class="actions">
+
+          <button
+            class="danger"
+            onclick="deleteProduct(${p.id})"
+          >
+            Delete
+          </button>
+
+        </td>
+
+      `;
+
+      table.appendChild(tr);
+
+    });
+
+  }catch(e){
+
+    console.error(e);
+
+  }
+
+}
+
+
+/* =========================
+   ADD PRODUCT
+========================= */
+
+async function addProduct(){
+
+  const product = {
+
+    name:
+      document.getElementById("pName").value.trim(),
+
+    price:
+      Number(document.getElementById("pPrice").value),
+
+    oldPrice:
+      Number(document.getElementById("pOldPrice").value || 0),
+
+    stock:
+      Number(document.getElementById("pStock").value || 0),
+
+    discount:
+      Number(document.getElementById("pDiscount").value || 0),
+
+    category:
+      document.getElementById("pCategory").value.trim(),
+
+    image:
+      document.getElementById("pImage").value.trim()
+
+  };
+
+  if(!product.name || !product.price){
+
+    alert(
+      "Product name এবং price দিন"
+    );
+
+    return;
+  }
+
+  try{
+
+    await api(
+      "/api/admin/products",
+      {
+        method:"POST",
+        body:JSON.stringify(product)
+      }
+    );
+
+    alert(
+      "Product added successfully"
+    );
+
+    document.getElementById("pName").value="";
+    document.getElementById("pPrice").value="";
+    document.getElementById("pOldPrice").value="";
+    document.getElementById("pStock").value="";
+    document.getElementById("pDiscount").value="";
+    document.getElementById("pCategory").value="";
+    document.getElementById("pImage").value="";
+
+    await loadProducts();
+
+  }catch(e){
+
+    alert(e.message);
+
+  }
+
+}
+
+
+/* =========================
+   DELETE PRODUCT
+========================= */
+
+async function deleteProduct(id){
+
+  if(!confirm(
+    "এই product টি delete করবেন?"
+  )){
+    return;
+  }
+
+  try{
+
+    await api(
+      "/api/admin/products/" + id,
+      {
+        method:"DELETE"
+      }
+    );
+
+    await loadProducts();
+
+  }catch(e){
+
+    alert(e.message);
+
+  }
+
+}
+
+
+/* =========================
+   ORDERS
+========================= */
+
+async function loadOrders(){
+
+  try{
+
+    const data =
+      await api("/api/admin/orders");
+
+    const orders =
+      data.orders || [];
 
     document.getElementById(
       "orderCount"
-    ).textContent = data.orders;
+    ).innerText = orders.length;
+
+    const pending =
+      orders.filter(
+        o =>
+          String(o.status).toLowerCase()
+          === "pending"
+      ).length;
 
     document.getElementById(
       "pendingCount"
-    ).textContent = data.pending;
+    ).innerText = pending;
 
-    document.getElementById(
-      "salesCount"
-    ).textContent =
-      "৳" +
-      Number(data.sales || 0)
-        .toLocaleString();
-
-  }
-
-
-  // ===================================
-  // PRODUCTS
-  // ===================================
-
-  async function loadProducts() {
-
-    const response =
-      await fetch(
-        "/api/admin/products"
+    const sales =
+      orders.reduce(
+        (sum,o) =>
+          sum + Number(o.total || 0),
+        0
       );
 
-    if (response.status === 401) {
-      showLogin();
-      return;
-    }
-
-    const products =
-      await response.json();
+    document.getElementById(
+      "salesTotal"
+    ).innerText =
+      "৳" + sales.toLocaleString();
 
     const table =
       document.getElementById(
-        "productsTable"
+        "orderTable"
       );
 
-    table.innerHTML = "";
+    table.innerHTML="";
+
+    orders.forEach(o => {
+
+      const tr =
+        document.createElement("tr");
+
+      tr.innerHTML=`
+
+        <td>${escapeHtml(o.id || "")}</td>
+
+        <td>
+          ${escapeHtml(
+            o.customer?.name || ""
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            o.customer?.phone || ""
+          )}
+        </td>
+
+        <td>
+          ৳${Number(
+            o.total || 0
+          ).toLocaleString()}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            o.paymentMethod || "cod"
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            o.status || "Pending"
+          )}
+        </td>
+
+        <td>
+          ${
+            o.createdAt
+            ?
+            new Date(
+              o.createdAt
+            ).toLocaleString()
+            :
+            ""
+          }
+        </td>
 
-    products.forEach(
-      (product) => {
-
-        const row =
-          document.createElement("tr");
-
-        row.innerHTML = `
-          <td>${product.id}</td>
-
-          <td>
-            ${escapeHtml(product.name)}
-          </td>
-
-          <td>
-            ${escapeHtml(
-              product.category || ""
-            )}
-          </td>
-
-          <td>
-            ৳${Number(
-              product.price
-            ).toLocaleString()}
-          </td>
-
-          <td>
-            ${product.stock}
-          </td>
-
-          <td>
-
-            <button
-              class="small-btn edit-btn"
-              onclick='editProduct(${JSON.stringify(product)})'
-            >
-              Edit
-            </button>
-
-            <button
-              class="small-btn delete-btn"
-              onclick="deleteProduct(${product.id})"
-            >
-              Delete
-            </button>
-
-          </td>
-        `;
-
-        table.appendChild(row);
-
-      }
-    );
-
-  }
-
-
-  // ===================================
-  // ADD / EDIT PRODUCT
-  // ===================================
-
-  document
-    .getElementById("productForm")
-    .addEventListener(
-      "submit",
-      async function (event) {
-
-        event.preventDefault();
-
-        const id =
-          document.getElementById(
-            "productId"
-          ).value;
-
-        const product = {
-
-          name:
-            document.getElementById(
-              "productName"
-            ).value,
-
-          category:
-            document.getElementById(
-              "productCategory"
-            ).value,
-
-          price:
-            Number(
-              document.getElementById(
-                "productPrice"
-              ).value
-            ),
-
-          oldPrice:
-            Number(
-              document.getElementById(
-                "productOldPrice"
-              ).value || 0
-            ),
-
-          discount:
-            Number(
-              document.getElementById(
-                "productDiscount"
-              ).value || 0
-            ),
-
-          stock:
-            Number(
-              document.getElementById(
-                "productStock"
-              ).value
-            ),
-
-          image:
-            document.getElementById(
-              "productImage"
-            ).value
-
-        };
-
-
-        let response;
-
-
-        if (id) {
-
-          response =
-            await fetch(
-              "/api/admin/products/" +
-              id,
-              {
-                method: "PUT",
-
-                headers: {
-                  "Content-Type":
-                    "application/json"
-                },
-
-                body:
-                  JSON.stringify(product)
-              }
-            );
-
-        } else {
-
-          response =
-            await fetch(
-              "/api/admin/products",
-              {
-                method: "POST",
-
-                headers: {
-                  "Content-Type":
-                    "application/json"
-                },
-
-                body:
-                  JSON.stringify(product)
-              }
-            );
-
-        }
-
-
-        const data =
-          await response.json();
-
-
-        if (!response.ok) {
-
-          alert(
-            data.error ||
-            "Product save failed"
-          );
-
-          return;
-
-        }
-
-
-        document.getElementById(
-          "productMessage"
-        ).textContent =
-          "Product saved successfully.";
-
-        resetProductForm();
-
-        loadProducts();
-
-        loadDashboard();
-
-      }
-    );
-
-
-  function editProduct(product) {
-
-    document.getElementById(
-      "productId"
-    ).value = product.id;
-
-    document.getElementById(
-      "productName"
-    ).value = product.name || "";
-
-    document.getElementById(
-      "productCategory"
-    ).value =
-      product.category || "";
-
-    document.getElementById(
-      "productPrice"
-    ).value =
-      product.price || 0;
-
-    document.getElementById(
-      "productOldPrice"
-    ).value =
-      product.oldPrice || 0;
-
-    document.getElementById(
-      "productDiscount"
-    ).value =
-      product.discount || 0;
-
-    document.getElementById(
-      "productStock"
-    ).value =
-      product.stock || 0;
-
-    document.getElementById(
-      "productImage"
-    ).value =
-      product.image || "";
-
-    document.getElementById(
-      "productFormTitle"
-    ).textContent =
-      "Edit Product";
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-
-  }
-
-
-  function resetProductForm() {
-
-    document
-      .getElementById(
-        "productForm"
-      )
-      .reset();
-
-    document.getElementById(
-      "productId"
-    ).value = "";
-
-    document.getElementById(
-      "productFormTitle"
-    ).textContent =
-      "Add New Product";
-
-  }
-
-
-  async function deleteProduct(id) {
-
-    if (
-      !confirm(
-        "এই product টি delete করতে চান?"
-      )
-    ) {
-      return;
-    }
-
-
-    const response =
-      await fetch(
-        "/api/admin/products/" +
-        id,
-        {
-          method: "DELETE"
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      alert(
-        data.error ||
-        "Delete failed"
-      );
-
-      return;
-
-    }
-
-
-    loadProducts();
-
-    loadDashboard();
-
-  }
-
-
-  // ===================================
-  // ORDERS
-  // ===================================
-
-  async function loadOrders() {
-
-    const response =
-      await fetch(
-        "/api/admin/orders"
-      );
-
-    if (response.status === 401) {
-      showLogin();
-      return;
-    }
-
-    const orders =
-      await response.json();
-
-    const table =
-      document.getElementById(
-        "ordersTable"
-      );
-
-    table.innerHTML = "";
-
-
-    if (!orders.length) {
-
-      table.innerHTML = `
-        <tr>
-          <td colspan="7">
-            No orders yet.
-          </td>
-        </tr>
       `;
 
-      return;
-    }
+      table.appendChild(tr);
 
+    });
 
-    orders.forEach(
-      (order) => {
+  }catch(e){
 
-        const customer =
-          order.customer || {};
-
-        const row =
-          document.createElement("tr");
-
-        row.innerHTML = `
-
-          <td>
-            ${escapeHtml(
-              String(order.id)
-            )}
-          </td>
-
-          <td>
-            ${escapeHtml(
-              customer.name || ""
-            )}
-          </td>
-
-          <td>
-            ${escapeHtml(
-              customer.phone || ""
-            )}
-          </td>
-
-          <td>
-            ৳${Number(
-              order.total || 0
-            ).toLocaleString()}
-          </td>
-
-          <td>
-            ${escapeHtml(
-              order.paymentMethod || "cod"
-            )}
-          </td>
-
-          <td>
-            <span class="status">
-              ${escapeHtml(
-                order.status || "Pending"
-              )}
-            </span>
-          </td>
-
-          <td>
-
-            <select
-              onchange="updateOrderStatus('${escapeHtml(String(order.id))}', this.value)"
-            >
-
-              <option
-                value="Pending"
-                ${
-                  order.status === "Pending"
-                    ? "selected"
-                    : ""
-                }
-              >
-                Pending
-              </option>
-
-              <option
-                value="Confirmed"
-                ${
-                  order.status === "Confirmed"
-                    ? "selected"
-                    : ""
-                }
-              >
-                Confirmed
-              </option>
-
-              <option
-                value="Delivered"
-                ${
-                  order.status === "Delivered"
-                    ? "selected"
-                    : ""
-                }
-              >
-                Delivered
-              </option>
-
-              <option
-                value="Cancelled"
-                ${
-                  order.status === "Cancelled"
-                    ? "selected"
-                    : ""
-                }
-              >
-                Cancelled
-              </option>
-
-            </select>
-
-          </td>
-
-        `;
-
-        table.appendChild(row);
-
-      }
-    );
+    console.error(e);
 
   }
 
-
-  async function updateOrderStatus(
-    id,
-    status
-  ) {
-
-    const response =
-      await fetch(
-        "/api/admin/orders/" +
-        encodeURIComponent(id),
-        {
-          method: "PUT",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body: JSON.stringify({
-            status
-          })
-        }
-      );
+}
 
 
-    if (!response.ok) {
+/* =========================
+   SETTINGS
+========================= */
 
-      alert(
-        "Order status update failed"
-      );
+async function loadSettings(){
 
-      return;
+  try{
 
-    }
+    const data =
+      await api("/api/admin/settings");
 
-
-    loadOrders();
-
-    loadDashboard();
-
-  }
-
-
-  // ===================================
-  // SETTINGS
-  // ===================================
-
-  async function loadSettings() {
-
-    const response =
-      await fetch(
-        "/api/admin/settings"
-      );
-
-    if (response.status === 401) {
-      showLogin();
-      return;
-    }
-
-    const settings =
-      await response.json();
-
+    const s =
+      data.settings || {};
 
     document.getElementById(
       "shopName"
     ).value =
-      settings.shopName || "";
+      s.shopName || "";
 
     document.getElementById(
       "tagline"
     ).value =
-      settings.tagline || "";
+      s.tagline || "";
 
     document.getElementById(
       "phone1"
     ).value =
-      settings.phone1 || "";
+      s.phone1 || "";
 
     document.getElementById(
       "phone2"
     ).value =
-      settings.phone2 || "";
+      s.phone2 || "";
 
     document.getElementById(
       "facebook"
     ).value =
-      settings.facebook || "";
+      s.facebook || "";
 
     document.getElementById(
       "currency"
     ).value =
-      settings.currency || "BDT";
+      s.currency || "BDT";
+
+  }catch(e){
+
+    console.error(e);
 
   }
 
-
-  document
-    .getElementById("settingsForm")
-    .addEventListener(
-      "submit",
-      async function (event) {
-
-        event.preventDefault();
+}
 
 
-        const settings = {
+/* =========================
+   SAVE SETTINGS
+========================= */
+
+async function saveSettings(){
+
+  try{
+
+    await api(
+      "/api/admin/settings",
+      {
+        method:"PUT",
+
+        body:JSON.stringify({
 
           shopName:
             document.getElementById(
@@ -1781,67 +1237,65 @@
               "currency"
             ).value
 
-        };
-
-
-        const response =
-          await fetch(
-            "/api/admin/settings",
-            {
-              method: "PUT",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body:
-                JSON.stringify(settings)
-            }
-          );
-
-
-        if (!response.ok) {
-
-          alert(
-            "Settings save failed"
-          );
-
-          return;
-
-        }
-
-
-        document.getElementById(
-          "settingsMessage"
-        ).textContent =
-          "Settings saved successfully.";
-
+        })
       }
     );
 
+    const msg =
+      document.getElementById(
+        "settingsMessage"
+      );
 
-  // ===================================
-  // SECURITY / HTML ESCAPE
-  // ===================================
+    msg.style.display="block";
 
-  function escapeHtml(value) {
+    setTimeout(
+      () => {
+        msg.style.display="none";
+      },
+      2500
+    );
 
-    return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+  }catch(e){
+
+    alert(e.message);
 
   }
 
+}
 
-  // ===================================
-  // START
-  // ===================================
 
-  checkLogin();
+/* =========================
+   VIEW STORE
+========================= */
+
+function viewStore(){
+
+  window.location.href="/";
+
+}
+
+
+/* =========================
+   HTML SECURITY
+========================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+checkLogin();
 
 </script>
 
