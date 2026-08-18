@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<!-- PWA -->
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#17151b">
 <meta name="mobile-web-app-capable" content="yes">
@@ -15,637 +14,814 @@
 <title>SM Online Shop</title>
 
 <style>
-:root{--p:#f41470;--dark:#17151b;--bg:#fff;--soft:#fff1f7;--muted:#777}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial;color:#17151b;background:var(--bg)}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-
-.top{
-background:var(--dark);
-color:#fff;
-padding:9px 5%;
-display:flex;
-justify-content:space-between;
-font-size:12px
+:root{
+  --pink:#f41470;
+  --dark:#17151b;
+  --bg:#fff;
+  --soft:#fff1f7;
+  --muted:#777;
+  --border:#eee;
 }
 
-.top b{color:#ff75ae}
+*{box-sizing:border-box}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:var(--dark);
+  background:#fff;
+}
+
+button,input,textarea,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+a{
+  color:inherit;
+}
+
+/* TOP BAR */
+
+.top{
+  background:var(--dark);
+  color:#fff;
+  padding:9px 5%;
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  font-size:12px;
+}
+
+.top b{
+  color:#ff75ae;
+}
+
+/* HEADER */
 
 header{
-padding:15px 5%;
-display:flex;
-gap:20px;
-align-items:center;
-border-bottom:1px solid #eee;
-position:sticky;
-top:0;
-background:#fff;
-z-index:10
+  padding:14px 5%;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  background:#fff;
+  z-index:10;
 }
 
 .logo{
-display:flex;
-align-items:center;
-gap:10px;
-min-width:220px;
-text-decoration:none;
-color:inherit
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:220px;
+  text-decoration:none;
 }
 
 .mark{
-width:52px;
-height:52px;
-border-radius:50%;
-background:var(--dark);
-color:#fff;
-border:3px solid var(--p);
-display:grid;
-place-items:center;
-font-weight:900
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:var(--dark);
+  color:#fff;
+  border:3px solid var(--pink);
+  display:grid;
+  place-items:center;
+  font-weight:900;
 }
 
 .logo h1{
-font:700 24px Georgia;
-margin:0
+  font:700 24px Georgia,serif;
+  margin:0;
 }
 
 .logo small{
-color:var(--p);
-font-weight:bold
+  color:var(--pink);
+  font-weight:bold;
 }
 
+/* SEARCH */
+
 .search{
-display:flex;
-flex:1;
-border:1px solid #ddd;
-border-radius:30px;
-overflow:hidden
+  display:flex;
+  flex:1;
+  border:1px solid #ddd;
+  border-radius:30px;
+  overflow:hidden;
+  background:#fff;
 }
 
 .search input{
-flex:1;
-border:0;
-padding:12px 18px;
-outline:0
+  flex:1;
+  border:0;
+  padding:12px 18px;
+  outline:none;
 }
 
 .search button{
-width:55px;
-border:0;
-background:var(--p);
-color:#fff
+  width:55px;
+  border:0;
+  background:var(--pink);
+  color:#fff;
 }
 
+/* HEADER ACTIONS */
+
 .acts{
-display:flex;
-gap:10px
+  display:flex;
+  gap:10px;
 }
 
 .acts button{
-border:0;
-background:#fff
+  border:0;
+  background:#fff;
+  text-align:center;
 }
 
 .acts i{
-display:block;
-font-style:normal;
-font-size:20px
+  display:block;
+  font-style:normal;
+  font-size:11px;
 }
 
 .cartBadge{
-color:var(--p);
-font-weight:bold
+  color:var(--pink);
+  font-weight:bold;
 }
 
+/* NAV */
+
 nav{
-display:flex;
-justify-content:center;
-gap:25px;
-padding:13px;
-border-bottom:1px solid #eee;
-font-weight:bold;
-font-size:13px
+  display:flex;
+  justify-content:center;
+  gap:25px;
+  padding:13px;
+  border-bottom:1px solid var(--border);
+  font-weight:bold;
+  font-size:13px;
 }
 
 nav a{
-text-decoration:none;
-color:inherit
+  text-decoration:none;
 }
+
+nav a:hover{
+  color:var(--pink);
+}
+
+/* INSTALL */
+
+.installBtn{
+  display:none;
+  background:var(--pink);
+  color:#fff;
+  border:0;
+  padding:10px 15px;
+  border-radius:8px;
+  font-weight:bold;
+  margin:10px auto;
+}
+
+/* HERO */
 
 .hero{
-max-width:1350px;
-margin:18px auto;
-border-radius:24px;
-padding:65px 7%;
-min-height:420px;
-background:linear-gradient(110deg,#ffe2ed,#fff8fb);
-display:flex;
-align-items:center;
-position:relative;
-overflow:hidden
-}
-
-.hero h2{
-font:700 clamp(42px,6vw,72px) Georgia;
-margin:8px 0
-}
-
-.hero em{
-color:var(--p);
-font-style:normal
-}
-
-.hero p:first-child{
-color:var(--p);
-font-weight:bold;
-letter-spacing:2px
+  max-width:1350px;
+  margin:18px auto;
+  border-radius:24px;
+  padding:65px 7%;
+  min-height:420px;
+  background:linear-gradient(110deg,#ffe2ed,#fff8fb);
+  display:flex;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
 }
 
 .hero .copy{
-max-width:650px
+  max-width:650px;
+  position:relative;
+  z-index:2;
+}
+
+.hero h2{
+  font:700 clamp(42px,6vw,72px) Georgia,serif;
+  margin:8px 0;
+}
+
+.hero em{
+  color:var(--pink);
+  font-style:normal;
+}
+
+.hero p:first-child{
+  color:var(--pink);
+  font-weight:bold;
+  letter-spacing:2px;
 }
 
 .heroArt{
-position:absolute;
-right:5%;
-font-size:250px;
-opacity:.65
+  position:absolute;
+  right:5%;
+  font-size:250px;
+  opacity:.65;
 }
 
 .btn{
-border:0;
-background:var(--p);
-color:#fff;
-padding:13px 20px;
-border-radius:9px;
-font-weight:bold
+  border:0;
+  background:var(--pink);
+  color:#fff;
+  padding:13px 20px;
+  border-radius:9px;
+  font-weight:bold;
 }
 
-.installBtn{
-display:none;
-background:var(--p);
-color:#fff;
-border:0;
-padding:10px 15px;
-border-radius:8px;
-font-weight:bold;
-margin:10px auto
+.btn:hover{
+  opacity:.9;
 }
+
+/* BENEFITS */
 
 .benefits{
-max-width:1250px;
-margin:15px auto;
-display:grid;
-grid-template-columns:repeat(5,1fr);
-border:1px solid #eee;
-border-radius:14px;
-overflow:hidden
+  max-width:1250px;
+  margin:15px auto;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
 }
 
 .benefits div{
-text-align:center;
-padding:16px;
-border-right:1px solid #eee
+  text-align:center;
+  padding:16px 8px;
+  border-right:1px solid var(--border);
+}
+
+.benefits div:last-child{
+  border-right:0;
 }
 
 .benefits b{
-display:block
+  display:block;
+  margin-top:5px;
 }
 
 .benefits small{
-color:#777
+  color:var(--muted);
 }
 
+/* SECTION */
+
 .section{
-max-width:1250px;
-margin:45px auto;
-padding:0 12px
+  max-width:1250px;
+  margin:45px auto;
+  padding:0 12px;
 }
 
 .title{
-text-align:center
+  text-align:center;
 }
 
 .title h2{
-font:700 32px Georgia;
-margin:4px
+  font:700 32px Georgia,serif;
+  margin:4px;
 }
 
 .title p{
-color:#777
+  color:var(--muted);
 }
 
+/* CATEGORIES */
+
 .cats{
-display:grid;
-grid-template-columns:repeat(8,1fr);
-gap:12px;
-margin-top:25px
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:12px;
+  margin-top:25px;
 }
 
 .cat{
-border:1px solid #eee;
-background:#fff;
-border-radius:14px;
-padding:12px
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:14px;
+  padding:12px;
+  transition:.2s;
+}
+
+.cat:hover{
+  border-color:var(--pink);
+  transform:translateY(-2px);
 }
 
 .cat .ico{
-height:65px;
-width:65px;
-margin:auto;
-border-radius:50%;
-display:grid;
-place-items:center;
-background:var(--soft);
-font-size:30px
+  height:65px;
+  width:65px;
+  margin:auto;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:var(--soft);
+  font-size:30px;
 }
 
 .cat b{
-display:block;
-margin-top:7px
+  display:block;
+  margin-top:7px;
 }
+
+/* OFFER */
 
 .offer{
-max-width:1250px;
-margin:25px auto;
-padding:22px;
-border-radius:16px;
-background:linear-gradient(90deg,#ff1b72,#ff68a4);
-color:#fff;
-display:flex;
-justify-content:space-around;
-align-items:center
+  max-width:1250px;
+  margin:25px auto;
+  padding:22px;
+  border-radius:16px;
+  background:linear-gradient(90deg,#ff1b72,#ff68a4);
+  color:#fff;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  gap:15px;
 }
 
+/* PRODUCTS */
+
 .grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:18px
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
 }
 
 .card{
-border:1px solid #eee;
-border-radius:15px;
-overflow:hidden
+  border:1px solid var(--border);
+  border-radius:15px;
+  overflow:hidden;
+  background:#fff;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 25px #0001;
 }
 
 .pic{
-height:270px;
-background-size:cover;
-background-position:center;
-position:relative
+  height:270px;
+  background:#f8f8f8;
+  background-size:cover;
+  background-position:center;
+  position:relative;
 }
 
 .badge{
-position:absolute;
-left:9px;
-top:9px;
-background:var(--p);
-color:#fff;
-border-radius:7px;
-padding:5px;
-font-size:11px
+  position:absolute;
+  left:9px;
+  top:9px;
+  background:var(--pink);
+  color:#fff;
+  border-radius:7px;
+  padding:5px 7px;
+  font-size:11px;
 }
 
 .body{
-padding:13px
+  padding:13px;
 }
 
 .body h3{
-font-size:15px;
-margin:0 0 7px
+  font-size:15px;
+  margin:0 0 7px;
 }
 
 .stars{
-color:#f2b500
+  color:#f2b500;
+}
+
+.price{
+  margin-top:5px;
 }
 
 .price b{
-color:var(--p);
-font-size:18px
+  color:var(--pink);
+  font-size:18px;
 }
 
 .price del{
-color:#999;
-margin-left:6px;
-font-size:12px
+  color:#999;
+  margin-left:6px;
+  font-size:12px;
+}
+
+.stock{
+  display:block;
+  margin-top:6px;
+  font-size:12px;
 }
 
 .add{
-width:100%;
-margin-top:10px;
-border:0;
-background:var(--p);
-color:#fff;
-padding:10px;
-border-radius:8px;
-font-weight:bold
+  width:100%;
+  margin-top:10px;
+  border:0;
+  background:var(--pink);
+  color:#fff;
+  padding:10px;
+  border-radius:8px;
+  font-weight:bold;
 }
 
+.add:disabled{
+  background:#bbb;
+  cursor:not-allowed;
+}
+
+/* REVIEWS */
+
 .reviews{
-background:#fff7fb;
-padding:45px 5%
+  background:#fff7fb;
+  padding:45px 5%;
 }
 
 .reviewGrid{
-max-width:1250px;
-margin:auto;
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:15px
+  max-width:1250px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
 }
 
 .review{
-background:#fff;
-border:1px solid #eee;
-border-radius:14px;
-padding:18px
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
 }
 
 .review p{
-color:#666;
-line-height:1.5
+  color:#666;
+  line-height:1.5;
 }
 
+/* CONTACT */
+
 .contact{
-max-width:1250px;
-margin:30px auto;
-padding:25px;
-border-radius:15px;
-background:#eef6ff;
-display:flex;
-justify-content:space-between;
-align-items:center
+  max-width:1250px;
+  margin:30px auto;
+  padding:25px;
+  border-radius:15px;
+  background:#eef6ff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
 }
 
 .fb{
-background:#1877f2
+  background:#1877f2;
+  text-decoration:none;
 }
 
+/* FOOTER */
+
+footer{
+  background:var(--dark);
+  color:#fff;
+  padding:40px 5%;
+  margin-top:45px;
+}
+
+footer a,
+footer p{
+  color:#aaa;
+  text-decoration:none;
+}
+
+.foot{
+  max-width:1250px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:25px;
+}
+
+.copy{
+  text-align:center;
+  color:#aaa;
+  border-top:1px solid #333;
+  margin-top:25px;
+  padding-top:15px;
+  font-size:12px;
+}
+
+/* CART DRAWER */
+
 .drawer{
-position:fixed;
-right:-430px;
-top:0;
-width:min(430px,100%);
-height:100%;
-background:#fff;
-z-index:30;
-padding:20px;
-box-shadow:-10px 0 30px #0003;
-transition:.25s;
-overflow:auto
+  position:fixed;
+  right:-430px;
+  top:0;
+  width:min(430px,100%);
+  height:100%;
+  background:#fff;
+  z-index:30;
+  padding:20px;
+  box-shadow:-10px 0 30px #0003;
+  transition:.25s;
+  overflow:auto;
 }
 
 .drawer.open{
-right:0
+  right:0;
 }
 
 .shade{
-display:none;
-position:fixed;
-inset:0;
-background:#0008;
-z-index:20
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#0008;
+  z-index:20;
 }
 
 .shade.on{
-display:block
+  display:block;
 }
 
 .row{
-border-bottom:1px solid #eee;
-padding:12px 0;
-display:flex;
-gap:10px
+  border-bottom:1px solid #eee;
+  padding:12px 0;
+  display:flex;
+  gap:10px;
 }
 
 .row img{
-width:60px;
-height:70px;
-object-fit:cover;
-border-radius:7px
+  width:60px;
+  height:70px;
+  object-fit:cover;
+  border-radius:7px;
+  background:#eee;
+}
+
+.qtyBtns{
+  display:flex;
+  gap:5px;
+  margin-top:7px;
+}
+
+.qtyBtns button{
+  border:1px solid #ddd;
+  background:#fff;
+  border-radius:5px;
+  padding:3px 8px;
+}
+
+.removeBtn{
+  color:#e00;
 }
 
 .form input,
 .form textarea,
 .form select{
-width:100%;
-padding:10px;
-border:1px solid #ddd;
-border-radius:8px;
-margin:5px 0 10px
+  width:100%;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  margin:5px 0 10px;
 }
 
 .form label{
-font-size:12px;
-font-weight:bold
+  font-size:12px;
+  font-weight:bold;
 }
 
 .pay{
-border:1px solid #ddd;
-border-radius:9px;
-padding:11px;
-margin:7px 0
+  border:1px solid #ddd;
+  border-radius:9px;
+  padding:11px;
+  margin:7px 0;
 }
 
 .pay input{
-margin-right:8px
+  margin-right:8px;
 }
 
-footer{
-background:var(--dark);
-color:#fff;
-padding:40px 5%;
-margin-top:45px
-}
-
-footer a,
-footer p{
-color:#aaa;
-text-decoration:none
-}
-
-.foot{
-max-width:1250px;
-margin:auto;
-display:grid;
-grid-template-columns:2fr 1fr 1fr 1fr;
-gap:25px
-}
-
-.copy{
-text-align:center;
-color:#aaa;
-border-top:1px solid #333;
-margin-top:25px;
-padding-top:15px;
-font-size:12px
-}
+/* MOBILE */
 
 @media(max-width:850px){
 
-.search{
-display:none
-}
+  .top span:nth-child(2){
+    display:none;
+  }
 
-.benefits{
-grid-template-columns:repeat(2,1fr)
-}
+  .search{
+    display:none;
+  }
 
-.cats{
-grid-template-columns:repeat(4,1fr)
-}
+  .benefits{
+    grid-template-columns:repeat(2,1fr);
+    margin:10px;
+  }
 
-.grid{
-grid-template-columns:repeat(2,1fr)
-}
+  .benefits div{
+    border-bottom:1px solid #eee;
+  }
 
-.heroArt{
-opacity:.2
-}
+  .cats{
+    grid-template-columns:repeat(4,1fr);
+  }
 
-.reviewGrid{
-grid-template-columns:1fr
-}
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-.foot{
-grid-template-columns:1fr 1fr
-}
+  .heroArt{
+    opacity:.2;
+  }
+
+  .reviewGrid{
+    grid-template-columns:1fr;
+  }
+
+  .foot{
+    grid-template-columns:1fr 1fr;
+  }
 
 }
 
 @media(max-width:600px){
 
-header{
-padding:10px
+  header{
+    padding:10px;
+  }
+
+  .logo{
+    min-width:auto;
+  }
+
+  .logo h1{
+    font-size:18px;
+  }
+
+  .logo small{
+    font-size:10px;
+  }
+
+  .acts{
+    margin-left:auto;
+  }
+
+  nav{
+    overflow:auto;
+    justify-content:flex-start;
+    white-space:nowrap;
+  }
+
+  .hero{
+    margin:10px;
+    padding:40px 20px;
+    min-height:370px;
+  }
+
+  .hero h2{
+    font-size:43px;
+  }
+
+  .benefits{
+    margin:10px;
+  }
+
+  .cats{
+    gap:7px;
+  }
+
+  .cat{
+    padding:7px;
+  }
+
+  .cat .ico{
+    width:52px;
+    height:52px;
+  }
+
+  .cat b{
+    font-size:10px;
+  }
+
+  .pic{
+    height:200px;
+  }
+
+  .offer{
+    margin:20px 10px;
+    display:block;
+    text-align:center;
+  }
+
+  .offer>*{
+    display:block;
+    margin:7px;
+  }
+
+  .contact{
+    margin:20px 10px;
+    display:block;
+    text-align:center;
+  }
+
+  .contact .btn{
+    display:inline-block;
+    margin-top:10px;
+  }
+
+  .foot{
+    grid-template-columns:1fr;
+  }
+
 }
 
-.logo{
-min-width:auto
-}
+/* EMPTY PRODUCTS */
 
-.logo h1{
-font-size:18px
-}
-
-.logo small{
-font-size:10px
-}
-
-nav{
-overflow:auto;
-justify-content:flex-start;
-white-space:nowrap
-}
-
-.hero{
-margin:10px;
-padding:40px 20px
-}
-
-.hero h2{
-font-size:43px
-}
-
-.benefits{
-margin:10px
-}
-
-.cats{
-gap:7px
-}
-
-.cat{
-padding:7px
-}
-
-.cat .ico{
-width:52px;
-height:52px
-}
-
-.cat b{
-font-size:10px
-}
-
-.pic{
-height:200px
-}
-
-.offer{
-margin:20px 10px;
-display:block;
-text-align:center
-}
-
-.contact{
-margin:20px 10px;
-display:block;
-text-align:center
-}
-
+.empty{
+  grid-column:1/-1;
+  text-align:center;
+  padding:50px 20px;
+  color:#777;
 }
 </style>
 </head>
 
 <body>
 
+<!-- TOP BAR -->
+
 <div class="top">
-<span>💗 <b>SM Online Shop</b></span>
-<span>🚚 Fast Delivery All Over Bangladesh</span>
-<span>☎ 01827872334 | 01886995687</span>
+  <span>💗 <b id="topShopName">SM Online Shop</b></span>
+  <span>🚚 Fast Delivery All Over Bangladesh</span>
+  <span>☎ <span id="topPhone1">01827872334</span> | <span id="topPhone2">01886995687</span></span>
 </div>
+
+<!-- HEADER -->
 
 <header>
 
-<a class="logo" href="#">
-<span class="mark">SM</span>
+<a class="logo" href="/">
+  <span class="mark">SM</span>
 
-<span>
-<h1 id="shopName">SM Online Shop</h1>
-<small id="tagline">Style • Comfort • Confidence ♥</small>
-</span>
-
+  <span>
+    <h1 id="shopName">SM Online Shop</h1>
+    <small id="tagline">Style • Comfort • Confidence ♥</small>
+  </span>
 </a>
 
 <div class="search">
-<input id="search" placeholder="Search products...">
-<button>⌕</button>
+  <input
+    id="search"
+    type="search"
+    placeholder="Search products..."
+    autocomplete="off">
+  <button type="button" onclick="doSearch()">⌕</button>
 </div>
 
 <div class="acts">
 
-<button>
-♡
-<i>Wishlist</i>
-</button>
+  <button type="button" onclick="alert('Wishlist coming soon ❤️')">
+    ♡
+    <i>Wishlist</i>
+  </button>
 
-<button onclick="openCart()">
-🛍
-<i>Cart <span class="cartBadge" id="count">0</span></i>
-</button>
+  <button type="button" onclick="openCart()">
+    🛍
+    <i>Cart <span class="cartBadge" id="count">0</span></i>
+  </button>
 
 </div>
 
 </header>
 
-<!-- APP INSTALL BUTTON -->
+<!-- APP INSTALL -->
+
 <button id="installBtn" class="installBtn">
 📱 Install SM Online Shop App
 </button>
 
+<!-- NAVIGATION -->
+
 <nav>
-
-<a href="#">Home</a>
-<a href="#products">New Arrivals</a>
-<a href="#products">Best Seller</a>
-<a href="#products">Women Fashion</a>
-<a href="#offers">Sale</a>
-<a href="#contact">Contact</a>
-<a href="/admin.html" target="_blank">Admin</a>
-
+  <a href="/">Home</a>
+  <a href="#products">New Arrivals</a>
+  <a href="#products">Best Seller</a>
+  <a href="#products">Women Fashion</a>
+  <a href="#offers">Sale</a>
+  <a href="#contact">Contact</a>
+  <a href="/admin" target="_blank">Admin</a>
 </nav>
+
+<!-- HERO -->
 
 <section class="hero">
 
@@ -660,9 +836,11 @@ Be Stylish.<br>
 
 <p>Trendy • Elegant • Affordable</p>
 
-<button class="btn"
-onclick="document.getElementById('products').scrollIntoView()">
-Shop Now →
+<button
+  class="btn"
+  type="button"
+  onclick="document.getElementById('products').scrollIntoView()">
+  Shop Now →
 </button>
 
 </div>
@@ -671,107 +849,117 @@ Shop Now →
 
 </section>
 
+<!-- BENEFITS -->
+
 <div class="benefits">
 
 <div>
-🚚
-<b>Fast Delivery</b>
-<small>All Over Bangladesh</small>
+  🚚
+  <b>Fast Delivery</b>
+  <small>All Over Bangladesh</small>
 </div>
 
 <div>
-🛡️
-<b>100% Trusted</b>
-<small>Quality Products</small>
+  🛡️
+  <b>100% Trusted</b>
+  <small>Quality Products</small>
 </div>
 
 <div>
-🎧
-<b>Support</b>
-<small>We're here to help</small>
+  🎧
+  <b>Support</b>
+  <small>We're here to help</small>
 </div>
 
 <div>
-💵
-<b>Cash on Delivery</b>
-<small>Pay when received</small>
+  💵
+  <b>Cash on Delivery</b>
+  <small>Pay when received</small>
 </div>
 
 <div>
-↩️
-<b>Easy Return</b>
-<small>Customer friendly</small>
+  ↩️
+  <b>Easy Return</b>
+  <small>Customer friendly</small>
 </div>
 
 </div>
+
+<!-- CATEGORIES -->
 
 <section class="section">
 
 <div class="title">
-
-<h2>Shop by Category</h2>
-<p>Find your perfect style</p>
-
+  <h2>Shop by Category</h2>
+  <p>Find your perfect style</p>
 </div>
 
 <div class="cats">
 
-<button class="cat" onclick="filter('Dresses')">
-<div class="ico">👗</div>
-<b>Dresses</b>
+<button class="cat" type="button" onclick="filter('Dresses')">
+  <div class="ico">👗</div>
+  <b>Dresses</b>
 </button>
 
-<button class="cat" onclick="filter('Tops')">
-<div class="ico">👚</div>
-<b>Tops</b>
+<button class="cat" type="button" onclick="filter('Tops')">
+  <div class="ico">👚</div>
+  <b>Tops</b>
 </button>
 
-<button class="cat" onclick="filter('Saree')">
-<div class="ico">🥻</div>
-<b>Saree</b>
+<button class="cat" type="button" onclick="filter('Saree')">
+  <div class="ico">🥻</div>
+  <b>Saree</b>
 </button>
 
-<button class="cat" onclick="filter('Hijab')">
-<div class="ico">🧕</div>
-<b>Hijab</b>
+<button class="cat" type="button" onclick="filter('Hijab')">
+  <div class="ico">🧕</div>
+  <b>Hijab</b>
 </button>
 
-<button class="cat" onclick="filter('Bags')">
-<div class="ico">👜</div>
-<b>Bags</b>
+<button class="cat" type="button" onclick="filter('Bags')">
+  <div class="ico">👜</div>
+  <b>Bags</b>
 </button>
 
-<button class="cat" onclick="filter('Shoes')">
-<div class="ico">👠</div>
-<b>Shoes</b>
+<button class="cat" type="button" onclick="filter('Shoes')">
+  <div class="ico">👠</div>
+  <b>Shoes</b>
 </button>
 
-<button class="cat" onclick="filter('Jewellery')">
-<div class="ico">💎</div>
-<b>Jewellery</b>
+<button class="cat" type="button" onclick="filter('Jewellery')">
+  <div class="ico">💎</div>
+  <b>Jewellery</b>
 </button>
 
-<button class="cat" onclick="filter('Accessories')">
-<div class="ico">🕶️</div>
-<b>Accessories</b>
+<button class="cat" type="button" onclick="filter('Accessories')">
+  <div class="ico">🕶️</div>
+  <b>Accessories</b>
 </button>
 
 </div>
 
 </section>
 
+<!-- OFFER -->
+
 <div class="offer" id="offers">
 
 <b>🎁 Special Offer</b>
+
 <span>Buy More, Save More</span>
+
 <b>Up to 50% OFF</b>
 
-<button class="btn"
-onclick="document.getElementById('products').scrollIntoView()">
-Shop Deals
+<button
+  class="btn"
+  type="button"
+  onclick="document.getElementById('products').scrollIntoView()">
+  Shop Deals
 </button>
 
 </div>
+
+<!-- PRODUCTS -->
 
 <section class="section" id="products">
 
@@ -785,9 +973,13 @@ Popular items from SM Online Shop
 
 </div>
 
-<div class="grid" id="grid"></div>
+<div class="grid" id="grid">
+  <div class="empty">Loading products...</div>
+</div>
 
 </section>
+
+<!-- REVIEWS -->
 
 <section class="reviews">
 
@@ -802,44 +994,34 @@ Popular items from SM Online Shop
 <div class="reviewGrid">
 
 <article class="review">
-
-<b>Raisa Islam</b>
-
-<div>★★★★★</div>
-
-<p>
-“Collection and quality onek bhalo. Delivery fast chilo.”
-</p>
-
+  <b>Raisa Islam</b>
+  <div>★★★★★</div>
+  <p>
+    “Collection and quality onek bhalo. Delivery fast chilo.”
+  </p>
 </article>
 
 <article class="review">
-
-<b>Nusrat Jahan</b>
-
-<div>★★★★★</div>
-
-<p>
-“Product exactly picture-er moto. Highly recommended.”
-</p>
-
+  <b>Nusrat Jahan</b>
+  <div>★★★★★</div>
+  <p>
+    “Product exactly picture-er moto. Highly recommended.”
+  </p>
 </article>
 
 <article class="review">
-
-<b>Mim Akter</b>
-
-<div>★★★★★</div>
-
-<p>
-“Price reasonable, quality excellent. Abar order korbo.”
-</p>
-
+  <b>Mim Akter</b>
+  <div>★★★★★</div>
+  <p>
+    “Price reasonable, quality excellent. Abar order korbo.”
+  </p>
 </article>
 
 </div>
 
 </section>
+
+<!-- CONTACT -->
 
 <div class="contact" id="contact">
 
@@ -848,7 +1030,9 @@ Popular items from SM Online Shop
 <h3>Follow SM Online Shop</h3>
 
 <p>
-☎ 01827872334 &nbsp; | &nbsp; 01886995687
+☎ <span id="contactPhone1">01827872334</span>
+&nbsp; | &nbsp;
+<span id="contactPhone2">01886995687</span>
 </p>
 
 <p>
@@ -858,13 +1042,17 @@ New arrivals, offers & updates on Facebook.
 </div>
 
 <a
-class="btn fb"
-target="_blank"
-href="https://www.facebook.com/share/1Dr8FEmuoQ/">
-Facebook Page →
+  id="facebookLink"
+  class="btn fb"
+  target="_blank"
+  rel="noopener"
+  href="https://www.facebook.com/share/1Dr8FEmuoQ/">
+  Facebook Page →
 </a>
 
 </div>
+
+<!-- FOOTER -->
 
 <footer>
 
@@ -872,7 +1060,9 @@ Facebook Page →
 
 <div>
 
-<h2>SM Online Shop</h2>
+<h2 id="footerShopName">
+SM Online Shop
+</h2>
 
 <p>
 Women's fashion, bags, shoes, hijab and accessories.
@@ -884,7 +1074,7 @@ Women's fashion, bags, shoes, hijab and accessories.
 
 <h3>Quick Links</h3>
 
-<p><a href="#">Home</a></p>
+<p><a href="/">Home</a></p>
 <p><a href="#products">Shop</a></p>
 <p><a href="#offers">Offers</a></p>
 
@@ -903,8 +1093,8 @@ Women's fashion, bags, shoes, hijab and accessories.
 
 <h3>Contact</h3>
 
-<p>01827872334</p>
-<p>01886995687</p>
+<p id="footerPhone1">01827872334</p>
+<p id="footerPhone2">01886995687</p>
 <p>Dhaka, Bangladesh</p>
 
 </div>
@@ -912,22 +1102,37 @@ Women's fashion, bags, shoes, hijab and accessories.
 </div>
 
 <div class="copy">
-© 2026 SM Online Shop • Made with ♥ in Bangladesh
+© 2026 <span id="copyrightShop">SM Online Shop</span> • Made with ♥ in Bangladesh
 </div>
 
 </footer>
 
-<div class="shade" id="shade" onclick="closeCart()"></div>
+<!-- CART SHADE -->
+
+<div
+  class="shade"
+  id="shade"
+  onclick="closeCart()">
+</div>
+
+<!-- CART -->
 
 <aside class="drawer" id="drawer">
 
 <button
-onclick="closeCart()"
-style="float:right;border:0;border-radius:50%;width:35px;height:35px">
-×
+  type="button"
+  onclick="closeCart()"
+  style="
+    float:right;
+    border:0;
+    border-radius:50%;
+    width:35px;
+    height:35px;
+    font-size:20px;">
+  ×
 </button>
 
-<h2>Your Cart</h2>
+<h2>🛍 Your Cart</h2>
 
 <div id="cartRows"></div>
 
@@ -941,41 +1146,73 @@ Total:
 <h3>Checkout</h3>
 
 <label>Name</label>
-<input id="cname">
+<input
+  id="cname"
+  type="text"
+  placeholder="Your name">
 
 <label>Phone</label>
-<input id="cphone" placeholder="01XXXXXXXXX">
+<input
+  id="cphone"
+  type="tel"
+  placeholder="01XXXXXXXXX">
 
 <label>Address</label>
-<textarea id="caddress" rows="3"></textarea>
+
+<textarea
+  id="caddress"
+  rows="3"
+  placeholder="Delivery address"></textarea>
 
 <label>Payment</label>
 
 <div class="pay">
-<input type="radio" name="pay" value="cod" checked>
-Cash on Delivery
+  <label>
+    <input
+      type="radio"
+      name="pay"
+      value="cod"
+      checked>
+    Cash on Delivery
+  </label>
 </div>
 
 <div class="pay">
-<input type="radio" name="pay" value="bkash">
-bKash
+  <label>
+    <input
+      type="radio"
+      name="pay"
+      value="bkash">
+    bKash
+  </label>
 </div>
 
 <div class="pay">
-<input type="radio" name="pay" value="nagad">
-Nagad
+  <label>
+    <input
+      type="radio"
+      name="pay"
+      value="nagad">
+    Nagad
+  </label>
 </div>
 
 <div class="pay">
-<input type="radio" name="pay" value="card">
-Bank/Card
+  <label>
+    <input
+      type="radio"
+      name="pay"
+      value="card">
+    Bank/Card
+  </label>
 </div>
 
 <button
-class="btn"
-style="width:100%"
-onclick="placeOrder()">
-Place Order
+  class="btn"
+  style="width:100%;margin-top:10px"
+  type="button"
+  onclick="placeOrder()">
+  🛒 Place Order
 </button>
 
 <p style="font-size:11px;color:#777">
@@ -988,540 +1225,1034 @@ bKash/Nagad/Card gateway requires merchant credentials to be activated on the se
 
 <script>
 
-let products=[];
+/* =========================
+   GLOBAL DATA
+========================= */
 
-let cart=JSON.parse(localStorage.smCart||"[]");
+let products = [];
 
-const taka=n=>"৳"+Number(n).toLocaleString("en-BD");
-
-
-async function load(){
+let cart = [];
 
 try{
+  cart = JSON.parse(
+    localStorage.getItem("smCart") || "[]"
+  );
 
-let r=await fetch("/api/store");
-
-if(!r.ok){
-throw new Error("Store API failed");
+  if(!Array.isArray(cart)){
+    cart = [];
+  }
+}catch{
+  cart = [];
 }
 
-let d=await r.json();
+/* =========================
+   HELPERS
+========================= */
 
-products=d.products||[];
+function taka(number){
 
-if(d.settings){
-
-shopName.textContent=d.settings.shopName||"SM Online Shop";
-
-tagline.textContent=
-d.settings.tagline||
-"Style • Comfort • Confidence ♥";
-
-}
-
-render();
-
-renderCart();
-
-}catch(error){
-
-console.error(error);
-
-grid.innerHTML=
-"<p style='text-align:center;grid-column:1/-1'>Products loading...</p>";
-
-}
+  return "৳" +
+    Number(number || 0)
+      .toLocaleString("en-BD",{
+        maximumFractionDigits:2
+      });
 
 }
 
 
-function render(list=products){
-
-grid.innerHTML=list.map(p=>`
-
-<article class="card">
-
-<div
-class="pic"
-style="background-image:url('${p.image||""}')">
-
-<span class="badge">
--${p.discount||0}%
-</span>
-
-</div>
-
-<div class="body">
-
-<h3>${p.name}</h3>
-
-<span class="stars">
-★★★★★
-</span>
-
-<div class="price">
-
-<b>${taka(p.price)}</b>
-
-<del>${taka(p.oldPrice||p.price)}</del>
-
-</div>
-
-<small>
-${p.stock>0?"In stock":"Out of stock"}
-</small>
-
-<button
-class="add"
-${p.stock<1?"disabled":""}
-onclick="add(${p.id})">
-
-🛒 Add to Cart
-
-</button>
-
-</div>
-
-</article>
-
-`).join("");
-
-}
-
-
-function filter(c){
-
-render(
-products.filter(
-p=>p.category===c
-)
-);
-
-}
-
-
-search.oninput=e=>{
-
-render(
-products.filter(
-p=>
-(p.name+" "+p.category)
-.toLowerCase()
-.includes(
-e.target.value.toLowerCase()
-)
-)
-);
-
-};
-
-
-function add(id){
-
-let x=cart.find(a=>a.id===id);
-
-x?
-x.qty++:
-cart.push({id,qty:1});
-
-localStorage.smCart=
-JSON.stringify(cart);
-
-openCart();
-
-}
-
-
-function openCart(){
-
-shade.classList.add("on");
-
-drawer.classList.add("open");
-
-renderCart();
-
-}
-
-
-function closeCart(){
-
-shade.classList.remove("on");
-
-drawer.classList.remove("open");
-
-}
-
-
-function renderCart(){
-
-count.textContent=
-cart.reduce(
-(s,x)=>s+x.qty,
-0
-);
-
-if(!cart.length){
-
-cartRows.innerHTML=
-"<p>Your cart is empty.</p>";
-
-total.textContent="৳0";
-
-return;
-
-}
-
-cartRows.innerHTML=
-
-cart.map(x=>{
-
-let p=
-products.find(
-y=>y.id===x.id
-);
-
-if(!p)return "";
-
-return `
-
-<div class="row">
-
-<img src="${p.image||""}">
-
-<div>
-
-<b>${p.name}</b>
-
-<br>
-
-${taka(p.price)} × ${x.qty}
-
-<br>
-
-<button onclick="minus(${p.id})">
-−
-</button>
-
-<button onclick="plus(${p.id})">
-+
-</button>
-
-<button onclick="removeItem(${p.id})">
-Remove
-</button>
-
-</div>
-
-</div>
-
-`;
-
-}).join("");
-
-
-total.textContent=
-
-taka(
-
-cart.reduce(
-
-(s,x)=>{
-
-let p=
-products.find(
-y=>y.id===x.id
-);
-
-return s+
-(p?p.price:0)*x.qty;
-
-},
-
-0
-
-)
-
-);
-
-}
-
-
-function plus(id){
-
-let x=
-cart.find(
-a=>a.id===id
-);
-
-if(x)x.qty++;
-
-saveCart();
-
-}
-
-
-function minus(id){
-
-let x=
-cart.find(
-a=>a.id===id
-);
-
-if(!x)return;
-
-x.qty--;
-
-if(x.qty<1){
-
-cart=
-cart.filter(
-a=>a.id!==id
-);
-
-}
-
-saveCart();
-
-}
-
-
-function removeItem(id){
-
-cart=
-cart.filter(
-a=>a.id!==id
-);
-
-saveCart();
+function escapeHTML(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
 }
 
 
 function saveCart(){
 
-localStorage.smCart=
-JSON.stringify(cart);
+  localStorage.setItem(
+    "smCart",
+    JSON.stringify(cart)
+  );
 
-renderCart();
+  renderCart();
 
 }
 
+
+/* =========================
+   LOAD STORE
+========================= */
+
+async function load(){
+
+  const grid =
+    document.getElementById("grid");
+
+  try{
+
+    const response =
+      await fetch("/api/store",{
+        cache:"no-store"
+      });
+
+    if(!response.ok){
+      throw new Error(
+        "Store API failed"
+      );
+    }
+
+    const data =
+      await response.json();
+
+    products =
+      Array.isArray(data.products)
+        ? data.products
+        : [];
+
+    if(data.settings){
+
+      applySettings(
+        data.settings
+      );
+
+    }
+
+    render();
+
+    renderCart();
+
+  }catch(error){
+
+    console.error(
+      "Store loading error:",
+      error
+    );
+
+    grid.innerHTML = `
+      <div class="empty">
+        <h3>Unable to load products</h3>
+        <p>Please refresh the page and try again.</p>
+      </div>
+    `;
+
+  }
+
+}
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+function applySettings(settings){
+
+  const shop =
+    settings.shopName ||
+    "SM Online Shop";
+
+  const tagline =
+    settings.tagline ||
+    "Style • Comfort • Confidence ♥";
+
+  const phone1 =
+    settings.phone1 ||
+    "01827872334";
+
+  const phone2 =
+    settings.phone2 ||
+    "01886995687";
+
+  document.getElementById(
+    "shopName"
+  ).textContent = shop;
+
+  document.getElementById(
+    "topShopName"
+  ).textContent = shop;
+
+  document.getElementById(
+    "footerShopName"
+  ).textContent = shop;
+
+  document.getElementById(
+    "copyrightShop"
+  ).textContent = shop;
+
+  document.getElementById(
+    "tagline"
+  ).textContent = tagline;
+
+  document.getElementById(
+    "topPhone1"
+  ).textContent = phone1;
+
+  document.getElementById(
+    "topPhone2"
+  ).textContent = phone2;
+
+  document.getElementById(
+    "contactPhone1"
+  ).textContent = phone1;
+
+  document.getElementById(
+    "contactPhone2"
+  ).textContent = phone2;
+
+  document.getElementById(
+    "footerPhone1"
+  ).textContent = phone1;
+
+  document.getElementById(
+    "footerPhone2"
+  ).textContent = phone2;
+
+  const facebook =
+    settings.facebook;
+
+  if(facebook){
+
+    document.getElementById(
+      "facebookLink"
+    ).href = facebook;
+
+  }
+
+}
+
+
+/* =========================
+   RENDER PRODUCTS
+========================= */
+
+function render(list = products){
+
+  const grid =
+    document.getElementById("grid");
+
+  if(!list.length){
+
+    grid.innerHTML = `
+      <div class="empty">
+        <h3>No products found</h3>
+        <p>Try another search or category.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  grid.innerHTML =
+    list.map(product => {
+
+      const id =
+        Number(product.id);
+
+      const name =
+        escapeHTML(product.name);
+
+      const category =
+        escapeHTML(
+          product.category || "General"
+        );
+
+      const image =
+        escapeHTML(
+          product.image || ""
+        );
+
+      const price =
+        Number(product.price || 0);
+
+      const oldPrice =
+        Number(
+          product.oldPrice ||
+          price
+        );
+
+      const discount =
+        Number(
+          product.discount || 0
+        );
+
+      const stock =
+        Number(
+          product.stock || 0
+        );
+
+      return `
+
+      <article class="card">
+
+        <div
+          class="pic"
+          style="
+            background-image:url('${image}');
+          "
+        >
+
+          ${
+            discount > 0
+            ? `
+              <span class="badge">
+                -${discount}%
+              </span>
+            `
+            : ""
+          }
+
+        </div>
+
+        <div class="body">
+
+          <h3>
+            ${name}
+          </h3>
+
+          <small style="color:#777">
+            ${category}
+          </small>
+
+          <div class="stars">
+            ★★★★★
+          </div>
+
+          <div class="price">
+
+            <b>
+              ${taka(price)}
+            </b>
+
+            ${
+              oldPrice > price
+              ? `
+                <del>
+                  ${taka(oldPrice)}
+                </del>
+              `
+              : ""
+            }
+
+          </div>
+
+          <small
+            class="stock"
+            style="
+              color:${
+                stock > 0
+                ? "#168a45"
+                : "#e00000"
+              }
+            "
+          >
+            ${
+              stock > 0
+              ? "✓ In stock (" +
+                stock +
+                ")"
+              : "✕ Out of stock"
+            }
+          </small>
+
+          <button
+            class="add"
+            type="button"
+            ${
+              stock < 1
+                ? "disabled"
+                : ""
+            }
+            onclick="add(${id})"
+          >
+            🛒 Add to Cart
+          </button>
+
+        </div>
+
+      </article>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* =========================
+   CATEGORY FILTER
+========================= */
+
+function filter(category){
+
+  const filtered =
+    products.filter(
+      product =>
+        String(
+          product.category || ""
+        ).toLowerCase()
+        ===
+        category.toLowerCase()
+    );
+
+  render(filtered);
+
+  document.getElementById(
+    "products"
+  ).scrollIntoView();
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+function doSearch(){
+
+  const input =
+    document.getElementById(
+      "search"
+    );
+
+  const text =
+    input.value
+      .trim()
+      .toLowerCase();
+
+  if(!text){
+
+    render();
+
+    return;
+  }
+
+  const filtered =
+    products.filter(
+      product => {
+
+        const value =
+          (
+            product.name +
+            " " +
+            product.category
+          ).toLowerCase();
+
+        return value.includes(text);
+
+      }
+    );
+
+  render(filtered);
+
+  document.getElementById(
+    "products"
+  ).scrollIntoView();
+
+}
+
+
+document.getElementById(
+  "search"
+).addEventListener(
+  "input",
+  doSearch
+);
+
+
+/* =========================
+   CART
+========================= */
+
+function add(id){
+
+  const product =
+    products.find(
+      p => Number(p.id) === Number(id)
+    );
+
+  if(!product){
+    return;
+  }
+
+  const stock =
+    Number(product.stock || 0);
+
+  const existing =
+    cart.find(
+      item =>
+        Number(item.id) === Number(id)
+    );
+
+  if(existing){
+
+    if(existing.qty >= stock){
+
+      alert(
+        "You cannot add more than available stock."
+      );
+
+      return;
+    }
+
+    existing.qty++;
+
+  }else{
+
+    cart.push({
+      id:Number(id),
+      qty:1
+    });
+
+  }
+
+  saveCart();
+
+  openCart();
+
+}
+
+
+function openCart(){
+
+  document.getElementById(
+    "shade"
+  ).classList.add("on");
+
+  document.getElementById(
+    "drawer"
+  ).classList.add("open");
+
+  renderCart();
+
+}
+
+
+function closeCart(){
+
+  document.getElementById(
+    "shade"
+  ).classList.remove("on");
+
+  document.getElementById(
+    "drawer"
+  ).classList.remove("open");
+
+}
+
+
+/* =========================
+   RENDER CART
+========================= */
+
+function renderCart(){
+
+  const count =
+    document.getElementById(
+      "count"
+    );
+
+  const rows =
+    document.getElementById(
+      "cartRows"
+    );
+
+  const total =
+    document.getElementById(
+      "total"
+    );
+
+  const quantity =
+    cart.reduce(
+      (sum,item) =>
+        sum + Number(item.qty || 0),
+      0
+    );
+
+  count.textContent =
+    quantity;
+
+  if(!cart.length){
+
+    rows.innerHTML = `
+      <div style="
+        text-align:center;
+        padding:30px 10px;
+        color:#777;">
+        🛍️<br>
+        <b>Your cart is empty.</b>
+        <p>Add some products to continue.</p>
+      </div>
+    `;
+
+    total.textContent =
+      "৳0";
+
+    return;
+  }
+
+  let cartTotal = 0;
+
+  rows.innerHTML =
+    cart.map(item => {
+
+      const product =
+        products.find(
+          p =>
+            Number(p.id) ===
+            Number(item.id)
+        );
+
+      if(!product){
+        return "";
+      }
+
+      const qty =
+        Number(item.qty || 1);
+
+      const subtotal =
+        Number(product.price || 0) *
+        qty;
+
+      cartTotal += subtotal;
+
+      return `
+
+      <div class="row">
+
+        <img
+          src="${escapeHTML(product.image || "")}"
+          alt="${escapeHTML(product.name)}"
+        >
+
+        <div style="flex:1">
+
+          <b>
+            ${escapeHTML(product.name)}
+          </b>
+
+          <br>
+
+          <span style="color:#f41470;font-weight:bold">
+            ${taka(product.price)}
+          </span>
+
+          × ${qty}
+
+          <div class="qtyBtns">
+
+            <button
+              type="button"
+              onclick="minus(${Number(product.id)})">
+              −
+            </button>
+
+            <button
+              type="button"
+              onclick="plus(${Number(product.id)})">
+              +
+            </button>
+
+            <button
+              type="button"
+              class="removeBtn"
+              onclick="removeItem(${Number(product.id)})">
+              Remove
+            </button>
+
+          </div>
+
+          <small>
+            Subtotal: ${taka(subtotal)}
+          </small>
+
+        </div>
+
+      </div>
+
+      `;
+
+    }).join("");
+
+  total.textContent =
+    taka(cartTotal);
+
+}
+
+
+/* =========================
+   PLUS
+========================= */
+
+function plus(id){
+
+  const item =
+    cart.find(
+      x =>
+        Number(x.id) ===
+        Number(id)
+    );
+
+  const product =
+    products.find(
+      p =>
+        Number(p.id) ===
+        Number(id)
+    );
+
+  if(!item || !product){
+    return;
+  }
+
+  if(
+    item.qty >=
+    Number(product.stock || 0)
+  ){
+
+    alert(
+      "Maximum available stock reached."
+    );
+
+    return;
+  }
+
+  item.qty++;
+
+  saveCart();
+
+}
+
+
+/* =========================
+   MINUS
+========================= */
+
+function minus(id){
+
+  const item =
+    cart.find(
+      x =>
+        Number(x.id) ===
+        Number(id)
+    );
+
+  if(!item){
+    return;
+  }
+
+  item.qty--;
+
+  if(item.qty < 1){
+
+    cart =
+      cart.filter(
+        x =>
+          Number(x.id) !==
+          Number(id)
+      );
+
+  }
+
+  saveCart();
+
+}
+
+
+/* =========================
+   REMOVE
+========================= */
+
+function removeItem(id){
+
+  cart =
+    cart.filter(
+      x =>
+        Number(x.id) !==
+        Number(id)
+    );
+
+  saveCart();
+
+}
+
+
+/* =========================
+   PLACE ORDER
+========================= */
 
 async function placeOrder(){
 
-if(!cart.length){
+  if(!cart.length){
 
-return alert(
-"Cart is empty"
-);
+    alert(
+      "Your cart is empty."
+    );
+
+    return;
+  }
+
+  const name =
+    document.getElementById(
+      "cname"
+    ).value.trim();
+
+  const phone =
+    document.getElementById(
+      "cphone"
+    ).value.trim();
+
+  const address =
+    document.getElementById(
+      "caddress"
+    ).value.trim();
+
+  if(!name || !phone || !address){
+
+    alert(
+      "Name, phone and address are required."
+    );
+
+    return;
+  }
+
+  const phonePattern =
+    /^01[0-9]{9}$/;
+
+  if(!phonePattern.test(phone)){
+
+    alert(
+      "Please enter a valid Bangladesh phone number.\nExample: 01827872334"
+    );
+
+    return;
+  }
+
+  const payment =
+    document.querySelector(
+      'input[name="pay"]:checked'
+    )?.value || "cod";
+
+  const items =
+    cart.map(
+      item => ({
+        id:Number(item.id),
+        qty:Number(item.qty)
+      })
+    );
+
+  const orderButton =
+    document.querySelector(
+      '.form .btn'
+    );
+
+  try{
+
+    orderButton.disabled = true;
+
+    orderButton.textContent =
+      "Placing Order...";
+
+    const response =
+      await fetch(
+        "/api/orders",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            customer:{
+              name,
+              phone,
+              address
+            },
+
+            items,
+
+            paymentMethod:
+              payment
+
+          })
+
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if(!response.ok){
+
+      throw new Error(
+        data.error ||
+        "Order failed"
+      );
+
+    }
+
+    alert(
+      "✅ Order placed successfully!\n\n" +
+      "Order ID: " +
+      data.orderId +
+      "\n" +
+      "Total: " +
+      taka(data.total)
+    );
+
+    cart = [];
+
+    localStorage.removeItem(
+      "smCart"
+    );
+
+    document.getElementById(
+      "cname"
+    ).value = "";
+
+    document.getElementById(
+      "cphone"
+    ).value = "";
+
+    document.getElementById(
+      "caddress"
+    ).value = "";
+
+    closeCart();
+
+    await load();
+
+  }catch(error){
+
+    console.error(
+      "Order error:",
+      error
+    );
+
+    alert(
+      "❌ " +
+      error.message
+    );
+
+  }finally{
+
+    orderButton.disabled =
+      false;
+
+    orderButton.textContent =
+      "🛒 Place Order";
+
+  }
 
 }
+
+
+/* =========================
+   SERVICE WORKER
+========================= */
 
 if(
-!cname.value||
-!cphone.value||
-!caddress.value
+  "serviceWorker" in navigator
 ){
 
-return alert(
-"Name, phone and address are required"
-);
+  window.addEventListener(
+    "load",
+    () => {
 
-}
+      navigator.serviceWorker
+        .register(
+          "/service-worker.js"
+        )
+        .then(
+          () =>
+            console.log(
+              "Service Worker registered"
+            )
+        )
+        .catch(
+          error =>
+            console.log(
+              "Service Worker error:",
+              error
+            )
+        );
 
-let payment=
-document.querySelector(
-'input[name=pay]:checked'
-).value;
-
-let items=
-cart.map(
-x=>({
-id:x.id,
-qty:x.qty
-})
-);
-
-try{
-
-let r=
-await fetch(
-"/api/orders",
-{
-method:"POST",
-headers:{
-"Content-Type":
-"application/json"
-},
-body:JSON.stringify({
-
-customer:{
-name:cname.value,
-phone:cphone.value,
-address:caddress.value
-},
-
-items,
-
-paymentMethod:
-payment
-
-})
-}
-);
-
-let d=
-await r.json();
-
-if(!r.ok){
-
-return alert(
-d.error||
-"Order failed"
-);
-
-}
-
-alert(
-"Order placed! Order ID: "+
-d.orderId+
-" | Total: "+
-taka(d.total)
-);
-
-cart=[];
-
-localStorage.removeItem(
-"smCart"
-);
-
-closeCart();
-
-load();
-
-}catch(error){
-
-console.error(error);
-
-alert(
-"Network error. Please try again."
-);
-
-}
+    }
+  );
 
 }
 
 
 /* =========================
-   PWA SERVICE WORKER
+   PWA INSTALL
 ========================= */
 
-if("serviceWorker" in navigator){
+let deferredPrompt = null;
+
+const installBtn =
+  document.getElementById(
+    "installBtn"
+  );
 
 window.addEventListener(
-"load",
-function(){
+  "beforeinstallprompt",
+  event => {
 
-navigator.serviceWorker
-.register(
-"/service-worker.js"
-)
-.then(
-function(){
+    event.preventDefault();
 
-console.log(
-"SM Online Shop Service Worker registered"
+    deferredPrompt = event;
+
+    installBtn.style.display =
+      "block";
+
+  }
 );
-
-}
-)
-.catch(
-function(error){
-
-console.log(
-"Service Worker registration failed:",
-error
-);
-
-}
-);
-
-});
-
-}
-
-
-/* =========================
-   INSTALL APP BUTTON
-========================= */
-
-let deferredPrompt=null;
-
-const installBtn=
-document.getElementById(
-"installBtn"
-);
-
-window.addEventListener(
-"beforeinstallprompt",
-function(e){
-
-e.preventDefault();
-
-deferredPrompt=e;
-
-installBtn.style.display=
-"block";
-
-}
-);
-
 
 installBtn.addEventListener(
-"click",
-async function(){
+  "click",
+  async () => {
 
-if(!deferredPrompt)return;
+    if(!deferredPrompt){
+      return;
+    }
 
-deferredPrompt.prompt();
+    deferredPrompt.prompt();
 
-const choice=
-await deferredPrompt.userChoice;
+    const choice =
+      await deferredPrompt.userChoice;
 
-if(
-choice.outcome==="accepted"
-){
+    console.log(
+      "Install choice:",
+      choice.outcome
+    );
 
-console.log(
-"App installation accepted"
+    deferredPrompt = null;
+
+    installBtn.style.display =
+      "none";
+
+  }
 );
-
-}
-
-deferredPrompt=null;
-
-installBtn.style.display=
-"none";
-
-}
-);
-
 
 window.addEventListener(
-"appinstalled",
-function(){
+  "appinstalled",
+  () => {
 
-installBtn.style.display=
-"none";
+    installBtn.style.display =
+      "none";
 
-console.log(
-"SM Online Shop installed"
+  }
 );
 
-});
 
-
-/* START WEBSITE */
+/* =========================
+   START
+========================= */
 
 load();
 
