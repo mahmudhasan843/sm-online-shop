@@ -13,256 +13,396 @@ body{
 margin:0;
 font-family:Arial,sans-serif;
 background:#f5f5f7;
-color:#18151b
+color:#17151b
 }
 
-.hidden{display:none!important}
+button,input,select,textarea{
+font:inherit
+}
+
+button{
+cursor:pointer
+}
+
+.hidden{
+display:none!important
+}
+
+/* LOGIN */
 
 .login{
-max-width:400px;
-margin:80px auto;
-background:#fff;
-padding:30px;
-border-radius:18px;
-box-shadow:0 20px 50px #0002
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:linear-gradient(135deg,#17151b,#f41470)
 }
 
-.login h2{margin-top:0}
+.loginBox{
+width:100%;
+max-width:420px;
+background:#fff;
+padding:30px;
+border-radius:20px;
+box-shadow:0 20px 50px #0005
+}
 
-input,select{
+.loginBox h1{
+margin-top:0;
+text-align:center
+}
+
+.loginLogo{
+width:70px;
+height:70px;
+margin:auto;
+border-radius:50%;
+background:#17151b;
+color:#fff;
+border:4px solid #f41470;
+display:grid;
+place-items:center;
+font-size:22px;
+font-weight:bold
+}
+
+input,select,textarea{
 width:100%;
 padding:12px;
-margin:6px 0 14px;
 border:1px solid #ddd;
 border-radius:8px;
-font-size:15px
+margin:6px 0 12px;
+outline:none
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+border-color:#f41470
+}
+
+label{
+font-size:13px;
+font-weight:bold
 }
 
 .btn{
 border:0;
 background:#f41470;
 color:#fff;
-padding:11px 16px;
+padding:11px 17px;
 border-radius:8px;
-font-weight:bold;
-cursor:pointer
+font-weight:bold
 }
 
-.btn.gray{background:#777}
-.btn.red{background:#d52f46}
+.btn:hover{
+opacity:.9
+}
+
+.gray{
+background:#777
+}
+
+.red{
+background:#d52f46
+}
+
+.green{
+background:#159447
+}
+
+/* HEADER */
 
 header{
 background:#17151b;
 color:#fff;
-padding:16px 5%;
+padding:15px 5%;
 display:flex;
 align-items:center;
-justify-content:space-between
+justify-content:space-between;
+gap:15px
 }
+
+header h1{
+margin:0;
+font-size:21px
+}
+
+header small{
+color:#ff75ae
+}
+
+/* DASHBOARD */
 
 .wrap{
 max-width:1250px;
-margin:22px auto;
-padding:0 14px
+margin:auto;
+padding:20px 14px
 }
 
-.dash{
-display:grid;
-grid-template-columns:210px 1fr;
-gap:16px
-}
-
-.side{
-background:#17151b;
-border-radius:15px;
-padding:12px;
-min-height:650px
-}
-
-.side button{
-width:100%;
-border:0;
-background:transparent;
-color:#fff;
-text-align:left;
-padding:12px;
-border-radius:8px;
-cursor:pointer;
-margin-bottom:4px
-}
-
-.side button:hover,
-.side button.active{
-background:#f41470
-}
-
-.main{
-background:#fff;
-border-radius:15px;
-padding:22px
-}
-
-.cards{
+.stats{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:12px
+gap:15px;
+margin-bottom:20px
 }
 
-.card{
+.stat{
+background:#fff;
+padding:20px;
+border-radius:14px;
+box-shadow:0 2px 10px #0000000d
+}
+
+.stat small{
+color:#777
+}
+
+.stat b{
+display:block;
+font-size:27px;
+margin-top:8px
+}
+
+/* NAV */
+
+.tabs{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-bottom:20px
+}
+
+.tab{
+border:0;
+background:#fff;
+padding:11px 16px;
+border-radius:8px;
+font-weight:bold
+}
+
+.tab.active{
+background:#f41470;
+color:#fff
+}
+
+.panel{
+background:#fff;
+border-radius:15px;
+padding:20px;
+box-shadow:0 2px 10px #0000000d;
+margin-bottom:20px
+}
+
+.panel h2{
+margin-top:0
+}
+
+/* PRODUCT */
+
+.productGrid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px
+}
+
+.product{
 border:1px solid #eee;
 border-radius:12px;
-padding:17px
+overflow:hidden;
+background:#fff
 }
 
-.card b{
-display:block;
-color:#f41470;
-font-size:25px;
-margin-top:5px
-}
-
-.table{
+.product img{
 width:100%;
-border-collapse:collapse
-}
-
-.table th,
-.table td{
-padding:10px;
-border-bottom:1px solid #eee;
-text-align:left
-}
-
-.table img{
-width:60px;
-height:70px;
+height:210px;
 object-fit:cover;
-border-radius:7px
+background:#eee
 }
 
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:#0008;
-align-items:center;
-justify-content:center;
-padding:15px;
-z-index:20
+.productBody{
+padding:13px
 }
 
-.modal.show{
-display:flex
+.productBody h3{
+margin:0 0 8px
 }
 
-.modalbox{
-background:#fff;
-border-radius:16px;
-padding:22px;
-width:min(650px,100%);
-max-height:90vh;
-overflow:auto
+.price{
+color:#f41470;
+font-size:18px;
+font-weight:bold
 }
 
-.row2{
+.old{
+color:#999;
+font-size:12px;
+text-decoration:line-through;
+margin-left:5px
+}
+
+.actions{
+display:flex;
+gap:7px;
+margin-top:10px
+}
+
+.actions button{
+flex:1;
+border:0;
+padding:9px;
+border-radius:7px;
+font-weight:bold
+}
+
+/* FORM */
+
+.formGrid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:12px
 }
 
-.form label{
-font-size:12px;
-font-weight:bold
+.full{
+grid-column:1/-1
 }
 
 .preview{
-width:140px;
-height:170px;
+width:130px;
+height:130px;
 object-fit:cover;
 border-radius:10px;
 border:1px solid #ddd;
-display:none;
-margin:10px 0
+margin:5px 0 10px
 }
 
-.uploadBox{
-border:2px dashed #ddd;
-padding:20px;
-border-radius:12px;
-text-align:center;
-margin:10px 0 15px
-}
-
-.uploadBox input{
-border:0;
-padding:0
-}
+/* ORDERS */
 
 .order{
 border:1px solid #eee;
-padding:14px;
-border-radius:10px;
-margin:8px 0
+border-radius:12px;
+padding:15px;
+margin-bottom:12px
 }
 
-.status{
-color:#f41470;
-font-weight:bold
-}
-
-.act{
+.orderHead{
 display:flex;
-gap:5px;
+justify-content:space-between;
+gap:10px;
 flex-wrap:wrap
 }
 
-.notice{
-padding:12px;
-background:#fff7d9;
-border:1px solid #f1d97a;
-border-radius:10px;
-font-size:13px;
-margin-bottom:15px
+.status{
+padding:5px 9px;
+border-radius:6px;
+background:#fff0f5;
+color:#f41470;
+font-weight:bold;
+font-size:12px
 }
 
-.order-actions{
-margin-top:12px;
-padding-top:10px;
-border-top:1px solid #eee
+.orderItems{
+background:#fafafa;
+padding:10px;
+margin-top:10px;
+border-radius:8px
 }
 
-.order-actions select{
-width:auto;
-min-width:170px;
-margin:0
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse
 }
 
-@media(max-width:800px){
-
-.dash{
-grid-template-columns:1fr
+th,td{
+padding:10px;
+border-bottom:1px solid #eee;
+text-align:left;
+font-size:13px
 }
 
-.side{
-min-height:auto
+/* MESSAGE */
+
+.msg{
+padding:10px;
+border-radius:8px;
+margin-bottom:12px;
+display:none
 }
 
-.cards{
+.success{
+display:block;
+background:#e9fff1;
+color:#08752f
+}
+
+.error{
+display:block;
+background:#ffecee;
+color:#a50019
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+.stats{
 grid-template-columns:repeat(2,1fr)
 }
 
-.row2{
+.productGrid{
+grid-template-columns:repeat(2,1fr)
+}
+
+}
+
+@media(max-width:600px){
+
+header{
+padding:13px
+}
+
+header h1{
+font-size:17px
+}
+
+.stats{
+grid-template-columns:1fr 1fr
+}
+
+.productGrid{
 grid-template-columns:1fr
 }
 
-.table{
-font-size:12px;
-display:block;
-overflow:auto
+.formGrid{
+grid-template-columns:1fr
 }
 
-.login{
-margin:40px 15px
+.full{
+grid-column:auto
+}
+
+.panel{
+padding:14px
+}
+
+.actions{
+flex-direction:column
+}
+
+.tabs{
+overflow:auto;
+flex-wrap:nowrap
+}
+
+.tab{
+white-space:nowrap
+}
+
+table{
+font-size:11px
 }
 
 }
@@ -271,12 +411,67 @@ margin:40px 15px
 
 <body>
 
-<header>
+<!-- LOGIN -->
 
-<b>SM Online Shop — Admin Panel</b>
+<section id="loginPage" class="login">
+
+<div class="loginBox">
+
+<div class="loginLogo">SM</div>
+
+<h1>SM Online Shop</h1>
+
+<p style="text-align:center;color:#777">
+Admin Panel
+</p>
+
+<div id="loginMsg" class="msg"></div>
+
+<label>Username</label>
+
+<input
+id="username"
+placeholder="Admin username"
+autocomplete="username"
+>
+
+<label>Password</label>
+
+<input
+id="password"
+type="password"
+placeholder="Admin password"
+autocomplete="current-password"
+>
 
 <button
-class="btn gray"
+class="btn"
+style="width:100%"
+onclick="login()">
+Login
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ADMIN -->
+
+<section id="adminPage" class="hidden">
+
+<header>
+
+<div>
+
+<h1>SM Online Shop</h1>
+
+<small>Admin Dashboard</small>
+
+</div>
+
+<button
+class="btn red"
 onclick="logout()">
 Logout
 </button>
@@ -284,209 +479,312 @@ Logout
 </header>
 
 
-<!-- LOGIN -->
+<div class="wrap">
 
-<div id="loginBox" class="login">
+<!-- STATS -->
 
-<h2>Admin Login</h2>
+<div class="stats">
 
-<label>Username</label>
+<div class="stat">
 
-<input
-id="username"
-value="SMADMIN"
-autocomplete="username">
+<small>Total Products</small>
 
-<label>Password</label>
+<b id="productCount">0</b>
 
-<input
-id="password"
-type="password"
-autocomplete="current-password">
+</div>
 
-<button
-class="btn"
-onclick="login()">
-Login
-</button>
+<div class="stat">
+
+<small>Total Orders</small>
+
+<b id="orderCount">0</b>
+
+</div>
+
+<div class="stat">
+
+<small>Pending Orders</small>
+
+<b id="pendingCount">0</b>
+
+</div>
+
+<div class="stat">
+
+<small>Total Sales</small>
+
+<b id="salesTotal">৳0</b>
+
+</div>
 
 </div>
 
 
-<!-- ADMIN APP -->
+<!-- TABS -->
 
-<div
-id="adminApp"
-class="wrap hidden">
-
-<div class="dash">
-
-
-<aside class="side">
+<div class="tabs">
 
 <button
-class="active"
-onclick="tab('dashboard',this)">
-📊 Dashboard
-</button>
-
-<button
-onclick="tab('products',this)">
+class="tab active"
+onclick="showTab('products',this)">
 🛍 Products
 </button>
 
 <button
-onclick="tab('orders',this)">
+class="tab"
+onclick="showTab('add',this)">
+➕ Add Product
+</button>
+
+<button
+class="tab"
+onclick="showTab('orders',this)">
 📦 Orders
 </button>
 
 <button
-onclick="tab('settings',this)">
-⚙ Store Settings
+class="tab"
+onclick="showTab('settings',this)">
+⚙️ Settings
 </button>
 
-<a
-href="/"
-target="_blank">
-
-<button>
-🌐 View Store
-</button>
-
-</a>
-
-</aside>
-
-
-<main class="main">
-
-
-<!-- DASHBOARD -->
-
-<section id="dashboard">
-
-<h2>Dashboard</h2>
-
-<div class="cards">
-
-<div class="card">
-Products
-<b id="productCount">0</b>
 </div>
-
-<div class="card">
-Orders
-<b id="orderCount">0</b>
-</div>
-
-<div class="card">
-Pending
-<b id="pendingCount">0</b>
-</div>
-
-<div class="card">
-Sales
-<b id="salesTotal">৳0</b>
-</div>
-
-</div>
-
-<div class="notice">
-Cloudinary Gallery Upload is enabled.
-You can select product photos directly from your phone.
-</div>
-
-</section>
 
 
 <!-- PRODUCTS -->
 
-<section
-id="products"
-class="hidden">
+<div id="productsTab" class="tabContent">
+
+<div class="panel">
 
 <h2>Products</h2>
 
-<button
-class="btn"
-onclick="openProduct()">
-+ Add Product
-</button>
+<input
+id="productSearch"
+placeholder="Search products..."
+oninput="searchProducts()"
+>
 
 <div
-style="overflow:auto;margin-top:15px">
-
-<table class="table">
-
-<thead>
-
-<tr>
-
-<th>Image</th>
-<th>Name</th>
-<th>Category</th>
-<th>Price</th>
-<th>Stock</th>
-<th>Action</th>
-
-</tr>
-
-</thead>
-
-<tbody id="productRows"></tbody>
-
-</table>
+id="productGrid"
+class="productGrid">
+</div>
 
 </div>
 
-</section>
+</div>
+
+
+<!-- ADD / EDIT -->
+
+<div
+id="addTab"
+class="tabContent hidden">
+
+<div class="panel">
+
+<h2 id="formTitle">
+Add New Product
+</h2>
+
+<div id="productMsg" class="msg"></div>
+
+<input
+type="hidden"
+id="editId"
+>
+
+<div class="formGrid">
+
+<div>
+
+<label>Product Name</label>
+
+<input
+id="pName"
+placeholder="Example: Premium Ladies Dress"
+>
+
+</div>
+
+
+<div>
+
+<label>Category</label>
+
+<select id="pCategory">
+
+<option>Dresses</option>
+<option>Tops</option>
+<option>Saree</option>
+<option>Hijab</option>
+<option>Bags</option>
+<option>Shoes</option>
+<option>Jewellery</option>
+<option>Accessories</option>
+<option>General</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>Price</label>
+
+<input
+id="pPrice"
+type="number"
+step="0.01"
+placeholder="1200"
+>
+
+</div>
+
+
+<div>
+
+<label>Old Price</label>
+
+<input
+id="pOldPrice"
+type="number"
+step="0.01"
+placeholder="1500"
+>
+
+</div>
+
+
+<div>
+
+<label>Discount %</label>
+
+<input
+id="pDiscount"
+type="number"
+step="0.01"
+placeholder="20"
+>
+
+</div>
+
+
+<div>
+
+<label>Stock</label>
+
+<input
+id="pStock"
+type="number"
+placeholder="10"
+>
+
+</div>
+
+
+<div class="full">
+
+<label>Product Image</label>
+
+<input
+id="pImageFile"
+type="file"
+accept="image/*"
+onchange="previewImage(event)"
+>
+
+<img
+id="imagePreview"
+class="preview hidden"
+>
+
+<input
+id="pImage"
+placeholder="Image URL"
+>
+
+<small style="color:#777">
+Choose an image to upload to Cloudinary, or paste an image URL.
+</small>
+
+</div>
+
+</div>
+
+
+<div style="display:flex;gap:10px;margin-top:10px">
+
+<button
+class="btn"
+onclick="saveProduct()">
+💾 Save Product
+</button>
+
+<button
+class="btn gray"
+onclick="resetProductForm()">
+Clear
+</button>
+
+</div>
+
+</div>
+
+</div>
 
 
 <!-- ORDERS -->
 
-<section
-id="orders"
-class="hidden">
-
-<h2>Orders</h2>
-
 <div
-class="notice">
+id="ordersTab"
+class="tabContent hidden">
 
-Customer order করলে প্রথমে
-<b>Pending</b> থাকবে।
+<div class="panel">
 
-Admin এখান থেকে
-<b>Confirmed</b>,
-<b>Delivered</b> অথবা
-<b>Cancelled</b> করতে পারবে।
+<h2>📦 Customer Orders</h2>
+
+<div id="ordersList">
+Loading...
+</div>
 
 </div>
 
-<div id="orderList"></div>
-
-</section>
+</div>
 
 
 <!-- SETTINGS -->
 
-<section
-id="settings"
-class="hidden">
+<div
+id="settingsTab"
+class="tabContent hidden">
 
-<h2>Store Settings</h2>
+<div class="panel">
 
-<div class="form">
+<h2>⚙️ Store Settings</h2>
+
+<div id="settingsMsg" class="msg"></div>
+
+<div class="formGrid">
+
+<div>
 
 <label>Shop Name</label>
 
 <input id="shopName">
 
+</div>
+
+
+<div>
+
 <label>Tagline</label>
 
 <input id="tagline">
 
-<div class="row2">
+</div>
+
 
 <div>
 
@@ -496,6 +794,7 @@ class="hidden">
 
 </div>
 
+
 <div>
 
 <label>Phone 2</label>
@@ -504,167 +803,44 @@ class="hidden">
 
 </div>
 
-</div>
+
+<div class="full">
 
 <label>Facebook Page</label>
 
-<input id="facebook">
+<input
+id="facebook"
+placeholder="https://facebook.com/..."
+>
 
-<br>
+</div>
+
+
+<div>
+
+<label>Currency</label>
+
+<select id="currency">
+
+<option value="BDT">
+BDT
+</option>
+
+<option value="USD">
+USD
+</option>
+
+</select>
+
+</div>
+
+</div>
+
 
 <button
 class="btn"
 onclick="saveSettings()">
-
-Save Settings
-
-</button>
-
-</div>
-
-</section>
-
-
-</main>
-
-</div>
-
-</div>
-
-
-<!-- PRODUCT MODAL -->
-
-<div
-id="productModal"
-class="modal">
-
-<div class="modalbox">
-
-<h2 id="modalTitle">
-Add Product
-</h2>
-
-<div class="form">
-
-<label>Product Name</label>
-
-<input id="productName">
-
-<div class="row2">
-
-<div>
-
-<label>Category</label>
-
-<input
-id="productCategory"
-value="Dresses">
-
-</div>
-
-<div>
-
-<label>Stock</label>
-
-<input
-id="productStock"
-type="number"
-value="0">
-
-</div>
-
-</div>
-
-
-<div class="row2">
-
-<div>
-
-<label>Price</label>
-
-<input
-id="productPrice"
-type="number">
-
-</div>
-
-<div>
-
-<label>Old Price</label>
-
-<input
-id="productOldPrice"
-type="number">
-
-</div>
-
-</div>
-
-
-<div class="row2">
-
-<div>
-
-<label>Discount %</label>
-
-<input
-id="productDiscount"
-type="number"
-value="0">
-
-</div>
-
-<div>
-
-<label>Current Image URL</label>
-
-<input
-id="productImage"
-readonly>
-
-</div>
-
-</div>
-
-
-<label>Product Image</label>
-
-<div class="uploadBox">
-
-<input
-id="imageFile"
-type="file"
-accept="image/jpeg,image/png,image/webp"
-onchange="previewImage(event)">
-
-<p>
-📷 Select image from your phone Gallery
-</p>
-
-</div>
-
-
-<img
-id="imagePreview"
-class="preview">
-
-
-<div>
-
-<button
-class="btn"
-onclick="saveProduct()">
-
-Save Product
-
-</button>
-
-<button
-class="btn gray"
-onclick="closeProduct()">
-
-Cancel
-
+💾 Save Settings
 </button>
 
 </div>
@@ -679,96 +855,132 @@ Cancel
 <script>
 
 let token =
-localStorage.getItem("smToken") || "";
+localStorage.getItem("smAdminToken") || "";
 
-let editingId = null;
+let products = [];
+
+let orders = [];
 
 
-/* =====================
+/* =========================
    API
-===================== */
+========================= */
 
-async function api(url, options = {}){
+async function api(
+url,
+options={}
+){
 
-options.headers = {
-...(options.headers || {}),
-Authorization:
-"Bearer " + token,
-"Content-Type":
-"application/json"
-};
+options.headers =
+options.headers || {};
+
+if(token){
+
+options.headers.Authorization =
+"Bearer " + token;
+
+}
+
+if(
+options.body &&
+typeof options.body === "object" &&
+!(options.body instanceof FormData)
+){
+
+options.headers["Content-Type"] =
+"application/json";
+
+options.body =
+JSON.stringify(options.body);
+
+}
 
 const response =
-await fetch(url, options);
+await fetch(url,options);
 
-if(response.status === 401){
+let data={};
+
+try{
+
+data =
+await response.json();
+
+}catch(e){}
+
+if(response.status===401){
 
 logout();
 
 throw new Error(
-"Unauthorized"
+data.error ||
+"Session expired"
 );
 
 }
 
-return response;
+if(!response.ok){
+
+throw new Error(
+data.error ||
+"Request failed"
+);
+
+}
+
+return data;
 
 }
 
 
-/* =====================
+/* =========================
    LOGIN
-===================== */
+========================= */
 
 async function login(){
 
 const username =
-document.getElementById(
-"username"
-).value.trim();
+document.getElementById("username")
+.value.trim();
 
 const password =
-document.getElementById(
-"password"
-).value;
+document.getElementById("password")
+.value;
 
+const msg =
+document.getElementById("loginMsg");
 
-try{
+msg.className="msg";
+msg.textContent="";
 
-const response =
-await fetch(
-"/api/admin/login",
-{
-method:"POST",
-headers:{
-"Content-Type":
-"application/json"
-},
-body:JSON.stringify({
-username,
-password
-})
-}
-);
+if(!username || !password){
 
-const data =
-await response.json();
+msg.className="msg error";
 
-if(!response.ok){
-
-alert(
-data.error ||
-"Login failed"
-);
+msg.textContent =
+"Username and password required.";
 
 return;
 
 }
 
-token = data.token;
+try{
+
+const data =
+await api(
+"/api/admin/login",
+{
+method:"POST",
+body:{
+username,
+password
+}
+}
+);
+
+token=data.token;
 
 localStorage.setItem(
-"smToken",
+"smAdminToken",
 token
 );
 
@@ -776,568 +988,255 @@ showAdmin();
 
 }catch(error){
 
-alert(
-"Login failed. Please try again."
-);
+msg.className="msg error";
+
+msg.textContent =
+error.message;
 
 }
 
 }
 
 
-/* =====================
-   SHOW ADMIN
-===================== */
-
-function showAdmin(){
-
-document
-.getElementById("loginBox")
-.classList.add("hidden");
-
-document
-.getElementById("adminApp")
-.classList.remove("hidden");
-
-refresh();
-
-}
-
-
-/* =====================
+/* =========================
    LOGOUT
-===================== */
+========================= */
 
-function logout(){
-
-localStorage.removeItem(
-"smToken"
-);
-
-token = "";
-
-location.reload();
-
-}
-
-
-/* =====================
-   AUTO LOGIN
-===================== */
-
-if(token){
-
-showAdmin();
-
-}
-
-
-/* =====================
-   TAB
-===================== */
-
-function tab(id, button){
-
-document
-.querySelectorAll(
-"main section"
-)
-.forEach(section =>
-section.classList.add(
-"hidden"
-)
-);
-
-document
-.getElementById(id)
-.classList.remove(
-"hidden"
-);
-
-document
-.querySelectorAll(
-".side button"
-)
-.forEach(b =>
-b.classList.remove(
-"active"
-)
-);
-
-if(button){
-
-button.classList.add(
-"active"
-);
-
-}
-
-refresh();
-
-}
-
-
-/* =====================
-   REFRESH
-===================== */
-
-async function refresh(){
+async function logout(){
 
 try{
 
-const [
-productsResponse,
-ordersResponse,
-storeResponse
-] = await Promise.all([
+if(token){
 
-api(
-"/api/admin/products"
-),
-
-api(
-"/api/admin/orders"
-),
-
-api(
-"/api/store"
-)
-
-]);
-
-
-const products =
-await productsResponse.json();
-
-const orders =
-await ordersResponse.json();
-
-const store =
-await storeResponse.json();
-
-
-document
-.getElementById(
-"productCount"
-)
-.textContent =
-products.length;
-
-
-document
-.getElementById(
-"orderCount"
-)
-.textContent =
-orders.length;
-
-
-document
-.getElementById(
-"pendingCount"
-)
-.textContent =
-orders.filter(
-o => o.status === "Pending"
-).length;
-
-
-const sales =
-orders.reduce(
-(sum, order) =>
-sum + Number(order.total || 0),
-0
+await fetch(
+"/api/admin/logout",
+{
+method:"POST",
+headers:{
+Authorization:
+"Bearer "+token
+}
+}
 );
 
+}
+
+}catch(e){}
+
+token="";
+
+localStorage.removeItem(
+"smAdminToken"
+);
 
 document
-.getElementById(
-"salesTotal"
-)
-.textContent =
-"৳" +
-sales.toLocaleString();
-
-
-renderProducts(products);
-
-renderOrders(orders);
-
+.getElementById("adminPage")
+.classList.add("hidden");
 
 document
-.getElementById(
-"shopName"
-)
-.value =
-store.settings.shopName || "";
+.getElementById("loginPage")
+.classList.remove("hidden");
+
+}
 
 
-document
-.getElementById(
-"tagline"
-)
-.value =
-store.settings.tagline || "";
+/* =========================
+   SHOW ADMIN
+========================= */
 
+async function showAdmin(){
 
 document
-.getElementById(
-"phone1"
-)
-.value =
-store.settings.phone1 || "";
-
+.getElementById("loginPage")
+.classList.add("hidden");
 
 document
-.getElementById(
-"phone2"
-)
-.value =
-store.settings.phone2 || "";
+.getElementById("adminPage")
+.classList.remove("hidden");
 
+await loadProducts();
+
+await loadOrders();
+
+await loadSettings();
+
+}
+
+
+/* =========================
+   TABS
+========================= */
+
+function showTab(
+name,
+button
+){
 
 document
-.getElementById(
-"facebook"
-)
-.value =
-store.settings.facebook || "";
+.querySelectorAll(".tabContent")
+.forEach(x=>
+x.classList.add("hidden")
+);
 
+document
+.getElementById(name+"Tab")
+.classList.remove("hidden");
+
+document
+.querySelectorAll(".tab")
+.forEach(x=>
+x.classList.remove("active")
+);
+
+button.classList.add("active");
+
+}
+
+
+/* =========================
+   PRODUCTS
+========================= */
+
+async function loadProducts(){
+
+try{
+
+products =
+await api(
+"/api/admin/products"
+);
+
+renderProducts();
+
+updateStats();
 
 }catch(error){
 
-console.error(error);
+alert(error.message);
 
 }
 
 }
 
 
-/* =====================
-   RENDER PRODUCTS
-===================== */
+function renderProducts(
+list=products
+){
 
-function renderProducts(products){
-
-const rows =
+const grid =
 document.getElementById(
-"productRows"
+"productGrid"
 );
 
+if(!list.length){
 
-rows.innerHTML =
-products.map(product => {
+grid.innerHTML =
+"<p>No products found.</p>";
 
-const image =
-product.image
-?
-`<img src="${escapeHtml(product.image)}">`
-:
-`<div style="
-width:60px;
-height:70px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#eee;
-border-radius:7px">
-📷
-</div>`;
+return;
 
+}
 
-return `
+grid.innerHTML =
+list.map(p=>`
 
-<tr>
+<div class="product">
 
-<td>
-${image}
-</td>
+<img
+src="${escapeHtml(p.image||"")}"
+onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22500%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22>NO IMAGE</text></svg>'"
+>
 
-<td>
-${escapeHtml(product.name)}
-</td>
+<div class="productBody">
 
-<td>
-${escapeHtml(product.category || "")}
-</td>
+<h3>
+${escapeHtml(p.name)}
+</h3>
 
-<td>
-৳${Number(product.price || 0).toLocaleString()}
-</td>
+<small>
+${escapeHtml(p.category)}
+</small>
 
-<td>
-${Number(product.stock || 0)}
-</td>
+<p class="price">
 
-<td>
+৳${Number(p.price).toLocaleString("en-BD")}
 
-<div class="act">
+<span class="old">
+৳${Number(p.oldPrice||p.price).toLocaleString("en-BD")}
+</span>
+
+</p>
+
+<p>
+Stock:
+<b>${p.stock}</b>
+&nbsp; | &nbsp;
+Discount:
+<b>${p.discount}%</b>
+</p>
+
+<div class="actions">
 
 <button
-class="btn"
-onclick='editProduct(${JSON.stringify(product)})'>
-
-Edit
-
+style="background:#fff0f5;color:#f41470"
+onclick="editProduct(${p.id})">
+✏️ Edit
 </button>
 
 <button
-class="btn red"
-onclick="deleteProduct(${product.id})">
-
-Delete
-
+style="background:#ffecee;color:#c00"
+onclick="deleteProduct(${p.id})">
+🗑 Delete
 </button>
 
 </div>
 
-</td>
+</div>
 
-</tr>
+</div>
 
-`;
-
-}).join("");
+`).join("");
 
 }
 
 
-/* =====================
-   ADD PRODUCT
-===================== */
+/* =========================
+   SEARCH
+========================= */
 
-function openProduct(){
+function searchProducts(){
 
-editingId = null;
-
+const q =
 document
-.getElementById(
-"modalTitle"
+.getElementById("productSearch")
+.value
+.toLowerCase();
+
+renderProducts(
+products.filter(p=>
+(
+p.name+
+" "+
+p.category
 )
-.textContent =
-"Add Product";
-
-
-document
-.getElementById(
-"productName"
+.toLowerCase()
+.includes(q)
 )
-.value = "";
-
-
-document
-.getElementById(
-"productCategory"
-)
-.value = "Dresses";
-
-
-document
-.getElementById(
-"productStock"
-)
-.value = "0";
-
-
-document
-.getElementById(
-"productPrice"
-)
-.value = "";
-
-
-document
-.getElementById(
-"productOldPrice"
-)
-.value = "";
-
-
-document
-.getElementById(
-"productDiscount"
-)
-.value = "0";
-
-
-document
-.getElementById(
-"productImage"
-)
-.value = "";
-
-
-document
-.getElementById(
-"imageFile"
-)
-.value = "";
-
-
-document
-.getElementById(
-"imagePreview"
-)
-.style.display =
-"none";
-
-
-document
-.getElementById(
-"productModal"
-)
-.classList.add(
-"show"
 );
 
 }
 
 
-/* =====================
-   EDIT PRODUCT
-===================== */
-
-function editProduct(product){
-
-editingId =
-product.id;
-
-
-document
-.getElementById(
-"modalTitle"
-)
-.textContent =
-"Edit Product";
-
-
-document
-.getElementById(
-"productName"
-)
-.value =
-product.name || "";
-
-
-document
-.getElementById(
-"productCategory"
-)
-.value =
-product.category || "";
-
-
-document
-.getElementById(
-"productStock"
-)
-.value =
-product.stock || 0;
-
-
-document
-.getElementById(
-"productPrice"
-)
-.value =
-product.price || "";
-
-
-document
-.getElementById(
-"productOldPrice"
-)
-.value =
-product.oldPrice || "";
-
-
-document
-.getElementById(
-"productDiscount"
-)
-.value =
-product.discount || 0;
-
-
-document
-.getElementById(
-"productImage"
-)
-.value =
-product.image || "";
-
-
-document
-.getElementById(
-"imageFile"
-)
-.value = "";
-
-
-const preview =
-document.getElementById(
-"imagePreview"
-);
-
-
-if(product.image){
-
-preview.src =
-product.image;
-
-preview.style.display =
-"block";
-
-}else{
-
-preview.style.display =
-"none";
-
-}
-
-
-document
-.getElementById(
-"productModal"
-)
-.classList.add(
-"show"
-);
-
-}
-
-
-/* =====================
-   CLOSE PRODUCT
-===================== */
-
-function closeProduct(){
-
-document
-.getElementById(
-"productModal"
-)
-.classList.remove(
-"show"
-);
-
-}
-
-
-/* =====================
-   PREVIEW IMAGE
-===================== */
+/* =========================
+   IMAGE PREVIEW
+========================= */
 
 function previewImage(event){
 
 const file =
 event.target.files[0];
 
-if(!file){
-
-return;
-
-}
+if(!file)return;
 
 const preview =
 document.getElementById(
@@ -1347,329 +1246,304 @@ document.getElementById(
 preview.src =
 URL.createObjectURL(file);
 
-preview.style.display =
-"block";
+preview.classList.remove(
+"hidden"
+);
 
 }
 
 
-/* =====================
-   UPLOAD CLOUDINARY
-===================== */
+/* =========================
+   UPLOAD IMAGE
+========================= */
 
 async function uploadImage(){
 
-const input =
-document.getElementById(
-"imageFile"
-);
-
 const file =
-input.files[0];
+document
+.getElementById("pImageFile")
+.files[0];
 
 if(!file){
 
-return null;
+return document
+.getElementById("pImage")
+.value.trim();
 
 }
 
-if(
-![
-"image/jpeg",
-"image/png",
-"image/webp"
-].includes(file.type)
-){
+if(file.size>10*1024*1024){
 
-alert(
-"Please select JPG, PNG or WebP image."
+throw new Error(
+"Image must be smaller than 10MB."
 );
 
-return null;
-
 }
-
-
-if(file.size > 5 * 1024 * 1024){
-
-alert(
-"Image must be smaller than 5MB."
-);
-
-return null;
-
-}
-
 
 return new Promise(
-(resolve, reject) => {
+(resolve,reject)=>{
 
 const reader =
 new FileReader();
 
-
-reader.onload =
-async function(){
+reader.onload=async()=>{
 
 try{
 
-const response =
+const data =
 await api(
 "/api/admin/upload",
 {
 method:"POST",
-body:JSON.stringify({
-image:reader.result
-})
+body:{
+image:
+reader.result
+}
 }
 );
-
-
-const data =
-await response.json();
-
-
-if(!response.ok){
-
-alert(
-data.error ||
-"Upload failed"
-);
-
-resolve(null);
-
-return;
-
-}
-
 
 resolve(data.url);
 
 }catch(error){
 
-console.error(error);
-
-alert(
-"Image upload failed."
-);
-
-resolve(null);
+reject(error);
 
 }
 
 };
 
-
-reader.onerror =
-() => {
-
-alert(
-"Could not read image."
+reader.onerror=()=>{
+reject(
+new Error("Could not read image")
 );
-
-resolve(null);
-
 };
-
 
 reader.readAsDataURL(file);
 
-});
+}
+);
 
 }
 
 
-/* =====================
+/* =========================
    SAVE PRODUCT
-===================== */
+========================= */
 
 async function saveProduct(){
 
-const name =
-document
-.getElementById(
-"productName"
-)
-.value.trim();
+const msg =
+document.getElementById(
+"productMsg"
+);
 
+msg.className="msg";
+
+try{
+
+const name =
+document.getElementById("pName")
+.value.trim();
 
 const price =
 Number(
-document
-.getElementById(
-"productPrice"
-)
+document.getElementById("pPrice")
 .value
 );
 
-
 if(!name){
 
-alert(
+throw new Error(
 "Product name is required."
 );
 
-return;
-
 }
 
+if(price<=0){
 
-if(!price){
-
-alert(
-"Product price is required."
+throw new Error(
+"Valid product price is required."
 );
 
-return;
-
 }
 
+msg.className="msg success";
 
-const uploadedImage =
+msg.textContent =
+"Saving product...";
+
+const image =
 await uploadImage();
 
-
-let image =
-document
-.getElementById(
-"productImage"
-)
-.value.trim();
-
-
-if(uploadedImage){
-
-image =
-uploadedImage;
-
-}
-
-
-const product = {
+const body={
 
 name,
 
 category:
-document
-.getElementById(
-"productCategory"
-)
-.value.trim(),
-
-stock:
-Number(
-document
-.getElementById(
-"productStock"
-)
-.value || 0
-),
+document.getElementById(
+"pCategory"
+).value,
 
 price,
 
 oldPrice:
 Number(
-document
-.getElementById(
-"productOldPrice"
-)
-.value || price
-),
+document.getElementById(
+"pOldPrice"
+).value
+) || price,
 
 discount:
 Number(
-document
-.getElementById(
-"productDiscount"
-)
-.value || 0
-),
+document.getElementById(
+"pDiscount"
+).value
+) || 0,
+
+stock:
+Number(
+document.getElementById(
+"pStock"
+).value
+) || 0,
 
 image
 
 };
 
+const editId =
+document.getElementById(
+"editId"
+).value;
 
-try{
+if(editId){
 
-const response =
 await api(
-
-editingId
-?
-"/api/admin/products/" +
-editingId
-:
-"/api/admin/products",
-
+"/api/admin/products/"+editId,
 {
-method:
-editingId
-?
-"PUT"
-:
-"POST",
+method:"PUT",
+body
+}
+);
 
-body:
-JSON.stringify(product)
+msg.textContent =
+"Product updated successfully.";
+
+}else{
+
+await api(
+"/api/admin/products",
+{
+method:"POST",
+body
+}
+);
+
+msg.textContent =
+"Product added successfully.";
 
 }
 
-);
+await loadProducts();
 
-
-const data =
-await response.json();
-
-
-if(!response.ok){
-
-alert(
-data.error ||
-"Save failed"
-);
-
-return;
-
-}
-
-
-alert(
-editingId
-?
-"Product updated successfully!"
-:
-"Product added successfully!"
-);
-
-
-closeProduct();
-
-refresh();
-
+resetProductForm();
 
 }catch(error){
 
-console.error(error);
+msg.className="msg error";
 
-alert(
-"Could not save product."
+msg.textContent =
+error.message;
+
+}
+
+}
+
+
+/* =========================
+   EDIT PRODUCT
+========================= */
+
+function editProduct(id){
+
+const p =
+products.find(
+x=>Number(x.id)===Number(id)
 );
 
-}
+if(!p)return;
+
+document
+.getElementById("editId")
+.value=p.id;
+
+document
+.getElementById("pName")
+.value=p.name;
+
+document
+.getElementById("pCategory")
+.value=p.category;
+
+document
+.getElementById("pPrice")
+.value=p.price;
+
+document
+.getElementById("pOldPrice")
+.value=p.oldPrice;
+
+document
+.getElementById("pDiscount")
+.value=p.discount;
+
+document
+.getElementById("pStock")
+.value=p.stock;
+
+document
+.getElementById("pImage")
+.value=p.image||"";
+
+document
+.getElementById("formTitle")
+.textContent=
+"Edit Product";
+
+document
+.getElementById("addTab")
+.classList.remove("hidden");
+
+document
+.getElementById("productsTab")
+.classList.add("hidden");
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
 
 }
 
 
-/* =====================
+/* =========================
    DELETE PRODUCT
-===================== */
+========================= */
 
 async function deleteProduct(id){
 
+const p =
+products.find(
+x=>Number(x.id)===Number(id)
+);
+
+if(!p)return;
+
 if(
 !confirm(
-"Delete this product?"
+'Delete "'+
+p.name+
+'"?'
 )
 ){
 
@@ -1677,374 +1551,405 @@ return;
 
 }
 
-
 try{
 
-const response =
 await api(
-"/api/admin/products/" +
-id,
+"/api/admin/products/"+id,
 {
 method:"DELETE"
 }
 );
 
-
-const data =
-await response.json();
-
-
-if(!response.ok){
+await loadProducts();
 
 alert(
-data.error ||
-"Delete failed"
+"Product deleted successfully."
 );
-
-return;
-
-}
-
-
-refresh();
-
 
 }catch(error){
 
-alert(
-"Delete failed."
-);
+alert(error.message);
 
 }
 
 }
 
 
-/* =====================
+/* =========================
+   RESET FORM
+========================= */
+
+function resetProductForm(){
+
+document
+.getElementById("editId")
+.value="";
+
+document
+.getElementById("pName")
+.value="";
+
+document
+.getElementById("pPrice")
+.value="";
+
+document
+.getElementById("pOldPrice")
+.value="";
+
+document
+.getElementById("pDiscount")
+.value="";
+
+document
+.getElementById("pStock")
+.value="";
+
+document
+.getElementById("pImage")
+.value="";
+
+document
+.getElementById("pImageFile")
+.value="";
+
+document
+.getElementById("imagePreview")
+.classList.add("hidden");
+
+document
+.getElementById("formTitle")
+.textContent=
+"Add New Product";
+
+}
+
+
+/* =========================
    ORDERS
-===================== */
+========================= */
 
-async function updateOrderStatus(id, status){
+async function loadOrders(){
 
 try{
 
-const response =
+orders =
 await api(
-"/api/admin/orders/" +
-encodeURIComponent(id),
-
-{
-method:"PUT",
-
-body:
-JSON.stringify({
-status
-})
-
-}
+"/api/admin/orders"
 );
 
+renderOrders();
 
-const data =
-await response.json();
-
-
-if(!response.ok){
-
-alert(
-data.error ||
-"Order status update failed"
-);
-
-return;
-
-}
-
-
-alert(
-"Order status updated to " +
-status
-);
-
-refresh();
-
+updateStats();
 
 }catch(error){
 
 console.error(error);
 
-alert(
-"Order status update failed."
-);
-
 }
 
 }
 
 
-/* =====================
-   RENDER ORDERS
-===================== */
+function renderOrders(){
 
-function renderOrders(orders){
-
-const list =
+const box =
 document.getElementById(
-"orderList"
+"ordersList"
 );
-
 
 if(!orders.length){
 
-list.innerHTML =
+box.innerHTML =
 "<p>No orders yet.</p>";
 
 return;
 
 }
 
+box.innerHTML =
+orders.map(order=>{
 
-list.innerHTML =
-orders.map(order => `
+const customer =
+order.customer || {};
+
+const items =
+order.items || [];
+
+return `
 
 <div class="order">
 
-<b>
-${escapeHtml(order.id)}
-</b>
+<div class="orderHead">
 
-—
-${escapeHtml(
-order.customer?.name || ""
-)}
-
-<br>
-
-☎
-${escapeHtml(
-order.customer?.phone || ""
-)}
-
-<br>
-
-📍
-${escapeHtml(
-order.customer?.address || ""
-)}
-
-<br>
+<div>
 
 <b>
-৳${Number(
-order.total || 0
-).toLocaleString()}
+Order #${escapeHtml(order.id)}
 </b>
-
-—
-
-${escapeHtml(
-order.paymentMethod || "COD"
-)}
-
-<br>
-
-Status:
-
-<span class="status">
-
-${escapeHtml(
-order.status || "Pending"
-)}
-
-</span>
-
-
-<div class="order-actions">
-
-<label>
-Change Order Status
-</label>
-
-<select
-onchange="updateOrderStatus(
-'${escapeHtml(String(order.id))}',
-this.value
-)">
-
-<option
-value="Pending"
-${order.status === "Pending" ? "selected" : ""}>
-Pending
-</option>
-
-<option
-value="Confirmed"
-${order.status === "Confirmed" ? "selected" : ""}>
-Confirmed
-</option>
-
-<option
-value="Delivered"
-${order.status === "Delivered" ? "selected" : ""}>
-Delivered
-</option>
-
-<option
-value="Cancelled"
-${order.status === "Cancelled" ? "selected" : ""}>
-Cancelled
-</option>
-
-</select>
-
-</div>
-
 
 <br>
 
 <small>
-
-${(order.items || [])
-.map(
-item =>
-escapeHtml(item.name) +
-" × " +
-Number(item.qty || 1)
-)
-.join(", ")}
-
+${new Date(
+order.createdAt
+).toLocaleString("en-BD")}
 </small>
 
 </div>
 
-`).join("");
+<span class="status">
+${escapeHtml(order.status)}
+</span>
+
+</div>
+
+<hr>
+
+<b>Customer</b>
+
+<p>
+Name:
+${escapeHtml(customer.name||"")}
+<br>
+
+Phone:
+${escapeHtml(customer.phone||"")}
+<br>
+
+Address:
+${escapeHtml(customer.address||"")}
+</p>
+
+<b>Payment:</b>
+${escapeHtml(order.paymentMethod||"cod")}
+
+<div class="orderItems">
+
+<b>Products</b>
+
+${items.map(item=>`
+
+<div>
+${escapeHtml(item.name)}
+× ${item.qty}
+= ৳${Number(
+item.price*item.qty
+).toLocaleString("en-BD")}
+</div>
+
+`).join("")}
+
+<hr>
+
+<b>
+Total:
+৳${Number(
+order.total
+).toLocaleString("en-BD")}
+</b>
+
+</div>
+
+</div>
+
+`;
+
+}).join("");
 
 }
 
 
-/* =====================
+/* =========================
    SETTINGS
-===================== */
+========================= */
 
-async function saveSettings(){
-
-const settings = {
-
-shopName:
-document
-.getElementById(
-"shopName"
-)
-.value,
-
-tagline:
-document
-.getElementById(
-"tagline"
-)
-.value,
-
-phone1:
-document
-.getElementById(
-"phone1"
-)
-.value,
-
-phone2:
-document
-.getElementById(
-"phone2"
-)
-.value,
-
-facebook:
-document
-.getElementById(
-"facebook"
-)
-.value
-
-};
-
+async function loadSettings(){
 
 try{
 
-const response =
-await api(
-"/api/admin/settings",
-
-{
-method:"PUT",
-
-body:
-JSON.stringify(settings)
-
-}
-);
-
-
-if(response.ok){
-
-alert(
-"Settings saved successfully!"
-);
-
-}else{
-
 const data =
-await response.json();
-
-alert(
-data.error ||
-"Save failed"
+await api(
+"/api/store"
 );
 
-}
+const s =
+data.settings || {};
+
+document
+.getElementById("shopName")
+.value =
+s.shopName||"";
+
+document
+.getElementById("tagline")
+.value =
+s.tagline||"";
+
+document
+.getElementById("phone1")
+.value =
+s.phone1||"";
+
+document
+.getElementById("phone2")
+.value =
+s.phone2||"";
+
+document
+.getElementById("facebook")
+.value =
+s.facebook||"";
+
+document
+.getElementById("currency")
+.value =
+s.currency||"BDT";
 
 }catch(error){
 
-alert(
-"Could not save settings."
+console.error(error);
+
+}
+
+}
+
+
+/* =========================
+   SAVE SETTINGS
+========================= */
+
+async function saveSettings(){
+
+const msg =
+document.getElementById(
+"settingsMsg"
 );
 
+msg.className="msg";
+
+try{
+
+const data =
+await api(
+"/api/admin/settings",
+{
+method:"PUT",
+body:{
+
+shopName:
+document.getElementById(
+"shopName"
+).value,
+
+tagline:
+document.getElementById(
+"tagline"
+).value,
+
+phone1:
+document.getElementById(
+"phone1"
+).value,
+
+phone2:
+document.getElementById(
+"phone2"
+).value,
+
+facebook:
+document.getElementById(
+"facebook"
+).value,
+
+currency:
+document.getElementById(
+"currency"
+).value
+
+}
+}
+);
+
+msg.className="msg success";
+
+msg.textContent =
+"Settings saved successfully.";
+
+}catch(error){
+
+msg.className="msg error";
+
+msg.textContent =
+error.message;
+
 }
 
 }
 
 
-/* =====================
-   ESCAPE HTML
-===================== */
+/* =========================
+   STATS
+========================= */
+
+function updateStats(){
+
+document
+.getElementById("productCount")
+.textContent =
+products.length;
+
+document
+.getElementById("orderCount")
+.textContent =
+orders.length;
+
+document
+.getElementById("pendingCount")
+.textContent =
+orders.filter(
+x=>x.status==="Pending"
+).length;
+
+const sales =
+orders.reduce(
+(sum,x)=>
+sum+Number(x.total||0),
+0
+);
+
+document
+.getElementById("salesTotal")
+.textContent =
+"৳"+
+sales.toLocaleString("en-BD");
+
+}
+
+
+/* =========================
+   SECURITY
+========================= */
 
 function escapeHtml(value){
 
-return String(value ?? "")
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 
-.replaceAll(
-"&",
-"&amp;"
-)
+}
 
-.replaceAll(
-"<",
-"&lt;"
-)
 
-.replaceAll(
-">",
-"&gt;"
-)
+/* =========================
+   START
+========================= */
 
-.replaceAll(
-'"',
-"&quot;"
-)
+if(token){
 
-.replaceAll(
-"'",
-"&#039;"
-);
+showAdmin();
 
 }
 
