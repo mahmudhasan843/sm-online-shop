@@ -1,13 +1,25 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>SM Online Shop - Admin</title>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1"
+>
+
+<title>
+SM Online Shop - Admin
+</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+box-sizing:border-box
+}
 
 body{
 margin:0;
@@ -16,7 +28,10 @@ background:#f5f5f7;
 color:#17151b
 }
 
-button,input,select,textarea{
+button,
+input,
+select,
+textarea{
 font:inherit
 }
 
@@ -36,7 +51,12 @@ display:flex;
 align-items:center;
 justify-content:center;
 padding:20px;
-background:linear-gradient(135deg,#17151b,#f41470)
+background:
+linear-gradient(
+135deg,
+#17151b,
+#f41470
+)
 }
 
 .loginBox{
@@ -45,7 +65,8 @@ max-width:420px;
 background:#fff;
 padding:30px;
 border-radius:20px;
-box-shadow:0 20px 50px #0005
+box-shadow:
+0 20px 50px #0005
 }
 
 .loginBox h1{
@@ -67,13 +88,16 @@ font-size:22px;
 font-weight:bold
 }
 
-input,select,textarea{
+input,
+select,
+textarea{
 width:100%;
 padding:12px;
 border:1px solid #ddd;
 border-radius:8px;
 margin:6px 0 12px;
-outline:none
+outline:none;
+background:#fff
 }
 
 input:focus,
@@ -112,6 +136,10 @@ background:#d52f46
 background:#159447
 }
 
+.blue{
+background:#2563eb
+}
+
 /* HEADER */
 
 header{
@@ -143,7 +171,8 @@ padding:20px 14px
 
 .stats{
 display:grid;
-grid-template-columns:repeat(4,1fr);
+grid-template-columns:
+repeat(4,1fr);
 gap:15px;
 margin-bottom:20px
 }
@@ -152,7 +181,8 @@ margin-bottom:20px
 background:#fff;
 padding:20px;
 border-radius:14px;
-box-shadow:0 2px 10px #0000000d
+box-shadow:
+0 2px 10px #0000000d
 }
 
 .stat small{
@@ -191,7 +221,8 @@ color:#fff
 background:#fff;
 border-radius:15px;
 padding:20px;
-box-shadow:0 2px 10px #0000000d;
+box-shadow:
+0 2px 10px #0000000d;
 margin-bottom:20px
 }
 
@@ -203,7 +234,8 @@ margin-top:0
 
 .productGrid{
 display:grid;
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:
+repeat(3,1fr);
 gap:15px
 }
 
@@ -260,7 +292,8 @@ font-weight:bold
 
 .formGrid{
 display:grid;
-grid-template-columns:1fr 1fr;
+grid-template-columns:
+1fr 1fr;
 gap:12px
 }
 
@@ -293,13 +326,85 @@ gap:10px;
 flex-wrap:wrap
 }
 
+.orderId{
+font-weight:bold;
+font-size:16px
+}
+
+.statusBox{
+display:flex;
+gap:8px;
+align-items:center;
+flex-wrap:wrap
+}
+
+.statusSelect{
+width:auto;
+min-width:145px;
+margin:0
+}
+
+.paymentSelect{
+width:auto;
+min-width:125px;
+margin:0
+}
+
 .status{
 padding:5px 9px;
 border-radius:6px;
-background:#fff0f5;
-color:#f41470;
 font-weight:bold;
 font-size:12px
+}
+
+.statusPending{
+background:#fff7e6;
+color:#a16207
+}
+
+.statusConfirmed{
+background:#eff6ff;
+color:#1d4ed8
+}
+
+.statusProcessing{
+background:#f5f3ff;
+color:#6d28d9
+}
+
+.statusShipped{
+background:#ecfeff;
+color:#0e7490
+}
+
+.statusDelivered{
+background:#ecfdf5;
+color:#047857
+}
+
+.statusCancelled{
+background:#fff1f2;
+color:#be123c
+}
+
+.paymentPaid{
+background:#ecfdf5;
+color:#047857
+}
+
+.paymentPending{
+background:#fff7e6;
+color:#a16207
+}
+
+.paymentFailed{
+background:#fff1f2;
+color:#be123c
+}
+
+.paymentRefunded{
+background:#f3f4f6;
+color:#374151
 }
 
 .orderItems{
@@ -309,6 +414,15 @@ margin-top:10px;
 border-radius:8px
 }
 
+.orderItem{
+padding:7px 0;
+border-bottom:1px solid #eee
+}
+
+.orderItem:last-child{
+border-bottom:0
+}
+
 /* TABLE */
 
 table{
@@ -316,7 +430,8 @@ width:100%;
 border-collapse:collapse
 }
 
-th,td{
+th,
+td{
 padding:10px;
 border-bottom:1px solid #eee;
 text-align:left;
@@ -344,16 +459,28 @@ background:#ffecee;
 color:#a50019
 }
 
+/* ORDER FILTER */
+
+.orderFilters{
+display:grid;
+grid-template-columns:
+1fr 1fr 1fr;
+gap:10px;
+margin-bottom:15px
+}
+
 /* MOBILE */
 
 @media(max-width:900px){
 
 .stats{
-grid-template-columns:repeat(2,1fr)
+grid-template-columns:
+repeat(2,1fr)
 }
 
 .productGrid{
-grid-template-columns:repeat(2,1fr)
+grid-template-columns:
+repeat(2,1fr)
 }
 
 }
@@ -369,15 +496,18 @@ font-size:17px
 }
 
 .stats{
-grid-template-columns:1fr 1fr
+grid-template-columns:
+1fr 1fr
 }
 
 .productGrid{
-grid-template-columns:1fr
+grid-template-columns:
+1fr
 }
 
 .formGrid{
-grid-template-columns:1fr
+grid-template-columns:
+1fr
 }
 
 .full{
@@ -401,33 +531,67 @@ flex-wrap:nowrap
 white-space:nowrap
 }
 
+.orderFilters{
+grid-template-columns:1fr
+}
+
+.statusBox{
+width:100%
+}
+
+.statusSelect,
+.paymentSelect{
+width:100%
+}
+
 table{
 font-size:11px
 }
 
 }
+
 </style>
+
 </head>
 
 <body>
 
-<!-- LOGIN -->
+<!-- =====================================================
+     LOGIN
+===================================================== -->
 
-<section id="loginPage" class="login">
+<section
+id="loginPage"
+class="login"
+>
 
 <div class="loginBox">
 
-<div class="loginLogo">SM</div>
+<div class="loginLogo">
+SM
+</div>
 
-<h1>SM Online Shop</h1>
+<h1>
+SM Online Shop
+</h1>
 
-<p style="text-align:center;color:#777">
+<p
+style="
+text-align:center;
+color:#777
+"
+>
 Admin Panel
 </p>
 
-<div id="loginMsg" class="msg"></div>
+<div
+id="loginMsg"
+class="msg"
+></div>
 
-<label>Username</label>
+<label>
+Username
+</label>
 
 <input
 id="username"
@@ -435,7 +599,9 @@ placeholder="Admin username"
 autocomplete="username"
 >
 
-<label>Password</label>
+<label>
+Password
+</label>
 
 <input
 id="password"
@@ -447,7 +613,8 @@ autocomplete="current-password"
 <button
 class="btn"
 style="width:100%"
-onclick="login()">
+onclick="login()"
+>
 Login
 </button>
 
@@ -456,23 +623,33 @@ Login
 </section>
 
 
-<!-- ADMIN -->
+<!-- =====================================================
+     ADMIN
+===================================================== -->
 
-<section id="adminPage" class="hidden">
+<section
+id="adminPage"
+class="hidden"
+>
 
 <header>
 
 <div>
 
-<h1>SM Online Shop</h1>
+<h1>
+SM Online Shop
+</h1>
 
-<small>Admin Dashboard</small>
+<small>
+Admin Dashboard
+</small>
 
 </div>
 
 <button
 class="btn red"
-onclick="logout()">
+onclick="logout()"
+>
 Logout
 </button>
 
@@ -487,33 +664,57 @@ Logout
 
 <div class="stat">
 
-<small>Total Products</small>
+<small>
+Total Products
+</small>
 
-<b id="productCount">0</b>
-
-</div>
-
-<div class="stat">
-
-<small>Total Orders</small>
-
-<b id="orderCount">0</b>
+<b
+id="productCount"
+>
+0
+</b>
 
 </div>
 
 <div class="stat">
 
-<small>Pending Orders</small>
+<small>
+Total Orders
+</small>
 
-<b id="pendingCount">0</b>
+<b
+id="orderCount"
+>
+0
+</b>
 
 </div>
 
 <div class="stat">
 
-<small>Total Sales</small>
+<small>
+Pending Orders
+</small>
 
-<b id="salesTotal">৳0</b>
+<b
+id="pendingCount"
+>
+0
+</b>
+
+</div>
+
+<div class="stat">
+
+<small>
+Total Sales
+</small>
+
+<b
+id="salesTotal"
+>
+৳0
+</b>
 
 </div>
 
@@ -526,38 +727,49 @@ Logout
 
 <button
 class="tab active"
-onclick="showTab('products',this)">
+onclick="showTab('products',this)"
+>
 🛍 Products
 </button>
 
 <button
 class="tab"
-onclick="showTab('add',this)">
+onclick="showTab('add',this)"
+>
 ➕ Add Product
 </button>
 
 <button
 class="tab"
-onclick="showTab('orders',this)">
+onclick="showTab('orders',this)"
+>
 📦 Orders
 </button>
 
 <button
 class="tab"
-onclick="showTab('settings',this)">
+onclick="showTab('settings',this)"
+>
 ⚙️ Settings
 </button>
 
 </div>
 
 
-<!-- PRODUCTS -->
+<!-- =====================================================
+     PRODUCTS
+===================================================== -->
 
-<div id="productsTab" class="tabContent">
+<div
+id="productsTab"
+class="tabContent"
+>
 
 <div class="panel">
 
-<h2>Products</h2>
+<h2>
+Products
+</h2>
 
 <input
 id="productSearch"
@@ -567,7 +779,8 @@ oninput="searchProducts()"
 
 <div
 id="productGrid"
-class="productGrid">
+class="productGrid"
+>
 </div>
 
 </div>
@@ -575,19 +788,27 @@ class="productGrid">
 </div>
 
 
-<!-- ADD / EDIT -->
+<!-- =====================================================
+     ADD / EDIT PRODUCT
+===================================================== -->
 
 <div
 id="addTab"
-class="tabContent hidden">
+class="tabContent hidden"
+>
 
 <div class="panel">
 
-<h2 id="formTitle">
+<h2
+id="formTitle"
+>
 Add New Product
 </h2>
 
-<div id="productMsg" class="msg"></div>
+<div
+id="productMsg"
+class="msg"
+></div>
 
 <input
 type="hidden"
@@ -598,7 +819,9 @@ id="editId"
 
 <div>
 
-<label>Product Name</label>
+<label>
+Product Name
+</label>
 
 <input
 id="pName"
@@ -607,31 +830,61 @@ placeholder="Example: Premium Ladies Dress"
 
 </div>
 
-
 <div>
 
-<label>Category</label>
+<label>
+Category
+</label>
 
-<select id="pCategory">
+<select
+id="pCategory"
+>
 
-<option>Dresses</option>
-<option>Tops</option>
-<option>Saree</option>
-<option>Hijab</option>
-<option>Bags</option>
-<option>Shoes</option>
-<option>Jewellery</option>
-<option>Accessories</option>
-<option>General</option>
+<option>
+Dresses
+</option>
+
+<option>
+Tops
+</option>
+
+<option>
+Saree
+</option>
+
+<option>
+Hijab
+</option>
+
+<option>
+Bags
+</option>
+
+<option>
+Shoes
+</option>
+
+<option>
+Jewellery
+</option>
+
+<option>
+Accessories
+</option>
+
+<option>
+General
+</option>
 
 </select>
 
 </div>
 
-
 <div>
 
-<label>Price</label>
+<label>
+Price
+</label>
 
 <input
 id="pPrice"
@@ -642,10 +895,11 @@ placeholder="1200"
 
 </div>
 
-
 <div>
 
-<label>Old Price</label>
+<label>
+Old Price
+</label>
 
 <input
 id="pOldPrice"
@@ -656,10 +910,11 @@ placeholder="1500"
 
 </div>
 
-
 <div>
 
-<label>Discount %</label>
+<label>
+Discount %
+</label>
 
 <input
 id="pDiscount"
@@ -670,10 +925,11 @@ placeholder="20"
 
 </div>
 
-
 <div>
 
-<label>Stock</label>
+<label>
+Stock
+</label>
 
 <input
 id="pStock"
@@ -683,10 +939,11 @@ placeholder="10"
 
 </div>
 
-
 <div class="full">
 
-<label>Product Image</label>
+<label>
+Product Image
+</label>
 
 <input
 id="pImageFile"
@@ -705,8 +962,11 @@ id="pImage"
 placeholder="Image URL"
 >
 
-<small style="color:#777">
-Choose an image to upload to Cloudinary, or paste an image URL.
+<small
+style="color:#777"
+>
+Choose an image to upload to Cloudinary,
+or paste an image URL.
 </small>
 
 </div>
@@ -714,17 +974,25 @@ Choose an image to upload to Cloudinary, or paste an image URL.
 </div>
 
 
-<div style="display:flex;gap:10px;margin-top:10px">
+<div
+style="
+display:flex;
+gap:10px;
+margin-top:10px
+"
+>
 
 <button
 class="btn"
-onclick="saveProduct()">
+onclick="saveProduct()"
+>
 💾 Save Product
 </button>
 
 <button
 class="btn gray"
-onclick="resetProductForm()">
+onclick="resetProductForm()"
+>
 Clear
 </button>
 
@@ -735,17 +1003,123 @@ Clear
 </div>
 
 
-<!-- ORDERS -->
+<!-- =====================================================
+     ORDERS
+===================================================== -->
 
 <div
 id="ordersTab"
-class="tabContent hidden">
+class="tabContent hidden"
+>
 
 <div class="panel">
 
-<h2>📦 Customer Orders</h2>
+<h2>
+📦 Customer Orders
+</h2>
 
-<div id="ordersList">
+<div class="orderFilters">
+
+<div>
+
+<label>
+Order Status
+</label>
+
+<select
+id="orderStatusFilter"
+onchange="renderOrders()"
+>
+
+<option value="">
+All Status
+</option>
+
+<option value="Pending">
+Pending
+</option>
+
+<option value="Confirmed">
+Confirmed
+</option>
+
+<option value="Processing">
+Processing
+</option>
+
+<option value="Shipped">
+Shipped
+</option>
+
+<option value="Delivered">
+Delivered
+</option>
+
+<option value="Cancelled">
+Cancelled
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+Payment Status
+</label>
+
+<select
+id="paymentStatusFilter"
+onchange="renderOrders()"
+>
+
+<option value="">
+All Payment
+</option>
+
+<option value="Pending">
+Pending
+</option>
+
+<option value="Paid">
+Paid
+</option>
+
+<option value="Failed">
+Failed
+</option>
+
+<option value="Refunded">
+Refunded
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+Search Order
+</label>
+
+<input
+id="orderSearch"
+placeholder="Order ID / Phone"
+oninput="renderOrders()"
+>
+
+</div>
+
+</div>
+
+
+<div
+id="ordersList"
+>
 Loading...
 </div>
 
@@ -754,59 +1128,81 @@ Loading...
 </div>
 
 
-<!-- SETTINGS -->
+<!-- =====================================================
+     SETTINGS
+===================================================== -->
 
 <div
 id="settingsTab"
-class="tabContent hidden">
+class="tabContent hidden"
+>
 
 <div class="panel">
 
-<h2>⚙️ Store Settings</h2>
+<h2>
+⚙️ Store Settings
+</h2>
 
-<div id="settingsMsg" class="msg"></div>
+<div
+id="settingsMsg"
+class="msg"
+></div>
 
 <div class="formGrid">
 
 <div>
 
-<label>Shop Name</label>
+<label>
+Shop Name
+</label>
 
-<input id="shopName">
+<input
+id="shopName"
+>
 
 </div>
-
 
 <div>
 
-<label>Tagline</label>
+<label>
+Tagline
+</label>
 
-<input id="tagline">
+<input
+id="tagline"
+>
 
 </div>
-
 
 <div>
 
-<label>Phone 1</label>
+<label>
+Phone 1
+</label>
 
-<input id="phone1">
+<input
+id="phone1"
+>
 
 </div>
-
 
 <div>
 
-<label>Phone 2</label>
+<label>
+Phone 2
+</label>
 
-<input id="phone2">
+<input
+id="phone2"
+>
 
 </div>
-
 
 <div class="full">
 
-<label>Facebook Page</label>
+<label>
+Facebook Page
+</label>
 
 <input
 id="facebook"
@@ -815,12 +1211,15 @@ placeholder="https://facebook.com/..."
 
 </div>
 
-
 <div>
 
-<label>Currency</label>
+<label>
+Currency
+</label>
 
-<select id="currency">
+<select
+id="currency"
+>
 
 <option value="BDT">
 BDT
@@ -836,10 +1235,10 @@ USD
 
 </div>
 
-
 <button
 class="btn"
-onclick="saveSettings()">
+onclick="saveSettings()"
+>
 💾 Save Settings
 </button>
 
@@ -854,17 +1253,23 @@ onclick="saveSettings()">
 
 <script>
 
+/* =====================================================
+   GLOBAL
+===================================================== */
+
 let token =
-localStorage.getItem("smAdminToken") || "";
+localStorage.getItem(
+"smAdminToken"
+) || "";
 
 let products = [];
 
 let orders = [];
 
 
-/* =========================
+/* =====================================================
    API
-========================= */
+===================================================== */
 
 async function api(
 url,
@@ -882,23 +1287,35 @@ options.headers.Authorization =
 }
 
 if(
-options.body &&
-typeof options.body === "object" &&
-!(options.body instanceof FormData)
+
+  options.body &&
+
+  typeof options.body ===
+    "object" &&
+
+  !(options.body instanceof FormData)
+
 ){
 
-options.headers["Content-Type"] =
+options.headers[
+"Content-Type"
+] =
 "application/json";
 
 options.body =
-JSON.stringify(options.body);
+JSON.stringify(
+options.body
+);
 
 }
 
 const response =
-await fetch(url,options);
+await fetch(
+url,
+options
+);
 
-let data={};
+let data = {};
 
 try{
 
@@ -907,7 +1324,9 @@ await response.json();
 
 }catch(e){}
 
-if(response.status===401){
+if(
+response.status === 401
+){
 
 logout();
 
@@ -918,7 +1337,9 @@ data.error ||
 
 }
 
-if(!response.ok){
+if(
+!response.ok
+){
 
 throw new Error(
 data.error ||
@@ -932,29 +1353,46 @@ return data;
 }
 
 
-/* =========================
+/* =====================================================
    LOGIN
-========================= */
+===================================================== */
 
 async function login(){
 
 const username =
-document.getElementById("username")
-.value.trim();
+document
+.getElementById(
+"username"
+)
+.value
+.trim();
 
 const password =
-document.getElementById("password")
+document
+.getElementById(
+"password"
+)
 .value;
 
 const msg =
-document.getElementById("loginMsg");
+document
+.getElementById(
+"loginMsg"
+);
 
-msg.className="msg";
-msg.textContent="";
+msg.className =
+"msg";
 
-if(!username || !password){
+msg.textContent =
+"";
 
-msg.className="msg error";
+if(
+!username ||
+!password
+){
+
+msg.className =
+"msg error";
 
 msg.textContent =
 "Username and password required.";
@@ -977,7 +1415,8 @@ password
 }
 );
 
-token=data.token;
+token =
+data.token;
 
 localStorage.setItem(
 "smAdminToken",
@@ -988,7 +1427,8 @@ showAdmin();
 
 }catch(error){
 
-msg.className="msg error";
+msg.className =
+"msg error";
 
 msg.textContent =
 error.message;
@@ -998,9 +1438,9 @@ error.message;
 }
 
 
-/* =========================
+/* =====================================================
    LOGOUT
-========================= */
+===================================================== */
 
 async function logout(){
 
@@ -1014,7 +1454,7 @@ await fetch(
 method:"POST",
 headers:{
 Authorization:
-"Bearer "+token
+"Bearer " + token
 }
 }
 );
@@ -1023,36 +1463,52 @@ Authorization:
 
 }catch(e){}
 
-token="";
+token = "";
 
 localStorage.removeItem(
 "smAdminToken"
 );
 
 document
-.getElementById("adminPage")
-.classList.add("hidden");
+.getElementById(
+"adminPage"
+)
+.classList.add(
+"hidden"
+);
 
 document
-.getElementById("loginPage")
-.classList.remove("hidden");
+.getElementById(
+"loginPage"
+)
+.classList.remove(
+"hidden"
+);
 
 }
 
 
-/* =========================
+/* =====================================================
    SHOW ADMIN
-========================= */
+===================================================== */
 
 async function showAdmin(){
 
 document
-.getElementById("loginPage")
-.classList.add("hidden");
+.getElementById(
+"loginPage"
+)
+.classList.add(
+"hidden"
+);
 
 document
-.getElementById("adminPage")
-.classList.remove("hidden");
+.getElementById(
+"adminPage"
+)
+.classList.remove(
+"hidden"
+);
 
 await loadProducts();
 
@@ -1063,9 +1519,9 @@ await loadSettings();
 }
 
 
-/* =========================
+/* =====================================================
    TABS
-========================= */
+===================================================== */
 
 function showTab(
 name,
@@ -1073,29 +1529,45 @@ button
 ){
 
 document
-.querySelectorAll(".tabContent")
-.forEach(x=>
-x.classList.add("hidden")
+.querySelectorAll(
+".tabContent"
+)
+.forEach(
+x =>
+x.classList.add(
+"hidden"
+)
 );
 
 document
-.getElementById(name+"Tab")
-.classList.remove("hidden");
-
-document
-.querySelectorAll(".tab")
-.forEach(x=>
-x.classList.remove("active")
+.getElementById(
+name + "Tab"
+)
+.classList.remove(
+"hidden"
 );
 
-button.classList.add("active");
+document
+.querySelectorAll(
+".tab"
+)
+.forEach(
+x =>
+x.classList.remove(
+"active"
+)
+);
+
+button.classList.add(
+"active"
+);
 
 }
 
 
-/* =========================
+/* =====================================================
    PRODUCTS
-========================= */
+===================================================== */
 
 async function loadProducts(){
 
@@ -1112,15 +1584,21 @@ updateStats();
 
 }catch(error){
 
-alert(error.message);
+alert(
+error.message
+);
 
 }
 
 }
 
+
+/* =====================================================
+   RENDER PRODUCTS
+===================================================== */
 
 function renderProducts(
-list=products
+list = products
 ){
 
 const grid =
@@ -1128,7 +1606,9 @@ document.getElementById(
 "productGrid"
 );
 
-if(!list.length){
+if(
+!list.length
+){
 
 grid.innerHTML =
 "<p>No products found.</p>";
@@ -1138,54 +1618,92 @@ return;
 }
 
 grid.innerHTML =
-list.map(p=>`
+list.map(
+p => `
 
 <div class="product">
 
 <img
-src="${escapeHtml(p.image||"")}"
-onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22500%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22>NO IMAGE</text></svg>'"
+src="${escapeHtml(
+p.image || ""
+)}"
+onerror="this.style.display='none'"
 >
 
 <div class="productBody">
 
 <h3>
-${escapeHtml(p.name)}
+${escapeHtml(
+p.name
+)}
 </h3>
 
 <small>
-${escapeHtml(p.category)}
+${escapeHtml(
+p.category
+)}
 </small>
 
 <p class="price">
 
-৳${Number(p.price).toLocaleString("en-BD")}
+৳${Number(
+p.price
+).toLocaleString(
+"en-BD"
+)}
 
 <span class="old">
-৳${Number(p.oldPrice||p.price).toLocaleString("en-BD")}
+
+৳${Number(
+p.oldPrice ||
+p.price
+).toLocaleString(
+"en-BD"
+)}
+
 </span>
 
 </p>
 
 <p>
+
 Stock:
-<b>${p.stock}</b>
+<b>
+${p.stock}
+</b>
+
 &nbsp; | &nbsp;
+
 Discount:
-<b>${p.discount}%</b>
+<b>
+${p.discount}%
+</b>
+
 </p>
 
 <div class="actions">
 
 <button
-style="background:#fff0f5;color:#f41470"
-onclick="editProduct(${p.id})">
+style="
+background:#fff0f5;
+color:#f41470
+"
+onclick="
+editProduct(${p.id})
+"
+>
 ✏️ Edit
 </button>
 
 <button
-style="background:#ffecee;color:#c00"
-onclick="deleteProduct(${p.id})">
+style="
+background:#ffecee;
+color:#c00
+"
+onclick="
+deleteProduct(${p.id})
+"
+>
 🗑 Delete
 </button>
 
@@ -1195,48 +1713,60 @@ onclick="deleteProduct(${p.id})">
 
 </div>
 
-`).join("");
+`
+).join("");
 
 }
 
 
-/* =========================
-   SEARCH
-========================= */
+/* =====================================================
+   SEARCH PRODUCTS
+===================================================== */
 
 function searchProducts(){
 
 const q =
 document
-.getElementById("productSearch")
+.getElementById(
+"productSearch"
+)
 .value
 .toLowerCase();
 
 renderProducts(
-products.filter(p=>
+
+products.filter(
+p =>
+
 (
-p.name+
-" "+
+p.name +
+" " +
 p.category
 )
 .toLowerCase()
 .includes(q)
+
 )
+
 );
 
 }
 
 
-/* =========================
+/* =====================================================
    IMAGE PREVIEW
-========================= */
+===================================================== */
 
-function previewImage(event){
+function previewImage(
+event
+){
 
 const file =
 event.target.files[0];
 
-if(!file)return;
+if(!file){
+return;
+}
 
 const preview =
 document.getElementById(
@@ -1244,7 +1774,9 @@ document.getElementById(
 );
 
 preview.src =
-URL.createObjectURL(file);
+URL.createObjectURL(
+file
+);
 
 preview.classList.remove(
 "hidden"
@@ -1253,26 +1785,34 @@ preview.classList.remove(
 }
 
 
-/* =========================
+/* =====================================================
    UPLOAD IMAGE
-========================= */
+===================================================== */
 
 async function uploadImage(){
 
 const file =
 document
-.getElementById("pImageFile")
+.getElementById(
+"pImageFile"
+)
 .files[0];
 
 if(!file){
 
 return document
-.getElementById("pImage")
-.value.trim();
+.getElementById(
+"pImage"
+)
+.value
+.trim();
 
 }
 
-if(file.size>10*1024*1024){
+if(
+file.size >
+10 * 1024 * 1024
+){
 
 throw new Error(
 "Image must be smaller than 10MB."
@@ -1286,7 +1826,8 @@ return new Promise(
 const reader =
 new FileReader();
 
-reader.onload=async()=>{
+reader.onload =
+async () => {
 
 try{
 
@@ -1302,23 +1843,34 @@ reader.result
 }
 );
 
-resolve(data.url);
+resolve(
+data.url
+);
 
 }catch(error){
 
-reject(error);
-
-}
-
-};
-
-reader.onerror=()=>{
 reject(
-new Error("Could not read image")
+error
 );
+
+}
+
 };
 
-reader.readAsDataURL(file);
+reader.onerror =
+() => {
+
+reject(
+new Error(
+"Could not read image"
+)
+);
+
+};
+
+reader.readAsDataURL(
+file
+);
 
 }
 );
@@ -1326,9 +1878,9 @@ reader.readAsDataURL(file);
 }
 
 
-/* =========================
+/* =====================================================
    SAVE PRODUCT
-========================= */
+===================================================== */
 
 async function saveProduct(){
 
@@ -1337,17 +1889,25 @@ document.getElementById(
 "productMsg"
 );
 
-msg.className="msg";
+msg.className =
+"msg";
 
 try{
 
 const name =
-document.getElementById("pName")
-.value.trim();
+document
+.getElementById(
+"pName"
+)
+.value
+.trim();
 
 const price =
 Number(
-document.getElementById("pPrice")
+document
+.getElementById(
+"pPrice"
+)
 .value
 );
 
@@ -1359,7 +1919,7 @@ throw new Error(
 
 }
 
-if(price<=0){
+if(price <= 0){
 
 throw new Error(
 "Valid product price is required."
@@ -1367,7 +1927,8 @@ throw new Error(
 
 }
 
-msg.className="msg success";
+msg.className =
+"msg success";
 
 msg.textContent =
 "Saving product...";
@@ -1375,36 +1936,44 @@ msg.textContent =
 const image =
 await uploadImage();
 
-const body={
+const body = {
 
 name,
 
 category:
-document.getElementById(
+document
+.getElementById(
 "pCategory"
-).value,
+)
+.value,
 
 price,
 
 oldPrice:
 Number(
-document.getElementById(
+document
+.getElementById(
 "pOldPrice"
-).value
+)
+.value
 ) || price,
 
 discount:
 Number(
-document.getElementById(
+document
+.getElementById(
 "pDiscount"
-).value
+)
+.value
 ) || 0,
 
 stock:
 Number(
-document.getElementById(
+document
+.getElementById(
 "pStock"
-).value
+)
+.value
 ) || 0,
 
 image
@@ -1412,18 +1981,26 @@ image
 };
 
 const editId =
-document.getElementById(
+document
+.getElementById(
 "editId"
-).value;
+)
+.value;
 
 if(editId){
 
 await api(
-"/api/admin/products/"+editId,
+
+"/api/admin/products/" +
+encodeURIComponent(
+editId
+),
+
 {
 method:"PUT",
 body
 }
+
 );
 
 msg.textContent =
@@ -1450,7 +2027,8 @@ resetProductForm();
 
 }catch(error){
 
-msg.className="msg error";
+msg.className =
+"msg error";
 
 msg.textContent =
 error.message;
@@ -1460,63 +2038,103 @@ error.message;
 }
 
 
-/* =========================
+/* =====================================================
    EDIT PRODUCT
-========================= */
+===================================================== */
 
-function editProduct(id){
+function editProduct(
+id
+){
 
 const p =
 products.find(
-x=>Number(x.id)===Number(id)
+x =>
+Number(x.id) ===
+Number(id)
 );
 
-if(!p)return;
+if(!p){
+return;
+}
 
 document
-.getElementById("editId")
-.value=p.id;
+.getElementById(
+"editId"
+)
+.value =
+p.id;
 
 document
-.getElementById("pName")
-.value=p.name;
+.getElementById(
+"pName"
+)
+.value =
+p.name;
 
 document
-.getElementById("pCategory")
-.value=p.category;
+.getElementById(
+"pCategory"
+)
+.value =
+p.category;
 
 document
-.getElementById("pPrice")
-.value=p.price;
+.getElementById(
+"pPrice"
+)
+.value =
+p.price;
 
 document
-.getElementById("pOldPrice")
-.value=p.oldPrice;
+.getElementById(
+"pOldPrice"
+)
+.value =
+p.oldPrice;
 
 document
-.getElementById("pDiscount")
-.value=p.discount;
+.getElementById(
+"pDiscount"
+)
+.value =
+p.discount;
 
 document
-.getElementById("pStock")
-.value=p.stock;
+.getElementById(
+"pStock"
+)
+.value =
+p.stock;
 
 document
-.getElementById("pImage")
-.value=p.image||"";
+.getElementById(
+"pImage"
+)
+.value =
+p.image || "";
 
 document
-.getElementById("formTitle")
-.textContent=
+.getElementById(
+"formTitle"
+)
+.textContent =
 "Edit Product";
 
 document
-.getElementById("addTab")
-.classList.remove("hidden");
+.getElementById(
+"addTab"
+)
+.classList.remove(
+"hidden"
+);
 
 document
-.getElementById("productsTab")
-.classList.add("hidden");
+.getElementById(
+"productsTab"
+)
+.classList.add(
+"hidden"
+);
 
 window.scrollTo({
 top:0,
@@ -1526,23 +2144,29 @@ behavior:"smooth"
 }
 
 
-/* =========================
+/* =====================================================
    DELETE PRODUCT
-========================= */
+===================================================== */
 
-async function deleteProduct(id){
+async function deleteProduct(
+id
+){
 
 const p =
 products.find(
-x=>Number(x.id)===Number(id)
+x =>
+Number(x.id) ===
+Number(id)
 );
 
-if(!p)return;
+if(!p){
+return;
+}
 
 if(
 !confirm(
-'Delete "'+
-p.name+
+'Delete "' +
+p.name +
 '"?'
 )
 ){
@@ -1554,10 +2178,16 @@ return;
 try{
 
 await api(
-"/api/admin/products/"+id,
+
+"/api/admin/products/" +
+encodeURIComponent(
+id
+),
+
 {
 method:"DELETE"
 }
+
 );
 
 await loadProducts();
@@ -1568,66 +2198,90 @@ alert(
 
 }catch(error){
 
-alert(error.message);
+alert(
+error.message
+);
 
 }
 
 }
 
 
-/* =========================
-   RESET FORM
-========================= */
+/* =====================================================
+   RESET PRODUCT FORM
+===================================================== */
 
 function resetProductForm(){
 
 document
-.getElementById("editId")
-.value="";
+.getElementById(
+"editId"
+)
+.value = "";
 
 document
-.getElementById("pName")
-.value="";
+.getElementById(
+"pName"
+)
+.value = "";
 
 document
-.getElementById("pPrice")
-.value="";
+.getElementById(
+"pPrice"
+)
+.value = "";
 
 document
-.getElementById("pOldPrice")
-.value="";
+.getElementById(
+"pOldPrice"
+)
+.value = "";
 
 document
-.getElementById("pDiscount")
-.value="";
+.getElementById(
+"pDiscount"
+)
+.value = "";
 
 document
-.getElementById("pStock")
-.value="";
+.getElementById(
+"pStock"
+)
+.value = "";
 
 document
-.getElementById("pImage")
-.value="";
+.getElementById(
+"pImage"
+)
+.value = "";
 
 document
-.getElementById("pImageFile")
-.value="";
+.getElementById(
+"pImageFile"
+)
+.value = "";
 
 document
-.getElementById("imagePreview")
-.classList.add("hidden");
+.getElementById(
+"imagePreview"
+)
+.classList.add(
+"hidden"
+);
 
 document
-.getElementById("formTitle")
-.textContent=
+.getElementById(
+"formTitle"
+)
+.textContent =
 "Add New Product";
 
 }
 
 
-/* =========================
+/* =====================================================
    ORDERS
-========================= */
+===================================================== */
 
 async function loadOrders(){
 
@@ -1644,12 +2298,78 @@ updateStats();
 
 }catch(error){
 
-console.error(error);
+console.error(
+error
+);
 
 }
 
 }
 
+
+/* =====================================================
+   ORDER STATUS CLASS
+===================================================== */
+
+function getStatusClass(
+status
+){
+
+switch(status){
+
+case "Confirmed":
+return "statusConfirmed";
+
+case "Processing":
+return "statusProcessing";
+
+case "Shipped":
+return "statusShipped";
+
+case "Delivered":
+return "statusDelivered";
+
+case "Cancelled":
+return "statusCancelled";
+
+default:
+return "statusPending";
+
+}
+
+}
+
+
+/* =====================================================
+   PAYMENT CLASS
+===================================================== */
+
+function getPaymentClass(
+status
+){
+
+switch(status){
+
+case "Paid":
+return "paymentPaid";
+
+case "Failed":
+return "paymentFailed";
+
+case "Refunded":
+return "paymentRefunded";
+
+default:
+return "paymentPending";
+
+}
+
+}
+
+
+/* =====================================================
+   RENDER ORDERS
+===================================================== */
 
 function renderOrders(){
 
@@ -1658,23 +2378,136 @@ document.getElementById(
 "ordersList"
 );
 
-if(!orders.length){
+let list =
+[...orders];
+
+/* FILTER STATUS */
+
+const statusFilter =
+document
+.getElementById(
+"orderStatusFilter"
+)
+.value;
+
+if(statusFilter){
+
+list =
+list.filter(
+order =>
+order.status ===
+statusFilter
+);
+
+}
+
+/* FILTER PAYMENT */
+
+const paymentFilter =
+document
+.getElementById(
+"paymentStatusFilter"
+)
+.value;
+
+if(paymentFilter){
+
+list =
+list.filter(
+order =>
+(order.paymentStatus ||
+"Pending") ===
+paymentFilter
+);
+
+}
+
+/* SEARCH */
+
+const search =
+document
+.getElementById(
+"orderSearch"
+)
+.value
+.toLowerCase()
+.trim();
+
+if(search){
+
+list =
+list.filter(
+order => {
+
+const customer =
+order.customer ||
+{};
+
+return (
+
+String(
+order.id
+)
+.toLowerCase()
+.includes(
+search
+)
+
+||
+
+String(
+customer.phone ||
+""
+)
+.toLowerCase()
+.includes(
+search
+)
+
+||
+
+String(
+customer.name ||
+""
+)
+.toLowerCase()
+.includes(
+search
+)
+
+);
+
+}
+);
+
+}
+
+if(
+!list.length
+){
 
 box.innerHTML =
-"<p>No orders yet.</p>";
+"<p>No orders found.</p>";
 
 return;
 
 }
 
 box.innerHTML =
-orders.map(order=>{
+list.map(
+order => {
 
 const customer =
-order.customer || {};
+order.customer ||
+{};
 
 const items =
-order.items || [];
+order.items ||
+[];
+
+const paymentStatus =
+order.paymentStatus ||
+"Pending";
 
 return `
 
@@ -1684,69 +2517,325 @@ return `
 
 <div>
 
-<b>
-Order #${escapeHtml(order.id)}
-</b>
+<div class="orderId">
 
-<br>
+Order #
+${escapeHtml(
+order.id
+)}
+
+</div>
 
 <small>
+
 ${new Date(
 order.createdAt
-).toLocaleString("en-BD")}
+).toLocaleString(
+"en-BD"
+)}
+
 </small>
 
 </div>
 
-<span class="status">
-${escapeHtml(order.status)}
+
+<div class="statusBox">
+
+<span
+class="
+status
+${getStatusClass(
+order.status
+)}
+"
+>
+
+${escapeHtml(
+order.status ||
+"Pending"
+)}
+
 </span>
 
 </div>
 
+</div>
+
+
 <hr>
 
-<b>Customer</b>
+
+<b>
+Customer
+</b>
 
 <p>
+
 Name:
-${escapeHtml(customer.name||"")}
+${escapeHtml(
+customer.name ||
+""
+)}
+
 <br>
 
 Phone:
-${escapeHtml(customer.phone||"")}
+${escapeHtml(
+customer.phone ||
+""
+)}
+
 <br>
 
 Address:
-${escapeHtml(customer.address||"")}
+${escapeHtml(
+customer.address ||
+""
+)}
+
 </p>
 
-<b>Payment:</b>
-${escapeHtml(order.paymentMethod||"cod")}
+
+<div
+style="
+display:grid;
+grid-template-columns:
+1fr 1fr;
+gap:10px;
+margin-top:10px
+"
+>
+
+<div>
+
+<label>
+Order Status
+</label>
+
+<select
+class="statusSelect"
+id="
+status-${escapeHtml(
+order.id
+)}
+"
+>
+
+<option
+value="Pending"
+${order.status==="Pending"?"selected":""}
+>
+Pending
+</option>
+
+<option
+value="Confirmed"
+${order.status==="Confirmed"?"selected":""}
+>
+Confirmed
+</option>
+
+<option
+value="Processing"
+${order.status==="Processing"?"selected":""}
+>
+Processing
+</option>
+
+<option
+value="Shipped"
+${order.status==="Shipped"?"selected":""}
+>
+Shipped
+</option>
+
+<option
+value="Delivered"
+${order.status==="Delivered"?"selected":""}
+>
+Delivered
+</option>
+
+<option
+value="Cancelled"
+${order.status==="Cancelled"?"selected":""}
+>
+Cancelled
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+Payment Status
+</label>
+
+<select
+class="paymentSelect"
+id="
+payment-${escapeHtml(
+order.id
+)}
+"
+>
+
+<option
+value="Pending"
+${paymentStatus==="Pending"?"selected":""}
+>
+Pending
+</option>
+
+<option
+value="Paid"
+${paymentStatus==="Paid"?"selected":""}
+>
+Paid
+</option>
+
+<option
+value="Failed"
+${paymentStatus==="Failed"?"selected":""}
+>
+Failed
+</option>
+
+<option
+value="Refunded"
+${paymentStatus==="Refunded"?"selected":""}
+>
+Refunded
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div
+style="
+display:flex;
+gap:8px;
+margin-top:8px;
+flex-wrap:wrap
+"
+>
+
+<button
+class="btn"
+onclick="
+updateOrderStatus(
+'${escapeHtml(
+order.id
+)}'
+)
+"
+>
+💾 Update Order
+</button>
+
+<button
+class="btn green"
+onclick="
+updatePaymentStatus(
+'${escapeHtml(
+order.id
+)}'
+)
+"
+>
+💳 Update Payment
+</button>
+
+</div>
+
+
+<p>
+
+<b>
+Payment Method:
+</b>
+
+${escapeHtml(
+order.paymentMethod ||
+"cod"
+)}
+
+&nbsp; | &nbsp;
+
+<b>
+Payment:
+</b>
+
+<span
+class="
+status
+${getPaymentClass(
+paymentStatus
+)}
+"
+>
+
+${escapeHtml(
+paymentStatus
+)}
+
+</span>
+
+</p>
+
 
 <div class="orderItems">
 
-<b>Products</b>
+<b>
+Products
+</b>
 
-${items.map(item=>`
+${items.map(
+item => `
 
-<div>
-${escapeHtml(item.name)}
-× ${item.qty}
-= ৳${Number(
-item.price*item.qty
-).toLocaleString("en-BD")}
+<div class="orderItem">
+
+${escapeHtml(
+item.name
+)}
+
+×
+${item.qty}
+
+=
+
+৳${Number(
+item.price *
+item.qty
+).toLocaleString(
+"en-BD"
+)}
+
 </div>
 
-`).join("")}
+`
+).join("")}
+
 
 <hr>
 
+
 <b>
+
 Total:
 ৳${Number(
 order.total
-).toLocaleString("en-BD")}
+).toLocaleString(
+"en-BD"
+)}
+
 </b>
 
 </div>
@@ -1755,14 +2844,135 @@ order.total
 
 `;
 
-}).join("");
+}
+).join("");
 
 }
 
 
-/* =========================
+/* =====================================================
+   UPDATE ORDER STATUS
+===================================================== */
+
+async function updateOrderStatus(
+orderId
+){
+
+const select =
+document.getElementById(
+"status-" +
+orderId
+);
+
+if(!select){
+return;
+}
+
+const status =
+select.value;
+
+try{
+
+await api(
+
+"/api/admin/orders/" +
+encodeURIComponent(
+orderId
+) +
+"/status",
+
+{
+method:"PUT",
+
+body:{
+status
+}
+
+}
+
+);
+
+await loadOrders();
+
+alert(
+"Order status updated to " +
+status
+);
+
+}catch(error){
+
+alert(
+error.message
+);
+
+}
+
+}
+
+
+/* =====================================================
+   UPDATE PAYMENT STATUS
+===================================================== */
+
+async function updatePaymentStatus(
+orderId
+){
+
+const select =
+document.getElementById(
+"payment-" +
+orderId
+);
+
+if(!select){
+return;
+}
+
+const paymentStatus =
+select.value;
+
+try{
+
+await api(
+
+"/api/admin/orders/" +
+encodeURIComponent(
+orderId
+) +
+"/payment-status",
+
+{
+method:"PUT",
+
+body:{
+paymentStatus
+}
+
+}
+
+);
+
+await loadOrders();
+
+alert(
+"Payment status updated to " +
+paymentStatus
+);
+
+}catch(error){
+
+alert(
+error.message
+);
+
+}
+
+}
+
+
+/* =====================================================
    SETTINGS
-========================= */
+===================================================== */
 
 async function loadSettings(){
 
@@ -1774,50 +2984,71 @@ await api(
 );
 
 const s =
-data.settings || {};
+data.settings ||
+{};
 
 document
-.getElementById("shopName")
+.getElementById(
+"shopName"
+)
 .value =
-s.shopName||"";
+s.shopName ||
+"";
 
 document
-.getElementById("tagline")
+.getElementById(
+"tagline"
+)
 .value =
-s.tagline||"";
+s.tagline ||
+"";
 
 document
-.getElementById("phone1")
+.getElementById(
+"phone1"
+)
 .value =
-s.phone1||"";
+s.phone1 ||
+"";
 
 document
-.getElementById("phone2")
+.getElementById(
+"phone2"
+)
 .value =
-s.phone2||"";
+s.phone2 ||
+"";
 
 document
-.getElementById("facebook")
+.getElementById(
+"facebook"
+)
 .value =
-s.facebook||"";
+s.facebook ||
+"";
 
 document
-.getElementById("currency")
+.getElementById(
+"currency"
+)
 .value =
-s.currency||"BDT";
+s.currency ||
+"BDT";
 
 }catch(error){
 
-console.error(error);
+console.error(
+error
+);
 
 }
 
 }
 
 
-/* =========================
+/* =====================================================
    SAVE SETTINGS
-========================= */
+===================================================== */
 
 async function saveSettings(){
 
@@ -1826,59 +3057,79 @@ document.getElementById(
 "settingsMsg"
 );
 
-msg.className="msg";
+msg.className =
+"msg";
 
 try{
 
-const data =
 await api(
+
 "/api/admin/settings",
+
 {
+
 method:"PUT",
+
 body:{
 
 shopName:
-document.getElementById(
+document
+.getElementById(
 "shopName"
-).value,
+)
+.value,
 
 tagline:
-document.getElementById(
+document
+.getElementById(
 "tagline"
-).value,
+)
+.value,
 
 phone1:
-document.getElementById(
+document
+.getElementById(
 "phone1"
-).value,
+)
+.value,
 
 phone2:
-document.getElementById(
+document
+.getElementById(
 "phone2"
-).value,
+)
+.value,
 
 facebook:
-document.getElementById(
+document
+.getElementById(
 "facebook"
-).value,
+)
+.value,
 
 currency:
-document.getElementById(
+document
+.getElementById(
 "currency"
-).value
+)
+.value
 
 }
+
 }
+
 );
 
-msg.className="msg success";
+msg.className =
+"msg success";
 
 msg.textContent =
 "Settings saved successfully.";
 
 }catch(error){
 
-msg.className="msg error";
+msg.className =
+"msg error";
 
 msg.textContent =
 error.message;
@@ -1888,64 +3139,124 @@ error.message;
 }
 
 
-/* =========================
+/* =====================================================
    STATS
-========================= */
+===================================================== */
 
 function updateStats(){
 
 document
-.getElementById("productCount")
+.getElementById(
+"productCount"
+)
 .textContent =
 products.length;
 
 document
-.getElementById("orderCount")
+.getElementById(
+"orderCount"
+)
 .textContent =
 orders.length;
 
 document
-.getElementById("pendingCount")
+.getElementById(
+"pendingCount"
+)
 .textContent =
+
 orders.filter(
-x=>x.status==="Pending"
+x =>
+x.status ===
+"Pending"
 ).length;
+
+
+/* TOTAL SALES
+
+   Cancelled orders are excluded.
+*/
 
 const sales =
 orders.reduce(
-(sum,x)=>
-sum+Number(x.total||0),
+(sum,x) => {
+
+if(
+x.status ===
+"Cancelled"
+){
+
+return sum;
+
+}
+
+return (
+sum +
+Number(
+x.total || 0
+)
+);
+
+},
 0
 );
 
 document
-.getElementById("salesTotal")
+.getElementById(
+"salesTotal"
+)
 .textContent =
-"৳"+
-sales.toLocaleString("en-BD");
+"৳" +
+sales.toLocaleString(
+"en-BD"
+);
 
 }
 
 
-/* =========================
-   SECURITY
-========================= */
+/* =====================================================
+   SECURITY / ESCAPE HTML
+===================================================== */
 
-function escapeHtml(value){
+function escapeHtml(
+value
+){
 
-return String(value)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+return String(
+value
+)
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
 
 }
 
 
-/* =========================
+/* =====================================================
    START
-========================= */
+===================================================== */
 
 if(token){
 
@@ -1956,4 +3267,5 @@ showAdmin();
 </script>
 
 </body>
+
 </html>
