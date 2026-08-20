@@ -1,3 +1,4 @@
+```javascript
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
@@ -29,10 +30,7 @@ app.use(
 
 app.use(
   express.static(
-    path.join(
-      __dirname,
-      "public"
-    )
+    path.join(__dirname, "public")
   )
 );
 
@@ -72,11 +70,11 @@ const pool =
       process.env.DATABASE_URL,
 
     ssl: {
-      rejectUnauthorized:
-        false
+      rejectUnauthorized: false
     },
 
     max: 5
+
   });
 
 /* =========================================================
@@ -86,16 +84,13 @@ const pool =
 cloudinary.config({
 
   cloud_name:
-    process.env
-      .CLOUDINARY_CLOUD_NAME,
+    process.env.CLOUDINARY_CLOUD_NAME,
 
   api_key:
-    process.env
-      .CLOUDINARY_API_KEY,
+    process.env.CLOUDINARY_API_KEY,
 
   api_secret:
-    process.env
-      .CLOUDINARY_API_SECRET
+    process.env.CLOUDINARY_API_SECRET
 
 });
 
@@ -160,6 +155,41 @@ const PAYMENT_STATUSES = [
   "Refunded"
 
 ];
+
+/* =========================================================
+   STATUS FLOW
+========================================================= */
+
+const STATUS_FLOW = {
+
+  Pending: [
+    "Confirmed",
+    "Cancelled"
+  ],
+
+  Confirmed: [
+    "Processing",
+    "Shipped",
+    "Cancelled"
+  ],
+
+  Processing: [
+    "Shipped",
+    "Cancelled"
+  ],
+
+  Shipped: [
+    "Delivered",
+    "Cancelled"
+  ],
+
+  Delivered: [
+    "Cancelled"
+  ],
+
+  Cancelled: []
+
+};
 
 /* =========================================================
    DATABASE INITIALIZATION
@@ -304,9 +334,7 @@ async function getSettings() {
 
     `);
 
-  if (
-    !result.rows.length
-  ) {
+  if (!result.rows.length) {
 
     return {
       ...defaultSettings
@@ -1484,6 +1512,7 @@ app.get(
     } catch (error) {
 
       console.error(
+        "Admin orders error:",
         error
       );
 
@@ -1503,6 +1532,10 @@ app.get(
 
 /* =========================================================
    UPDATE ORDER STATUS
+   IMPORTANT:
+   - Status is saved permanently in PostgreSQL
+   - Cancel restores stock
+   - Cancel cannot restore stock twice
 ========================================================= */
 
 app.put(
@@ -1515,6 +1548,9 @@ app.put(
     res
   ) => {
 
+    const client =
+      await pool.connect();
+
     try {
 
       const orderId =
@@ -1522,14 +1558,14 @@ app.put(
           req.params.id || ""
         ).trim();
 
-      const status =
+      const newStatus =
         String(
           req.body?.status || ""
         ).trim();
 
       if (
         !ORDER_STATUSES.includes(
-          status
+          newStatus
         )
       ) {
 
@@ -1544,236 +1580,16 @@ app.put(
 
       }
 
-      const result =
-        await pool.query(
-
-          `
-
-          UPDATE orders
-
-          SET status = $1
-
-          WHERE id = $2
-
-          RETURNING
-
-            id,
-
-            created_at
-              AS "createdAt",
-
-            customer,
-
-            items,
-
-            total::float
-              AS total,
-
-            payment_method
-              AS "paymentMethod",
-
-            status,
-
-            payment_status
-              AS "paymentStatus"
-
-          `,
-
-          [
-
-            status,
-
-            orderId
-
-          ]
-
-        );
-
-      if (
-        !result.rows.length
-      ) {
-
-        return res
-          .status(404)
-          .json({
-
-            error:
-              "Order not found"
-
-          });
-
-      }
-
-      res.json({
-
-        ok: true,
-
-        order:
-          result.rows[0]
-
-      });
-
-    } catch (error) {
-
-      console.error(
-        "Update order status error:",
-        error
+      await client.query(
+        "BEGIN"
       );
 
-      res
-        .status(500)
-        .json({
+      /* -----------------------------------------
+         LOCK ORDER
+      ----------------------------------------- */
 
-          error:
-            "Could not update order status"
-
-        });
-
-    }
-
-  }
-);
-
-/* =========================================================
-   UPDATE PAYMENT STATUS
-========================================================= */
-
-app.put(
-  "/api/admin/orders/:id/payment-status",
-
-  adminAuth,
-
-  async (
-    req,
-    res
-  ) => {
-
-    try {
-
-      const orderId =
-        String(
-          req.params.id || ""
-        ).trim();
-
-      const paymentStatus =
-        String(
-          req.body?.paymentStatus ||
-          ""
-        ).trim();
-
-      if (
-        !PAYMENT_STATUSES.includes(
-          paymentStatus
-        )
-      ) {
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              "Invalid payment status"
-
-          });
-
-      }
-
-      const result =
-        await pool.query(
-
-          `
-
-          UPDATE orders
-
-          SET payment_status = $1
-
-          WHERE id = $2
-
-          RETURNING
-
-            id,
-
-            payment_status
-              AS "paymentStatus"
-
-          `,
-
-          [
-
-            paymentStatus,
-
-            orderId
-
-          ]
-
-        );
-
-      if (
-        !result.rows.length
-      ) {
-
-        return res
-          .status(404)
-          .json({
-
-            error:
-              "Order not found"
-
-          });
-
-      }
-
-      res.json({
-
-        ok: true,
-
-        order:
-          result.rows[0]
-
-      });
-
-    } catch (error) {
-
-      console.error(
-        "Update payment status error:",
-        error
-      );
-
-      res
-        .status(500)
-        .json({
-
-          error:
-            "Could not update payment status"
-
-        });
-
-    }
-
-  }
-);
-
-/* =========================================================
-   PUBLIC ORDER TRACKING
-========================================================= */
-
-app.get(
-  "/api/orders/:id",
-
-  async (
-    req,
-    res
-  ) => {
-
-    try {
-
-      const orderId =
-        String(
-          req.params.id || ""
-        ).trim();
-
-      const result =
-        await pool.query(
+      const orderResult =
+        await client.query(
 
           `
 
@@ -1803,6 +1619,8 @@ app.get(
 
           WHERE id = $1
 
+          FOR UPDATE
+
           `,
 
           [orderId]
@@ -1810,8 +1628,12 @@ app.get(
         );
 
       if (
-        !result.rows.length
+        !orderResult.rows.length
       ) {
+
+        await client.query(
+          "ROLLBACK"
+        );
 
         return res
           .status(404)
@@ -1824,663 +1646,206 @@ app.get(
 
       }
 
-      res.json({
+      const order =
+        orderResult.rows[0];
 
-        ok: true,
+      const oldStatus =
+        order.status;
 
-        order:
-          result.rows[0]
+      /* -----------------------------------------
+         SAME STATUS
+      ----------------------------------------- */
 
-      });
+      if (
+        oldStatus === newStatus
+      ) {
 
-    } catch (error) {
+        await client.query(
+          "COMMIT"
+        );
 
-      console.error(
-        "Order tracking error:",
-        error
-      );
+        return res.json({
 
-      res
-        .status(500)
-        .json({
+          ok: true,
 
-          error:
-            "Could not load order"
+          order
 
         });
 
-    }
-
-  }
-);
-
-/* =========================================================
-   CREATE ORDER
-========================================================= */
-
-app.post(
-  "/api/orders",
-
-  async (
-    req,
-    res
-  ) => {
-
-    const client =
-      await pool.connect();
-
-    try {
-
-      const body =
-        req.body || {};
-
-      const customer =
-        body.customer;
-
-      const items =
-        body.items;
-
-      const paymentMethod =
-        String(
-          body.paymentMethod ||
-          "cod"
-        ).trim();
-
-      if (
-
-        !customer?.name ||
-
-        !customer?.phone ||
-
-        !customer?.address
-
-      ) {
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              "Customer information is required"
-
-          });
-
       }
-
-      if (
-
-        !Array.isArray(items) ||
-
-        items.length === 0
-
-      ) {
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              "Order items are required"
-
-          });
-
-      }
-
-      await client.query(
-        "BEGIN"
-      );
-
-      let total = 0;
-
-      const cleanItems = [];
 
       /* -----------------------------------------
-         COMBINE DUPLICATE PRODUCT IDS
+         ALREADY CANCELLED
       ----------------------------------------- */
 
-      const quantityMap =
-        new Map();
-
-      for (
-        const item of items
+      if (
+        oldStatus === "Cancelled"
       ) {
 
-        const id =
-          Number(
-            item.id
-          );
-
-        const qty =
-          Math.max(
-            1,
-            Number(
-              item.qty || 1
-            )
-          );
-
-        quantityMap.set(
-          id,
-          (
-            quantityMap.get(id) ||
-            0
-          ) + qty
+        await client.query(
+          "ROLLBACK"
         );
 
+        return res
+          .status(409)
+          .json({
+
+            error:
+              "Cancelled order cannot be changed."
+
+          });
+
       }
 
       /* -----------------------------------------
-         CHECK STOCK
+         STATUS TRANSITION CHECK
       ----------------------------------------- */
 
-      for (
-        const [
-          productId,
-          qty
-        ]
-        of quantityMap
+      const allowed =
+        STATUS_FLOW[
+          oldStatus
+        ] || [];
+
+      if (
+        !allowed.includes(
+          newStatus
+        )
       ) {
 
-        const result =
+        await client.query(
+          "ROLLBACK"
+        );
+
+        return res
+          .status(400)
+          .json({
+
+            error:
+              `Cannot change order status from ${oldStatus} to ${newStatus}.`
+
+          });
+
+      }
+
+      /* -----------------------------------------
+         CANCEL ORDER
+         RESTORE STOCK
+      ----------------------------------------- */
+
+      if (
+        newStatus === "Cancelled"
+      ) {
+
+        const items =
+          Array.isArray(
+            order.items
+          )
+            ? order.items
+            : [];
+
+        for (
+          const item of items
+        ) {
+
+          const productId =
+            Number(
+              item.id
+            );
+
+          const quantity =
+            Math.max(
+              0,
+              Number(
+                item.qty || 0
+              )
+            );
+
+          if (
+            !productId ||
+            quantity <= 0
+          ) {
+
+            continue;
+
+          }
+
+          /*
+             Lock product row before
+             increasing stock.
+          */
+
+          const productResult =
+            await client.query(
+
+              `
+
+              SELECT
+
+                id,
+
+                stock
+
+              FROM products
+
+              WHERE id = $1
+
+              FOR UPDATE
+
+              `,
+
+              [productId]
+
+            );
+
+          /*
+             If product was deleted,
+             do not crash the whole
+             cancellation process.
+          */
+
+          if (
+            !productResult.rows.length
+          ) {
+
+            console.warn(
+
+              "Product not found while restoring stock:",
+              productId
+
+            );
+
+            continue;
+
+          }
+
           await client.query(
 
             `
 
-            SELECT
+            UPDATE products
 
-              id::text AS id,
+            SET stock =
+              stock + $1
 
-              name,
-
-              price::float
-                AS price,
-
-              stock
-
-            FROM products
-
-            WHERE id = $1
-
-            FOR UPDATE
+            WHERE id = $2
 
             `,
 
-            [productId]
+            [
 
-          );
+              quantity,
 
-        if (
-          !result.rows.length
-        ) {
+              productId
 
-          throw new Error(
-            "Product not found"
-          );
-
-        }
-
-        const product =
-          result.rows[0];
-
-        if (
-          Number(
-            product.stock
-          ) < qty
-        ) {
-
-          throw new Error(
-
-            "Not enough stock for " +
-            product.name
+            ]
 
           );
 
         }
 
-        total +=
-          Number(
-            product.price
-          ) * qty;
-
-        cleanItems.push({
-
-          id:
-            Number(
-              product.id
-            ),
-
-          name:
-            product.name,
-
-          price:
-            Number(
-              product.price
-            ),
-
-          qty
-
-        });
-
       }
 
       /* -----------------------------------------
-         ORDER ID
-      ----------------------------------------- */
-
-      const orderId =
-
-        "SM" +
-        Date.now() +
-        crypto
-          .randomBytes(2)
-          .toString("hex")
-          .toUpperCase();
-
-      const createdAt =
-        new Date()
-          .toISOString();
-
-      const cleanCustomer = {
-
-        name:
-          String(
-            customer.name
-          ).trim(),
-
-        phone:
-          String(
-            customer.phone
-          ).trim(),
-
-        address:
-          String(
-            customer.address
-          ).trim()
-
-      };
-
-      /* -----------------------------------------
-         PAYMENT STATUS
-      ----------------------------------------- */
-
-      const paymentStatus =
-        "Pending";
-
-      /* -----------------------------------------
-         INSERT ORDER
-      ----------------------------------------- */
-
-      await client.query(
-
-        `
-
-        INSERT INTO orders (
-
-          id,
-
-          created_at,
-
-          customer,
-
-          items,
-
-          total,
-
-          payment_method,
-
-          status,
-
-          payment_status
-
-        )
-
-        VALUES (
-
-          $1,
-
-          $2,
-
-          $3,
-
-          $4,
-
-          $5,
-
-          $6,
-
-          $7,
-
-          $8
-
-        )
-
-        `,
-
-        [
-
-          orderId,
-
-          createdAt,
-
-          JSON.stringify(
-            cleanCustomer
-          ),
-
-          JSON.stringify(
-            cleanItems
-          ),
-
-          total,
-
-          paymentMethod,
-
-          "Pending",
-
-          paymentStatus
-
-        ]
-
-      );
-
-      /* -----------------------------------------
-         REDUCE STOCK
-      ----------------------------------------- */
-
-      for (
-        const item of cleanItems
-      ) {
-
-        await client.query(
-
-          `
-
-          UPDATE products
-
-          SET stock =
-            stock - $1
-
-          WHERE id = $2
-
-          `,
-
-          [
-
-            Number(
-              item.qty
-            ),
-
-            Number(
-              item.id
-            )
-
-          ]
-
-        );
-
-      }
-
-      await client.query(
-        "COMMIT"
-      );
-
-      res.json({
-
-        ok: true,
-
-        orderId,
-
-        total,
-
-        status:
-          "Pending",
-
-        paymentStatus:
-          "Pending"
-
-      });
-
-    } catch (error) {
-
-      await client.query(
-        "ROLLBACK"
-      );
-
-      console.error(
-        "Order error:",
-        error
-      );
-
-      res
-        .status(400)
-        .json({
-
-          error:
-            error.message ||
-            "Could not create order"
-
-        });
-
-    } finally {
-
-      client.release();
-
-    }
-
-  }
-);
-
-/* =========================================================
-   PAYMENT
-========================================================= */
-
-app.post(
-  "/api/payment/create",
-
-  (req, res) => {
-
-    const method =
-      req.body?.method;
-
-    if (
-      ![
-        "bkash",
-        "nagad",
-        "card"
-      ].includes(method)
-    ) {
-
-      return res
-        .status(400)
-        .json({
-
-          error:
-            "Unsupported payment method"
-
-        });
-
-    }
-
-    res
-      .status(501)
-      .json({
-
-        error:
-
-          method +
-          " payment gateway is not configured yet."
-
-      });
-
-  }
-);
-
-/* =========================================================
-   ADMIN PAGE
-========================================================= */
-
-app.get(
-  "/admin",
-
-  (req, res) => {
-
-    res.sendFile(
-
-      path.join(
-
-        __dirname,
-
-        "public",
-
-        "admin.html"
-
-      )
-
-    );
-
-  }
-);
-
-/* =========================================================
-   WEBSITE FALLBACK
-========================================================= */
-
-app.use(
-
-  (
-    req,
-    res,
-    next
-  ) => {
-
-    if (
-
-      req.method ===
-        "GET" &&
-
-      !req.path.startsWith(
-        "/api/"
-      )
-
-    ) {
-
-      const indexFile =
-
-        path.join(
-
-          __dirname,
-
-          "public",
-
-          "index.html"
-
-        );
-
-      if (
-        fs.existsSync(
-          indexFile
-        )
-      ) {
-
-        return res.sendFile(
-          indexFile
-        );
-
-      }
-
-    }
-
-    next();
-
-  }
-
-);
-
-/* =========================================================
-   404
-========================================================= */
-
-app.use(
-
-  (
-    req,
-    res
-  ) => {
-
-    res
-
-      .status(404)
-
-      .json({
-
-        error:
-          "Not found"
-
-      });
-
-  }
-
-);
-
-/* =========================================================
-   START SERVER
-========================================================= */
-
-async function startServer() {
-
-  try {
-
-    await initDatabase();
-
-    app.listen(
-
-      PORT,
-
-      "0.0.0.0",
-
-      () => {
-
-        console.log(
-
-          "SM Online Shop running on port " +
-          PORT
-
-        );
-
-      }
-
-    );
-
-  } catch (error) {
-
-    console.error(
-
-      "Database initialization failed:",
-
-      error
-
-    );
-
-    process.exit(1);
-
-  }
-
-}
-
-startServer();
-
-/* =========================================================
-   GRACEFUL SHUTDOWN
-========================================================= */
-
-process.on(
-
-  "SIGTERM",
-
-  async () => {
-
-    await pool.end();
-
-    process.exit(0);
-
-  }
-
-);
+         SAVE NEW STATUS
+     
+```
