@@ -1,4 +1,3 @@
-```javascript
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
@@ -8,8 +7,7 @@ const cloudinary = require("cloudinary").v2;
 
 const app = express();
 
-const PORT =
-  process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 /* =========================================================
    MIDDLEWARE
@@ -55,34 +53,25 @@ const ADMIN_PASS =
 ========================================================= */
 
 if (!process.env.DATABASE_URL) {
-
-  console.error(
-    "ERROR: DATABASE_URL is missing."
-  );
-
+  console.error("ERROR: DATABASE_URL is missing.");
   process.exit(1);
 }
 
-const pool =
-  new Pool({
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
 
-    connectionString:
-      process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  },
 
-    ssl: {
-      rejectUnauthorized: false
-    },
-
-    max: 5
-
-  });
+  max: 5
+});
 
 /* =========================================================
    CLOUDINARY
 ========================================================= */
 
 cloudinary.config({
-
   cloud_name:
     process.env.CLOUDINARY_CLOUD_NAME,
 
@@ -91,7 +80,6 @@ cloudinary.config({
 
   api_secret:
     process.env.CLOUDINARY_API_SECRET
-
 });
 
 /* =========================================================
@@ -99,25 +87,18 @@ cloudinary.config({
 ========================================================= */
 
 const defaultSettings = {
-
-  shopName:
-    "SM Online Shop",
+  shopName: "SM Online Shop",
 
   tagline:
     "Style • Comfort • Confidence ♥",
 
-  phone1:
-    "01827872334",
+  phone1: "01827872334",
 
-  phone2:
-    "01886995687",
+  phone2: "01886995687",
 
-  facebook:
-    "",
+  facebook: "",
 
-  currency:
-    "BDT"
-
+  currency: "BDT"
 };
 
 /* =========================================================
@@ -125,43 +106,31 @@ const defaultSettings = {
 ========================================================= */
 
 const ORDER_STATUSES = [
-
   "Pending",
-
   "Confirmed",
-
   "Processing",
-
   "Shipped",
-
   "Delivered",
-
   "Cancelled"
-
 ];
 
-/* =========================================================
-   PAYMENT STATUS
-========================================================= */
+/*
+  Allowed status flow:
 
-const PAYMENT_STATUSES = [
+  Pending
+      ↓
+  Confirmed
+      ↓
+  Processing
+      ↓
+  Shipped
+      ↓
+  Delivered
 
-  "Pending",
+  Cancel can happen before Delivered.
+*/
 
-  "Paid",
-
-  "Failed",
-
-  "Refunded"
-
-];
-
-/* =========================================================
-   STATUS FLOW
-========================================================= */
-
-const STATUS_FLOW = {
-
+const STATUS_TRANSITIONS = {
   Pending: [
     "Confirmed",
     "Cancelled"
@@ -183,24 +152,36 @@ const STATUS_FLOW = {
     "Cancelled"
   ],
 
-  Delivered: [
-    "Cancelled"
-  ],
+  Delivered: [],
 
   Cancelled: []
-
 };
+
+/* =========================================================
+   PAYMENT STATUS
+========================================================= */
+
+const PAYMENT_STATUSES = [
+  "Pending",
+  "Paid",
+  "Failed",
+  "Refunded"
+];
 
 /* =========================================================
    DATABASE INITIALIZATION
 ========================================================= */
 
 async function initDatabase() {
+  /*
+    IMPORTANT:
+    SQL is kept inside one template literal.
+    This prevents the "Unexpected identifier 'TABLE'"
+    JavaScript syntax error.
+  */
 
   await pool.query(`
-
     CREATE TABLE IF NOT EXISTS store_settings (
-
       id INTEGER PRIMARY KEY,
 
       shop_name TEXT NOT NULL
@@ -220,13 +201,9 @@ async function initDatabase() {
 
       currency TEXT NOT NULL
         DEFAULT 'BDT'
-
     );
 
-
-
     CREATE TABLE IF NOT EXISTS products (
-
       id BIGINT PRIMARY KEY,
 
       name TEXT NOT NULL,
@@ -249,13 +226,9 @@ async function initDatabase() {
 
       created_at TIMESTAMPTZ NOT NULL
         DEFAULT NOW()
-
     );
 
-
-
     CREATE TABLE IF NOT EXISTS orders (
-
       id TEXT PRIMARY KEY,
 
       created_at TIMESTAMPTZ NOT NULL
@@ -271,11 +244,16 @@ async function initDatabase() {
         DEFAULT 'cod',
 
       status TEXT NOT NULL
-        DEFAULT 'Pending'
+        DEFAULT 'Pending',
 
+      payment_status TEXT NOT NULL
+        DEFAULT 'Pending',
+
+      stock_restored BOOLEAN NOT NULL
+        DEFAULT FALSE,
+
+      cancelled_at TIMESTAMPTZ NULL
     );
-
-
 
     INSERT INTO store_settings (
       id
@@ -288,21 +266,26 @@ async function initDatabase() {
     ON CONFLICT (id)
     DO NOTHING;
 
-
-
     ALTER TABLE orders
-
-    ADD COLUMN IF NOT EXISTS
+      ADD COLUMN IF NOT EXISTS
       payment_status TEXT
       NOT NULL
       DEFAULT 'Pending';
 
+    ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS
+      stock_restored BOOLEAN
+      NOT NULL
+      DEFAULT FALSE;
+
+    ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS
+      cancelled_at TIMESTAMPTZ NULL;
   `);
 
   console.log(
-    "PostgreSQL database initialized."
+    "PostgreSQL database initialized successfully."
   );
-
 }
 
 /* =========================================================
@@ -310,43 +293,27 @@ async function initDatabase() {
 ========================================================= */
 
 async function getSettings() {
-
-  const result =
-    await pool.query(`
-
-      SELECT
-
-        shop_name,
-
-        tagline,
-
-        phone1,
-
-        phone2,
-
-        facebook,
-
-        currency
-
-      FROM store_settings
-
-      WHERE id = 1
-
-    `);
+  const result = await pool.query(`
+    SELECT
+      shop_name,
+      tagline,
+      phone1,
+      phone2,
+      facebook,
+      currency
+    FROM store_settings
+    WHERE id = 1
+  `);
 
   if (!result.rows.length) {
-
     return {
       ...defaultSettings
     };
-
   }
 
-  const row =
-    result.rows[0];
+  const row = result.rows[0];
 
   return {
-
     shopName:
       row.shop_name ||
       defaultSettings.shopName,
@@ -364,15 +331,11 @@ async function getSettings() {
       defaultSettings.phone2,
 
     facebook:
-      row.facebook ||
-      "",
+      row.facebook || "",
 
     currency:
-      row.currency ||
-      "BDT"
-
+      row.currency || "BDT"
   };
-
 }
 
 /* =========================================================
@@ -380,53 +343,38 @@ async function getSettings() {
 ========================================================= */
 
 async function getProducts() {
+  const result = await pool.query(`
+    SELECT
+      id::text AS id,
 
-  const result =
-    await pool.query(`
+      name,
 
-      SELECT
+      category,
 
-        id::text AS id,
+      price::float AS price,
 
-        name,
+      old_price::float AS "oldPrice",
 
-        category,
+      discount::float AS discount,
 
-        price::float AS price,
+      stock,
 
-        old_price::float
-          AS "oldPrice",
+      image,
 
-        discount::float
-          AS discount,
+      created_at AS "createdAt"
 
-        stock,
+    FROM products
 
-        image,
-
-        created_at
-          AS "createdAt"
-
-      FROM products
-
-      ORDER BY
-        created_at DESC
-
-    `);
+    ORDER BY created_at DESC
+  `);
 
   return result.rows.map(
     product => ({
-
       ...product,
 
-      id:
-        Number(
-          product.id
-        )
-
+      id: Number(product.id)
     })
   );
-
 }
 
 /* =========================================================
@@ -434,58 +382,47 @@ async function getProducts() {
 ========================================================= */
 
 async function getOrders() {
+  const result = await pool.query(`
+    SELECT
+      id,
 
-  const result =
-    await pool.query(`
+      created_at AS "createdAt",
 
-      SELECT
+      customer,
 
-        id,
+      items,
 
-        created_at
-          AS "createdAt",
+      total::float AS total,
 
-        customer,
+      payment_method AS "paymentMethod",
 
-        items,
+      status,
 
-        total::float
-          AS total,
+      payment_status AS "paymentStatus",
 
-        payment_method
-          AS "paymentMethod",
+      stock_restored AS "stockRestored",
 
-        status,
+      cancelled_at AS "cancelledAt"
 
-        payment_status
-          AS "paymentStatus"
+    FROM orders
 
-      FROM orders
-
-      ORDER BY
-        created_at DESC
-
-    `);
+    ORDER BY created_at DESC
+  `);
 
   return result.rows;
-
 }
 
 /* =========================================================
    ADMIN SESSIONS
 ========================================================= */
 
-const sessions =
-  new Map();
+const sessions = new Map();
 
 /* =========================================================
    CREATE ADMIN TOKEN
 ========================================================= */
 
-function createToken(
-  username
-) {
-
+function createToken(username) {
   const randomPart =
     crypto
       .randomBytes(32)
@@ -511,62 +448,37 @@ function createToken(
       .digest("hex");
 
   return (
-
     signature +
     "." +
     Buffer
       .from(username)
-      .toString(
-        "base64url"
-      )
-
+      .toString("base64url")
   );
-
 }
 
 /* =========================================================
    ADMIN AUTH
 ========================================================= */
 
-function adminAuth(
-  req,
-  res,
-  next
-) {
-
+function adminAuth(req, res, next) {
   const authHeader =
-    req.headers.authorization ||
-    "";
+    req.headers.authorization || "";
 
   if (
-    !authHeader.startsWith(
-      "Bearer "
-    )
+    !authHeader.startsWith("Bearer ")
   ) {
-
-    return res
-      .status(401)
-      .json({
-        error:
-          "Unauthorized"
-      });
-
+    return res.status(401).json({
+      error: "Unauthorized"
+    });
   }
 
   const token =
     authHeader.substring(7);
 
-  if (
-    !sessions.has(token)
-  ) {
-
-    return res
-      .status(401)
-      .json({
-        error:
-          "Session expired"
-      });
-
+  if (!sessions.has(token)) {
+    return res.status(401).json({
+      error: "Session expired"
+    });
   }
 
   req.adminUser =
@@ -576,7 +488,6 @@ function adminAuth(
     token;
 
   next();
-
 }
 
 /* =========================================================
@@ -586,51 +497,32 @@ function adminAuth(
 app.get(
   "/api/store",
 
-  async (
-    req,
-    res
-  ) => {
-
+  async (req, res) => {
     try {
-
       const [
         settings,
         products
-      ] =
-        await Promise.all([
-
-          getSettings(),
-
-          getProducts()
-
-        ]);
+      ] = await Promise.all([
+        getSettings(),
+        getProducts()
+      ]);
 
       res.json({
-
         settings,
-
         products
-
       });
 
     } catch (error) {
-
       console.error(
         "Store API error:",
         error
       );
 
-      res
-        .status(500)
-        .json({
-
-          error:
-            "Could not load store"
-
-        });
-
+      res.status(500).json({
+        error:
+          "Could not load store"
+      });
     }
-
   }
 );
 
@@ -642,44 +534,28 @@ app.post(
   "/api/admin/login",
 
   (req, res) => {
-
     const username =
       String(
-        req.body?.username ||
-        ""
+        req.body?.username || ""
       ).trim();
 
     const password =
       String(
-        req.body?.password ||
-        ""
+        req.body?.password || ""
       );
 
     if (
-
-      username !==
-        ADMIN_USER ||
-
-      password !==
-        ADMIN_PASS
-
+      username !== ADMIN_USER ||
+      password !== ADMIN_PASS
     ) {
-
-      return res
-        .status(401)
-        .json({
-
-          error:
-            "Invalid username or password"
-
-        });
-
+      return res.status(401).json({
+        error:
+          "Invalid username or password"
+      });
     }
 
     const token =
-      createToken(
-        username
-      );
+      createToken(username);
 
     sessions.set(
       token,
@@ -687,13 +563,9 @@ app.post(
     );
 
     res.json({
-
       ok: true,
-
       token
-
     });
-
   }
 );
 
@@ -707,7 +579,6 @@ app.post(
   adminAuth,
 
   (req, res) => {
-
     sessions.delete(
       req.adminToken
     );
@@ -715,7 +586,6 @@ app.post(
     res.json({
       ok: true
     });
-
   }
 );
 
@@ -728,37 +598,24 @@ app.get(
 
   adminAuth,
 
-  async (
-    req,
-    res
-  ) => {
-
+  async (req, res) => {
     try {
-
       const products =
         await getProducts();
 
-      res.json(
-        products
-      );
+      res.json(products);
 
     } catch (error) {
-
       console.error(
+        "Load products error:",
         error
       );
 
-      res
-        .status(500)
-        .json({
-
-          error:
-            "Could not load products"
-
-        });
-
+      res.status(500).json({
+        error:
+          "Could not load products"
+      });
     }
-
   }
 );
 
@@ -771,13 +628,8 @@ app.post(
 
   adminAuth,
 
-  async (
-    req,
-    res
-  ) => {
-
+  async (req, res) => {
     try {
-
       const body =
         req.body || {};
 
@@ -787,16 +639,10 @@ app.post(
         ).trim();
 
       if (!name) {
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              "Product name is required"
-
-          });
-
+        return res.status(400).json({
+          error:
+            "Product name is required"
+        });
       }
 
       const price =
@@ -804,25 +650,15 @@ app.post(
           body.price || 0
         );
 
-      if (
-        price <= 0
-      ) {
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              "Valid product price is required"
-
-          });
-
+      if (price <= 0) {
+        return res.status(400).json({
+          error:
+            "Valid product price is required"
+        });
       }
 
       const product = {
-
-        id:
-          Date.now(),
+        id: Date.now(),
 
         name,
 
@@ -856,96 +692,57 @@ app.post(
 
         image:
           String(
-            body.image ||
-            ""
+            body.image || ""
           ),
 
         createdAt:
-          new Date()
-            .toISOString()
-
+          new Date().toISOString()
       };
 
       await pool.query(
-
         `
-
         INSERT INTO products (
-
           id,
-
           name,
-
           category,
-
           price,
-
           old_price,
-
           discount,
-
           stock,
-
           image,
-
           created_at
-
         )
 
         VALUES (
-
           $1,$2,$3,$4,$5,$6,$7,$8,$9
-
         )
-
         `,
-
         [
-
           product.id,
-
           product.name,
-
           product.category,
-
           product.price,
-
           product.oldPrice,
-
           product.discount,
-
           product.stock,
-
           product.image,
-
           product.createdAt
-
         ]
-
       );
 
-      res.json(
-        product
-      );
+      res.json(product);
 
     } catch (error) {
-
       console.error(
         "Create product error:",
         error
       );
 
-      res
-        .status(500)
-        .json({
-
-          error:
-            "Could not create product"
-
-        });
-
+      res.status(500).json({
+        error:
+          "Could not create product"
+      });
     }
-
   }
 );
 
@@ -958,13 +755,8 @@ app.put(
 
   adminAuth,
 
-  async (
-    req,
-    res
-  ) => {
-
+  async (req, res) => {
     try {
-
       const id =
         Number(
           req.params.id
@@ -972,80 +764,48 @@ app.put(
 
       const existing =
         await pool.query(
-
           `
-
           SELECT
-
             id::text AS id,
-
             name,
-
             category,
-
-            price::float
-              AS price,
-
-            old_price::float
-              AS "oldPrice",
-
-            discount::float
-              AS discount,
-
+            price::float AS price,
+            old_price::float AS "oldPrice",
+            discount::float AS discount,
             stock,
-
             image,
-
-            created_at
-              AS "createdAt"
+            created_at AS "createdAt"
 
           FROM products
 
           WHERE id = $1
-
           `,
-
           [id]
-
         );
 
-      if (
-        !existing.rows.length
-      ) {
-
-        return res
-          .status(404)
-          .json({
-
-            error:
-              "Product not found"
-
-          });
-
+      if (!existing.rows.length) {
+        return res.status(404).json({
+          error:
+            "Product not found"
+        });
       }
 
       const oldProduct = {
-
         ...existing.rows[0],
 
         id:
           Number(
             existing.rows[0].id
           )
-
       };
 
       const body =
         req.body || {};
 
       const updatedProduct = {
-
         ...oldProduct,
-
         ...body,
-
         id
-
       };
 
       updatedProduct.name =
@@ -1062,8 +822,7 @@ app.put(
 
       updatedProduct.price =
         Number(
-          updatedProduct.price ||
-          0
+          updatedProduct.price || 0
         );
 
       updatedProduct.oldPrice =
@@ -1074,114 +833,72 @@ app.put(
 
       updatedProduct.discount =
         Number(
-          updatedProduct.discount ||
-          0
+          updatedProduct.discount || 0
         );
 
       updatedProduct.stock =
         Math.max(
           0,
           Number(
-            updatedProduct.stock ||
-            0
+            updatedProduct.stock || 0
           )
         );
 
       updatedProduct.image =
         String(
-          updatedProduct.image ||
-          ""
+          updatedProduct.image || ""
         );
 
       if (
-
         !updatedProduct.name ||
-
         updatedProduct.price <= 0
-
       ) {
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              "Valid product name and price are required"
-
-          });
-
+        return res.status(400).json({
+          error:
+            "Valid product name and price are required"
+        });
       }
 
       await pool.query(
-
         `
-
         UPDATE products
 
         SET
-
           name = $1,
-
           category = $2,
-
           price = $3,
-
           old_price = $4,
-
           discount = $5,
-
           stock = $6,
-
           image = $7
 
         WHERE id = $8
-
         `,
-
         [
-
           updatedProduct.name,
-
           updatedProduct.category,
-
           updatedProduct.price,
-
           updatedProduct.oldPrice,
-
           updatedProduct.discount,
-
           updatedProduct.stock,
-
           updatedProduct.image,
-
           id
-
         ]
-
       );
 
-      res.json(
-        updatedProduct
-      );
+      res.json(updatedProduct);
 
     } catch (error) {
-
       console.error(
         "Update product error:",
         error
       );
 
-      res
-        .status(500)
-        .json({
-
-          error:
-            "Could not update product"
-
-        });
-
+      res.status(500).json({
+        error:
+          "Could not update product"
+      });
     }
-
   }
 );
 
@@ -1194,13 +911,8 @@ app.delete(
 
   adminAuth,
 
-  async (
-    req,
-    res
-  ) => {
-
+  async (req, res) => {
     try {
-
       const id =
         Number(
           req.params.id
@@ -1208,32 +920,18 @@ app.delete(
 
       const result =
         await pool.query(
-
           `
-
           DELETE FROM products
-
           WHERE id = $1
-
           `,
-
           [id]
-
         );
 
-      if (
-        result.rowCount === 0
-      ) {
-
-        return res
-          .status(404)
-          .json({
-
-            error:
-              "Product not found"
-
-          });
-
+      if (result.rowCount === 0) {
+        return res.status(404).json({
+          error:
+            "Product not found"
+        });
       }
 
       res.json({
@@ -1241,23 +939,16 @@ app.delete(
       });
 
     } catch (error) {
-
       console.error(
         "Delete product error:",
         error
       );
 
-      res
-        .status(500)
-        .json({
-
-          error:
-            "Could not delete product"
-
-        });
-
+      res.status(500).json({
+        error:
+          "Could not delete product"
+      });
     }
-
   }
 );
 
@@ -1270,74 +961,42 @@ app.post(
 
   adminAuth,
 
-  async (
-    req,
-    res
-  ) => {
-
+  async (req, res) => {
     try {
-
       const image =
         req.body?.image;
 
       if (!image) {
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              "No image received"
-
-          });
-
+        return res.status(400).json({
+          error:
+            "No image received"
+        });
       }
 
       if (
-
-        !process.env
-          .CLOUDINARY_CLOUD_NAME ||
-
-        !process.env
-          .CLOUDINARY_API_KEY ||
-
-        !process.env
-          .CLOUDINARY_API_SECRET
-
+        !process.env.CLOUDINARY_CLOUD_NAME ||
+        !process.env.CLOUDINARY_API_KEY ||
+        !process.env.CLOUDINARY_API_SECRET
       ) {
-
-        return res
-          .status(500)
-          .json({
-
-            error:
-              "Cloudinary environment variables are missing"
-
-          });
-
+        return res.status(500).json({
+          error:
+            "Cloudinary environment variables are missing"
+        });
       }
 
       const result =
-        await cloudinary
-          .uploader
-          .upload(
+        await cloudinary.uploader.upload(
+          image,
+          {
+            folder:
+              "sm-online-shop/products",
 
-            image,
-
-            {
-
-              folder:
-                "sm-online-shop/products",
-
-              resource_type:
-                "image"
-
-            }
-
-          );
+            resource_type:
+              "image"
+          }
+        );
 
       res.json({
-
         ok: true,
 
         url:
@@ -1345,27 +1004,19 @@ app.post(
 
         public_id:
           result.public_id
-
       });
 
     } catch (error) {
-
       console.error(
         "Cloudinary upload error:",
         error
       );
 
-      res
-        .status(500)
-        .json({
-
-          error:
-            "Cloudinary image upload failed"
-
-        });
-
+      res.status(500).json({
+        error:
+          "Cloudinary image upload failed"
+      });
     }
-
   }
 );
 
@@ -1378,50 +1029,31 @@ app.put(
 
   adminAuth,
 
-  async (
-    req,
-    res
-  ) => {
-
+  async (req, res) => {
     try {
-
       const oldSettings =
         await getSettings();
 
       const settings = {
-
         ...oldSettings,
-
         ...(req.body || {})
-
       };
 
       await pool.query(
-
         `
-
         UPDATE store_settings
 
         SET
-
           shop_name = $1,
-
           tagline = $2,
-
           phone1 = $3,
-
           phone2 = $4,
-
           facebook = $5,
-
           currency = $6
 
         WHERE id = 1
-
         `,
-
         [
-
           String(
             settings.shopName ||
             defaultSettings.shopName
@@ -1433,56 +1065,41 @@ app.put(
           ),
 
           String(
-            settings.phone1 ||
-            ""
+            settings.phone1 || ""
           ),
 
           String(
-            settings.phone2 ||
-            ""
+            settings.phone2 || ""
           ),
 
           String(
-            settings.facebook ||
-            ""
+            settings.facebook || ""
           ),
 
           String(
-            settings.currency ||
-            "BDT"
+            settings.currency || "BDT"
           )
-
         ]
-
       );
 
       res.json({
-
         ok: true,
 
         settings:
           await getSettings()
-
       });
 
     } catch (error) {
-
       console.error(
         "Settings error:",
         error
       );
 
-      res
-        .status(500)
-        .json({
-
-          error:
-            "Could not save settings"
-
-        });
-
+      res.status(500).json({
+        error:
+          "Could not save settings"
+      });
     }
-
   }
 );
 
@@ -1495,47 +1112,71 @@ app.get(
 
   adminAuth,
 
-  async (
-    req,
-    res
-  ) => {
-
+  async (req, res) => {
     try {
-
       const orders =
         await getOrders();
 
-      res.json(
-        orders
-      );
+      res.json(orders);
 
     } catch (error) {
-
       console.error(
-        "Admin orders error:",
+        "Load orders error:",
         error
       );
 
-      res
-        .status(500)
-        .json({
-
-          error:
-            "Could not load orders"
-
-        });
-
+      res.status(500).json({
+        error:
+          "Could not load orders"
+      });
     }
-
   }
 );
 
 /* =========================================================
+   GET SINGLE ORDER
+========================================================= */
+
+async function getSingleOrder(
+  orderId,
+  client = pool
+) {
+  const result =
+    await client.query(
+      `
+      SELECT
+        id,
+
+        created_at AS "createdAt",
+
+        customer,
+
+        items,
+
+        total::float AS total,
+
+        payment_method AS "paymentMethod",
+
+        status,
+
+        payment_status AS "paymentStatus",
+
+        stock_restored AS "stockRestored",
+
+        cancelled_at AS "cancelledAt"
+
+      FROM orders
+
+      WHERE id = $1
+      `,
+      [orderId]
+    );
+
+  return result.rows[0] || null;
+}
+
+/* =========================================================
    UPDATE ORDER STATUS
-   IMPORTANT:
-   - Status is saved permanently in PostgreSQL
-   - Cancel restores stock
-   - Cancel cannot restore stock twice
 ========================================================= */
 
 app.put(
@@ -1543,16 +1184,11 @@ app.put(
 
   adminAuth,
 
-  async (
-    req,
-    res
-  ) => {
-
+  async (req, res) => {
     const client =
       await pool.connect();
 
     try {
-
       const orderId =
         String(
           req.params.id || ""
@@ -1568,142 +1204,84 @@ app.put(
           newStatus
         )
       ) {
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              "Invalid order status"
-
-          });
-
+        return res.status(400).json({
+          error:
+            "Invalid order status"
+        });
       }
 
-      await client.query(
-        "BEGIN"
-      );
+      await client.query("BEGIN");
 
-      /* -----------------------------------------
-         LOCK ORDER
-      ----------------------------------------- */
+      /*
+        Lock the order row so two admin requests
+        cannot change stock/status at the same time.
+      */
 
       const orderResult =
         await client.query(
-
           `
-
           SELECT
-
             id,
-
-            created_at
-              AS "createdAt",
-
             customer,
-
             items,
-
-            total::float
-              AS total,
-
-            payment_method
-              AS "paymentMethod",
-
+            total,
+            payment_method,
             status,
-
-            payment_status
-              AS "paymentStatus"
+            payment_status,
+            stock_restored,
+            cancelled_at
 
           FROM orders
 
           WHERE id = $1
 
           FOR UPDATE
-
           `,
-
           [orderId]
-
         );
 
-      if (
-        !orderResult.rows.length
-      ) {
+      if (!orderResult.rows.length) {
+        await client.query("ROLLBACK");
 
-        await client.query(
-          "ROLLBACK"
-        );
-
-        return res
-          .status(404)
-          .json({
-
-            error:
-              "Order not found"
-
-          });
-
+        return res.status(404).json({
+          error:
+            "Order not found"
+        });
       }
 
       const order =
         orderResult.rows[0];
 
-      const oldStatus =
+      const currentStatus =
         order.status;
 
-      /* -----------------------------------------
-         SAME STATUS
-      ----------------------------------------- */
+      /*
+        Same status = no problem.
+      */
 
       if (
-        oldStatus === newStatus
+        currentStatus === newStatus
       ) {
+        await client.query("COMMIT");
 
-        await client.query(
-          "COMMIT"
-        );
+        const currentOrder =
+          await getSingleOrder(
+            orderId
+          );
 
         return res.json({
-
           ok: true,
-
-          order
-
+          order: currentOrder
         });
-
       }
 
-      /* -----------------------------------------
-         ALREADY CANCELLED
-      ----------------------------------------- */
-
-      if (
-        oldStatus === "Cancelled"
-      ) {
-
-        await client.query(
-          "ROLLBACK"
-        );
-
-        return res
-          .status(409)
-          .json({
-
-            error:
-              "Cancelled order cannot be changed."
-
-          });
-
-      }
-
-      /* -----------------------------------------
-         STATUS TRANSITION CHECK
-      ----------------------------------------- */
+      /*
+        Check status flow.
+      */
 
       const allowed =
-        STATUS_FLOW[
-          oldStatus
+        STATUS_TRANSITIONS[
+          currentStatus
         ] || [];
 
       if (
@@ -1711,141 +1289,817 @@ app.put(
           newStatus
         )
       ) {
+        await client.query("ROLLBACK");
 
-        await client.query(
-          "ROLLBACK"
-        );
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              `Cannot change order status from ${oldStatus} to ${newStatus}.`
-
-          });
-
+        return res.status(400).json({
+          error:
+            `Cannot change order status from ${currentStatus} to ${newStatus}`
+        });
       }
 
-      /* -----------------------------------------
+      /* =====================================================
          CANCEL ORDER
-         RESTORE STOCK
-      ----------------------------------------- */
+      ===================================================== */
 
       if (
         newStatus === "Cancelled"
       ) {
+        /*
+          Restore stock only once.
+        */
 
-        const items =
-          Array.isArray(
-            order.items
-          )
-            ? order.items
-            : [];
-
-        for (
-          const item of items
+        if (
+          !order.stock_restored
         ) {
+          const items =
+            Array.isArray(order.items)
+              ? order.items
+              : [];
 
-          const productId =
-            Number(
-              item.id
-            );
-
-          const quantity =
-            Math.max(
-              0,
-              Number(
-                item.qty || 0
-              )
-            );
-
-          if (
-            !productId ||
-            quantity <= 0
+          for (
+            const item of items
           ) {
+            const productId =
+              Number(item.id);
 
-            continue;
+            const qty =
+              Math.max(
+                1,
+                Number(
+                  item.qty || 1
+                )
+              );
 
-          }
+            if (
+              !Number.isFinite(
+                productId
+              ) ||
+              !Number.isFinite(qty)
+            ) {
+              throw new Error(
+                "Invalid order item data"
+              );
+            }
 
-          /*
-             Lock product row before
-             increasing stock.
-          */
+            const productResult =
+              await client.query(
+                `
+                SELECT id
+                FROM products
+                WHERE id = $1
+                FOR UPDATE
+                `,
+                [productId]
+              );
 
-          const productResult =
+            /*
+              If a product was deleted after order,
+              cancellation cannot safely restore stock.
+            */
+
+            if (
+              !productResult.rows.length
+            ) {
+              throw new Error(
+                `Product ${productId} no longer exists. Cannot restore stock automatically.`
+              );
+            }
+
             await client.query(
-
               `
+              UPDATE products
 
-              SELECT
+              SET stock =
+                stock + $1
 
-                id,
-
-                stock
-
-              FROM products
-
-              WHERE id = $1
-
-              FOR UPDATE
-
+              WHERE id = $2
               `,
-
-              [productId]
-
+              [
+                qty,
+                productId
+              ]
             );
-
-          /*
-             If product was deleted,
-             do not crash the whole
-             cancellation process.
-          */
-
-          if (
-            !productResult.rows.length
-          ) {
-
-            console.warn(
-
-              "Product not found while restoring stock:",
-              productId
-
-            );
-
-            continue;
-
           }
 
           await client.query(
-
             `
+            UPDATE orders
 
-            UPDATE products
+            SET
+              status = 'Cancelled',
 
-            SET stock =
-              stock + $1
+              stock_restored = TRUE,
 
-            WHERE id = $2
+              cancelled_at = NOW()
 
+            WHERE id = $1
             `,
-
-            [
-
-              quantity,
-
-              productId
-
-            ]
-
+            [orderId]
           );
 
+        } else {
+          /*
+            Safety fallback:
+            Never add stock twice.
+          */
+
+          await client.query(
+            `
+            UPDATE orders
+
+            SET
+              status = 'Cancelled',
+
+              cancelled_at =
+                COALESCE(
+                  cancelled_at,
+                  NOW()
+                )
+
+            WHERE id = $1
+            `,
+            [orderId]
+          );
         }
 
+      } else {
+        /*
+          Normal status update.
+        */
+
+        await client.query(
+          `
+          UPDATE orders
+
+          SET status = $1
+
+          WHERE id = $2
+          `,
+          [
+            newStatus,
+            orderId
+          ]
+        );
       }
 
-      /* -----------------------------------------
-         SAVE NEW STATUS
-     
-```
+      await client.query("COMMIT");
+
+      /*
+        Return the exact database order.
+        Admin and customer will therefore see
+        the same status.
+      */
+
+      const updatedOrder =
+        await getSingleOrder(
+          orderId
+        );
+
+      res.json({
+        ok: true,
+        order: updatedOrder
+      });
+
+    } catch (error) {
+      try {
+        await client.query("ROLLBACK");
+      } catch {}
+
+      console.error(
+        "Update order status error:",
+        error
+      );
+
+      res.status(400).json({
+        error:
+          error.message ||
+          "Could not update order status"
+      });
+
+    } finally {
+      client.release();
+    }
+  }
+);
+
+/* =========================================================
+   UPDATE PAYMENT STATUS
+========================================================= */
+
+app.put(
+  "/api/admin/orders/:id/payment-status",
+
+  adminAuth,
+
+  async (req, res) => {
+    try {
+      const orderId =
+        String(
+          req.params.id || ""
+        ).trim();
+
+      const paymentStatus =
+        String(
+          req.body?.paymentStatus ||
+          ""
+        ).trim();
+
+      if (
+        !PAYMENT_STATUSES.includes(
+          paymentStatus
+        )
+      ) {
+        return res.status(400).json({
+          error:
+            "Invalid payment status"
+        });
+      }
+
+      const result =
+        await pool.query(
+          `
+          UPDATE orders
+
+          SET payment_status = $1
+
+          WHERE id = $2
+
+          RETURNING
+            id,
+
+            payment_status
+              AS "paymentStatus",
+
+            status
+          `,
+          [
+            paymentStatus,
+            orderId
+          ]
+        );
+
+      if (!result.rows.length) {
+        return res.status(404).json({
+          error:
+            "Order not found"
+        });
+      }
+
+      res.json({
+        ok: true,
+
+        order:
+          result.rows[0]
+      });
+
+    } catch (error) {
+      console.error(
+        "Update payment status error:",
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Could not update payment status"
+      });
+    }
+  }
+);
+
+/* =========================================================
+   PUBLIC ORDER TRACKING
+========================================================= */
+
+app.get(
+  "/api/orders/:id",
+
+  async (req, res) => {
+    try {
+      const orderId =
+        String(
+          req.params.id || ""
+        ).trim();
+
+      const order =
+        await getSingleOrder(
+          orderId
+        );
+
+      if (!order) {
+        return res.status(404).json({
+          error:
+            "Order not found"
+        });
+      }
+
+      /*
+        Cancelled এবং Delivered order আর active নয়.
+      */
+
+      const active =
+        ![
+          "Cancelled",
+          "Delivered"
+        ].includes(
+          order.status
+        );
+
+      res.json({
+        ok: true,
+
+        order: {
+          ...order,
+
+          active
+        }
+      });
+
+    } catch (error) {
+      console.error(
+        "Order tracking error:",
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Could not load order"
+      });
+    }
+  }
+);
+
+/* =========================================================
+   CREATE ORDER
+========================================================= */
+
+app.post(
+  "/api/orders",
+
+  async (req, res) => {
+    const client =
+      await pool.connect();
+
+    try {
+      const body =
+        req.body || {};
+
+      const customer =
+        body.customer;
+
+      const items =
+        body.items;
+
+      const paymentMethod =
+        String(
+          body.paymentMethod ||
+          "cod"
+        ).trim();
+
+      /* =====================================================
+         VALIDATE CUSTOMER
+      ===================================================== */
+
+      if (
+        !customer?.name ||
+        !customer?.phone ||
+        !customer?.address
+      ) {
+        return res.status(400).json({
+          error:
+            "Customer information is required"
+        });
+      }
+
+      /* =====================================================
+         VALIDATE ITEMS
+      ===================================================== */
+
+      if (
+        !Array.isArray(items) ||
+        items.length === 0
+      ) {
+        return res.status(400).json({
+          error:
+            "Order items are required"
+        });
+      }
+
+      await client.query("BEGIN");
+
+      let total = 0;
+
+      const cleanItems = [];
+
+      /* =====================================================
+         COMBINE DUPLICATE PRODUCT IDS
+      ===================================================== */
+
+      const quantityMap =
+        new Map();
+
+      for (
+        const item of items
+      ) {
+        const id =
+          Number(item.id);
+
+        const qty =
+          Math.max(
+            1,
+            Number(
+              item.qty || 1
+            )
+          );
+
+        if (
+          !Number.isFinite(id) ||
+          !Number.isFinite(qty)
+        ) {
+          throw new Error(
+            "Invalid product information"
+          );
+        }
+
+        quantityMap.set(
+          id,
+          (
+            quantityMap.get(id) ||
+            0
+          ) + qty
+        );
+      }
+
+      /* =====================================================
+         CHECK STOCK
+      ===================================================== */
+
+      for (
+        const [
+          productId,
+          qty
+        ] of quantityMap
+      ) {
+        const result =
+          await client.query(
+            `
+            SELECT
+              id::text AS id,
+
+              name,
+
+              price::float AS price,
+
+              stock
+
+            FROM products
+
+            WHERE id = $1
+
+            FOR UPDATE
+            `,
+            [productId]
+          );
+
+        if (!result.rows.length) {
+          throw new Error(
+            "Product not found"
+          );
+        }
+
+        const product =
+          result.rows[0];
+
+        if (
+          Number(product.stock) <
+          qty
+        ) {
+          throw new Error(
+            "Not enough stock for " +
+            product.name
+          );
+        }
+
+        total +=
+          Number(product.price) *
+          qty;
+
+        cleanItems.push({
+          id:
+            Number(product.id),
+
+          name:
+            product.name,
+
+          price:
+            Number(product.price),
+
+          qty
+        });
+      }
+
+      /* =====================================================
+         ORDER ID
+      ===================================================== */
+
+      const orderId =
+        "SM" +
+        Date.now() +
+        crypto
+          .randomBytes(2)
+          .toString("hex")
+          .toUpperCase();
+
+      const createdAt =
+        new Date().toISOString();
+
+      /* =====================================================
+         CUSTOMER
+      ===================================================== */
+
+      const cleanCustomer = {
+        name:
+          String(
+            customer.name
+          ).trim(),
+
+        phone:
+          String(
+            customer.phone
+          ).trim(),
+
+        address:
+          String(
+            customer.address
+          ).trim()
+      };
+
+      /* =====================================================
+         PAYMENT
+      ===================================================== */
+
+      const paymentStatus =
+        "Pending";
+
+      /* =====================================================
+         INSERT ORDER
+      ===================================================== */
+
+      await client.query(
+        `
+        INSERT INTO orders (
+          id,
+          created_at,
+          customer,
+          items,
+          total,
+          payment_method,
+          status,
+          payment_status,
+          stock_restored,
+          cancelled_at
+        )
+
+        VALUES (
+          $1,
+          $2,
+          $3,
+          $4,
+          $5,
+          $6,
+          $7,
+          $8,
+          FALSE,
+          NULL
+        )
+        `,
+        [
+          orderId,
+
+          createdAt,
+
+          JSON.stringify(
+            cleanCustomer
+          ),
+
+          JSON.stringify(
+            cleanItems
+          ),
+
+          total,
+
+          paymentMethod,
+
+          "Pending",
+
+          paymentStatus
+        ]
+      );
+
+      /* =====================================================
+         REDUCE STOCK
+      ===================================================== */
+
+      for (
+        const item of cleanItems
+      ) {
+        await client.query(
+          `
+          UPDATE products
+
+          SET stock =
+            stock - $1
+
+          WHERE id = $2
+          `,
+          [
+            Number(item.qty),
+
+            Number(item.id)
+          ]
+        );
+      }
+
+      await client.query("COMMIT");
+
+      res.json({
+        ok: true,
+
+        orderId,
+
+        total,
+
+        status:
+          "Pending",
+
+        paymentStatus:
+          "Pending"
+      });
+
+    } catch (error) {
+      try {
+        await client.query("ROLLBACK");
+      } catch {}
+
+      console.error(
+        "Order error:",
+        error
+      );
+
+      res.status(400).json({
+        error:
+          error.message ||
+          "Could not create order"
+      });
+
+    } finally {
+      client.release();
+    }
+  }
+);
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+app.post(
+  "/api/payment/create",
+
+  (req, res) => {
+    const method =
+      req.body?.method;
+
+    if (
+      ![
+        "bkash",
+        "nagad",
+        "card"
+      ].includes(method)
+    ) {
+      return res.status(400).json({
+        error:
+          "Unsupported payment method"
+      });
+    }
+
+    res.status(501).json({
+      error:
+        method +
+        " payment gateway is not configured yet."
+    });
+  }
+);
+
+/* =========================================================
+   ADMIN PAGE
+========================================================= */
+
+app.get(
+  "/admin",
+
+  (req, res) => {
+    res.sendFile(
+      path.join(
+        __dirname,
+        "public",
+        "admin.html"
+      )
+    );
+  }
+);
+
+/* =========================================================
+   WEBSITE FALLBACK
+========================================================= */
+
+app.use(
+  (
+    req,
+    res,
+    next
+  ) => {
+    if (
+      req.method === "GET" &&
+      !req.path.startsWith("/api/")
+    ) {
+      const indexFile =
+        path.join(
+          __dirname,
+          "public",
+          "index.html"
+        );
+
+      if (
+        fs.existsSync(indexFile)
+      ) {
+        return res.sendFile(
+          indexFile
+        );
+      }
+    }
+
+    next();
+  }
+);
+
+/* =========================================================
+   404
+========================================================= */
+
+app.use(
+  (
+    req,
+    res
+  ) => {
+    res.status(404).json({
+      error:
+        "Not found"
+    });
+  }
+);
+
+/* =========================================================
+   START SERVER
+========================================================= */
+
+async function startServer() {
+  try {
+    await initDatabase();
+
+    app.listen(
+      PORT,
+      "0.0.0.0",
+      () => {
+        console.log(
+          "SM Online Shop running on port " +
+          PORT
+        );
+      }
+    );
+
+  } catch (error) {
+    console.error(
+      "Database initialization failed:",
+      error
+    );
+
+    process.exit(1);
+  }
+}
+
+startServer();
+
+/* =========================================================
+   GRACEFUL SHUTDOWN
+========================================================= */
+
+process.on(
+  "SIGTERM",
+
+  async () => {
+    try {
+      await pool.end();
+    } finally {
+      process.exit(0);
+    }
+  }
+);u
