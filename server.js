@@ -42,26 +42,15 @@ if (
   process.env.CLOUDINARY_API_KEY &&
   process.env.CLOUDINARY_API_SECRET
 ) {
-
   cloudinary.config({
-
-    cloud_name:
-      process.env.CLOUDINARY_CLOUD_NAME,
-
-    api_key:
-      process.env.CLOUDINARY_API_KEY,
-
-    api_secret:
-      process.env.CLOUDINARY_API_SECRET
-
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
   });
-
 } else {
-
   console.warn(
     "Cloudinary environment variables are missing."
   );
-
 }
 
 
@@ -87,16 +76,13 @@ app.use(
    STATIC FILES
 ===================================================== */
 
-const publicPath =
-  path.join(
-    __dirname,
-    "public"
-  );
+const publicPath = path.join(
+  __dirname,
+  "public"
+);
 
 app.use(
-  express.static(
-    publicPath
-  )
+  express.static(publicPath)
 );
 
 
@@ -104,8 +90,7 @@ app.use(
    ADMIN SESSION
 ===================================================== */
 
-const adminSessions =
-  new Map();
+const adminSessions = new Map();
 
 
 /* =====================================================
@@ -113,16 +98,13 @@ const adminSessions =
 ===================================================== */
 
 function createToken() {
-
   return crypto
     .randomBytes(32)
     .toString("hex");
-
 }
 
 
 function getAdminToken(req) {
-
   const header =
     req.headers.authorization || "";
 
@@ -135,7 +117,6 @@ function getAdminToken(req) {
   return header
     .substring(7)
     .trim();
-
 }
 
 
@@ -144,7 +125,6 @@ function requireAdmin(
   res,
   next
 ) {
-
   const token =
     getAdminToken(req);
 
@@ -152,18 +132,15 @@ function requireAdmin(
     !token ||
     !adminSessions.has(token)
   ) {
-
     return res
       .status(401)
       .json({
         error:
           "Unauthorized. Please login again."
       });
-
   }
 
   next();
-
 }
 
 
@@ -171,14 +148,12 @@ function safeNumber(
   value,
   fallback = 0
 ) {
-
   const number =
     Number(value);
 
   return Number.isFinite(number)
     ? number
     : fallback;
-
 }
 
 
@@ -260,13 +235,10 @@ async function initDatabase() {
     `);
 
 
-    /*
-    IMPORTANT:
-
-    If the products table already existed
-    before Description was added, this
-    safely adds the missing column.
-    */
+    /* =================================================
+       PRODUCTS MIGRATION
+       SAFE FOR EXISTING DATABASE
+    ================================================= */
 
     await client.query(`
 
@@ -274,6 +246,36 @@ async function initDatabase() {
 
       ADD COLUMN IF NOT EXISTS
       description TEXT DEFAULT ''
+
+    `);
+
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+
+    `);
+
+
+    /*
+      Make sure old products have
+      updated_at values.
+    */
+
+    await client.query(`
+
+      UPDATE products
+
+      SET updated_at = COALESCE(
+        updated_at,
+        created_at,
+        NOW()
+      )
+
+      WHERE updated_at IS NULL
 
     `);
 
@@ -309,9 +311,9 @@ async function initDatabase() {
     `);
 
 
-    /*
-    Existing database migration safety.
-    */
+    /* =================================================
+       ORDERS MIGRATION
+    ================================================= */
 
     await client.query(`
 
@@ -343,17 +345,37 @@ async function initDatabase() {
     `);
 
 
+    /*
+      Make sure old orders have
+      updated_at values.
+    */
+
+    await client.query(`
+
+      UPDATE orders
+
+      SET updated_at = COALESCE(
+        updated_at,
+        created_at,
+        NOW()
+      )
+
+      WHERE updated_at IS NULL
+
+    `);
+
+
     /* =================================================
        DEFAULT SETTINGS
     ================================================= */
 
     const settingsResult =
-      await client.query(
-        `SELECT id
-         FROM store_settings
-         ORDER BY id
-         LIMIT 1`
-      );
+      await client.query(`
+        SELECT id
+        FROM store_settings
+        ORDER BY id
+        LIMIT 1
+      `);
 
 
     if (
@@ -427,6 +449,11 @@ app.get(
       });
 
     } catch (error) {
+
+      console.error(
+        "Health check error:",
+        error
+      );
 
       res
         .status(500)
@@ -593,7 +620,9 @@ app.get(
 
             image,
 
-            created_at AS "createdAt"
+            created_at AS "createdAt",
+
+            updated_at AS "updatedAt"
 
           FROM products
 
@@ -859,9 +888,7 @@ app.post(
 
 
       const cleanPrice =
-        safeNumber(
-          price
-        );
+        safeNumber(price);
 
 
       if (
@@ -890,7 +917,8 @@ app.post(
             old_price,
             discount,
             stock,
-            image
+            image,
+            updated_at
           )
 
           VALUES
@@ -902,7 +930,8 @@ app.post(
             $5,
             $6,
             $7,
-            $8
+            $8,
+            NOW()
           )
 
           RETURNING
@@ -1068,9 +1097,7 @@ app.put(
 
 
       const cleanPrice =
-        safeNumber(
-          price
-        );
+        safeNumber(price);
 
 
       if (
@@ -1394,8 +1421,7 @@ app.post(
 
 /* =====================================================
    ADMIN ORDERS
-   IMPORTANT:
-   CANCELLED ORDERS ARE NOT RETURNED
+   CANCELLED ORDERS ARE HIDDEN
 ===================================================== */
 
 app.get(
@@ -1506,11 +1532,6 @@ app.post(
         "BEGIN"
       );
 
-
-      /*
-      Validate stock and calculate
-      the final order items.
-      */
 
       const finalItems = [];
 
@@ -1630,10 +1651,6 @@ app.post(
         });
 
 
-        /*
-        Reduce stock.
-        */
-
         await client.query(
 
           `
@@ -1661,11 +1678,6 @@ app.post(
 
       }
 
-
-      /*
-      Always calculate total
-      from database prices.
-      */
 
       const calculatedTotal =
         finalItems.reduce(
@@ -1710,7 +1722,9 @@ app.post(
 
               payment_status,
 
-              payment_method
+              payment_method,
+
+              updated_at
 
             )
 
@@ -1728,7 +1742,9 @@ app.post(
 
               'Pending',
 
-              $4
+              $4,
+
+              NOW()
 
             )
 
@@ -1748,7 +1764,9 @@ app.post(
 
               payment_method AS "paymentMethod",
 
-              created_at AS "createdAt"
+              created_at AS "createdAt",
+
+              updated_at AS "updatedAt"
 
           `,
 
@@ -1817,7 +1835,7 @@ app.post(
 
 /* =====================================================
    UPDATE ORDER STATUS
-   THIS FIXES CANCEL PERSISTENCE
+   CANCEL IS PERMANENTLY SAVED
 ===================================================== */
 
 app.put(
@@ -1886,14 +1904,6 @@ app.put(
 
       }
 
-
-      /*
-      IMPORTANT DATABASE UPDATE
-
-      If status = Cancelled,
-      it is permanently saved in
-      PostgreSQL.
-      */
 
       const result =
         await pool.query(`
