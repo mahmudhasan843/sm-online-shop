@@ -1211,6 +1211,22 @@ app.post("/api/orders", async (req, res) => {
 });
 
 /* =========================================================
+ADMIN & FRONTEND ROUTING FALLBACK
+========================================================= */
+
+app.get("/admin", (req, res) => {
+  const adminFilePath = path.join(__dirname, "public", "admin.html");
+  if (fs.existsSync(adminFilePath)) {
+    return res.sendFile(adminFilePath);
+  }
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+/* =========================================================
 SERVER START
 ========================================================= */
 
