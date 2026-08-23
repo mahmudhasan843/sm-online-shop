@@ -62,8 +62,7 @@ max-width:420px;
 background:#fff;
 padding:30px;
 border-radius:20px;
-box-shadow:
-0 20px 50px #0005
+box-shadow:0 20px 50px #0005
 }
 
 .loginBox h1{
@@ -168,8 +167,7 @@ padding:20px 14px
 
 .stats{
 display:grid;
-grid-template-columns:
-repeat(4,1fr);
+grid-template-columns:repeat(4,1fr);
 gap:15px;
 margin-bottom:20px
 }
@@ -178,8 +176,7 @@ margin-bottom:20px
 background:#fff;
 padding:20px;
 border-radius:14px;
-box-shadow:
-0 2px 10px #0000000d
+box-shadow:0 2px 10px #0000000d
 }
 
 .stat small{
@@ -218,8 +215,7 @@ color:#fff
 background:#fff;
 border-radius:15px;
 padding:20px;
-box-shadow:
-0 2px 10px #0000000d;
+box-shadow:0 2px 10px #0000000d;
 margin-bottom:20px
 }
 
@@ -231,8 +227,7 @@ margin-top:0
 
 .productGrid{
 display:grid;
-grid-template-columns:
-repeat(3,1fr);
+grid-template-columns:repeat(3,1fr);
 gap:15px
 }
 
@@ -289,8 +284,7 @@ font-weight:bold
 
 .formGrid{
 display:grid;
-grid-template-columns:
-1fr 1fr;
+grid-template-columns:1fr 1fr;
 gap:12px
 }
 
@@ -313,8 +307,7 @@ margin:5px 0 10px
 border:1px solid #eee;
 border-radius:12px;
 padding:15px;
-margin-bottom:12px;
-background:#fff
+margin-bottom:12px
 }
 
 .orderHead{
@@ -337,13 +330,13 @@ flex-wrap:wrap
 }
 
 .statusSelect{
-width:100%;
+width:auto;
 min-width:145px;
 margin:0
 }
 
 .paymentSelect{
-width:100%;
+width:auto;
 min-width:125px;
 margin:0
 }
@@ -352,8 +345,7 @@ margin:0
 padding:5px 9px;
 border-radius:6px;
 font-weight:bold;
-font-size:12px;
-display:inline-block
+font-size:12px
 }
 
 .statusPending{
@@ -462,32 +454,20 @@ color:#a50019
 
 .orderFilters{
 display:grid;
-grid-template-columns:
-1fr 1fr 1fr;
+grid-template-columns:1fr 1fr 1fr;
 gap:10px;
 margin-bottom:15px
 }
 
-/* UPDATE MESSAGE */
+/* CANCELLED INFO */
 
-.updateMsg{
-padding:10px;
+.cancelledInfo{
+background:#fff7e6;
+color:#92400e;
+padding:10px 12px;
 border-radius:8px;
-margin-top:10px;
-display:none;
-font-weight:bold
-}
-
-.updateMsg.success{
-display:block;
-background:#e9fff1;
-color:#08752f
-}
-
-.updateMsg.error{
-display:block;
-background:#ffecee;
-color:#a50019
+margin-bottom:15px;
+font-size:13px
 }
 
 /* MOBILE */
@@ -495,13 +475,11 @@ color:#a50019
 @media(max-width:900px){
 
 .stats{
-grid-template-columns:
-repeat(2,1fr)
+grid-template-columns:repeat(2,1fr)
 }
 
 .productGrid{
-grid-template-columns:
-repeat(2,1fr)
+grid-template-columns:repeat(2,1fr)
 }
 
 }
@@ -517,18 +495,15 @@ font-size:17px
 }
 
 .stats{
-grid-template-columns:
-1fr 1fr
+grid-template-columns:1fr 1fr
 }
 
 .productGrid{
-grid-template-columns:
-1fr
+grid-template-columns:1fr
 }
 
 .formGrid{
-grid-template-columns:
-1fr
+grid-template-columns:1fr
 }
 
 .full{
@@ -577,7 +552,6 @@ font-size:11px
 
 <body>
 
-
 <!-- =====================================================
      LOGIN
 ===================================================== -->
@@ -598,10 +572,7 @@ SM Online Shop
 </h1>
 
 <p
-style="
-text-align:center;
-color:#777
-"
+style="text-align:center;color:#777"
 >
 Admin Panel
 </p>
@@ -680,7 +651,6 @@ Logout
 
 <div class="wrap">
 
-
 <!-- STATS -->
 
 <div class="stats">
@@ -691,9 +661,7 @@ Logout
 Total Products
 </small>
 
-<b
-id="productCount"
->
+<b id="productCount">
 0
 </b>
 
@@ -702,12 +670,10 @@ id="productCount"
 <div class="stat">
 
 <small>
-Total Orders
+Active Orders
 </small>
 
-<b
-id="orderCount"
->
+<b id="orderCount">
 0
 </b>
 
@@ -719,9 +685,7 @@ id="orderCount"
 Pending Orders
 </small>
 
-<b
-id="pendingCount"
->
+<b id="pendingCount">
 0
 </b>
 
@@ -733,9 +697,7 @@ id="pendingCount"
 Total Sales
 </small>
 
-<b
-id="salesTotal"
->
+<b id="salesTotal">
 ৳0
 </b>
 
@@ -822,9 +784,7 @@ class="tabContent hidden"
 
 <div class="panel">
 
-<h2
-id="formTitle"
->
+<h2 id="formTitle">
 Add New Product
 </h2>
 
@@ -859,45 +819,17 @@ placeholder="Example: Premium Ladies Dress"
 Category
 </label>
 
-<select
-id="pCategory"
->
+<select id="pCategory">
 
-<option>
-Dresses
-</option>
-
-<option>
-Tops
-</option>
-
-<option>
-Saree
-</option>
-
-<option>
-Hijab
-</option>
-
-<option>
-Bags
-</option>
-
-<option>
-Shoes
-</option>
-
-<option>
-Jewellery
-</option>
-
-<option>
-Accessories
-</option>
-
-<option>
-General
-</option>
+<option>Dresses</option>
+<option>Tops</option>
+<option>Saree</option>
+<option>Hijab</option>
+<option>Bags</option>
+<option>Shoes</option>
+<option>Jewellery</option>
+<option>Accessories</option>
+<option>General</option>
 
 </select>
 
@@ -985,9 +917,7 @@ id="pImage"
 placeholder="Image URL"
 >
 
-<small
-style="color:#777"
->
+<small style="color:#777">
 Choose an image to upload to Cloudinary,
 or paste an image URL.
 </small>
@@ -998,11 +928,7 @@ or paste an image URL.
 
 
 <div
-style="
-display:flex;
-gap:10px;
-margin-top:10px
-"
+style="display:flex;gap:10px;margin-top:10px"
 >
 
 <button
@@ -1041,6 +967,10 @@ class="tabContent hidden"
 📦 Customer Orders
 </h2>
 
+<div class="cancelledInfo">
+✅ Cancelled orders are automatically removed from this active order list.
+</div>
+
 <div class="orderFilters">
 
 <div>
@@ -1055,7 +985,7 @@ onchange="renderOrders()"
 >
 
 <option value="">
-All Status
+All Active Status
 </option>
 
 <option value="Pending">
@@ -1076,10 +1006,6 @@ Shipped
 
 <option value="Delivered">
 Delivered
-</option>
-
-<option value="Cancelled">
-Cancelled
 </option>
 
 </select>
@@ -1140,9 +1066,7 @@ oninput="renderOrders()"
 </div>
 
 
-<div
-id="ordersList"
->
+<div id="ordersList">
 Loading...
 </div>
 
@@ -1179,9 +1103,7 @@ class="msg"
 Shop Name
 </label>
 
-<input
-id="shopName"
->
+<input id="shopName">
 
 </div>
 
@@ -1191,9 +1113,7 @@ id="shopName"
 Tagline
 </label>
 
-<input
-id="tagline"
->
+<input id="tagline">
 
 </div>
 
@@ -1203,9 +1123,7 @@ id="tagline"
 Phone 1
 </label>
 
-<input
-id="phone1"
->
+<input id="phone1">
 
 </div>
 
@@ -1215,9 +1133,7 @@ id="phone1"
 Phone 2
 </label>
 
-<input
-id="phone2"
->
+<input id="phone2">
 
 </div>
 
@@ -1240,9 +1156,7 @@ placeholder="https://facebook.com/..."
 Currency
 </label>
 
-<select
-id="currency"
->
+<select id="currency">
 
 <option value="BDT">
 BDT
@@ -1281,9 +1195,7 @@ onclick="saveSettings()"
 ===================================================== */
 
 let token =
-localStorage.getItem(
-"smAdminToken"
-) || "";
+localStorage.getItem("smAdminToken") || "";
 
 let products = [];
 
@@ -1294,14 +1206,7 @@ let orders = [];
    API
 ===================================================== */
 
-async function api(
-url,
-options={}
-){
-
-options = {
-...options
-};
+async function api(url, options = {}){
 
 options.headers =
 options.headers || {};
@@ -1313,57 +1218,22 @@ options.headers.Authorization =
 
 }
 
-
-/* JSON BODY */
-
 if(
 options.body &&
 typeof options.body === "object" &&
 !(options.body instanceof FormData)
 ){
 
-options.headers[
-"Content-Type"
-] =
+options.headers["Content-Type"] =
 "application/json";
 
 options.body =
-JSON.stringify(
-options.body
-);
+JSON.stringify(options.body);
 
 }
-
-
-/* NO CACHE FOR GET */
-
-if(
-!options.method ||
-options.method.toUpperCase() === "GET"
-){
-
-options.cache =
-"no-store";
-
-const separator =
-url.includes("?")
-? "&"
-: "?";
-
-url =
-url +
-separator +
-"_t=" +
-Date.now();
-
-}
-
 
 const response =
-await fetch(
-url,
-options
-);
+await fetch(url, options);
 
 let data = {};
 
@@ -1374,32 +1244,23 @@ await response.json();
 
 }catch(e){}
 
-
-if(
-response.status === 401
-){
+if(response.status === 401){
 
 logout();
 
 throw new Error(
-data.error ||
-"Session expired"
+data.error || "Session expired"
 );
 
 }
 
-
-if(
-!response.ok
-){
+if(!response.ok){
 
 throw new Error(
-data.error ||
-"Request failed"
+data.error || "Request failed"
 );
 
 }
-
 
 return data;
 
@@ -1413,40 +1274,22 @@ return data;
 async function login(){
 
 const username =
-document
-.getElementById(
-"username"
-)
-.value
-.trim();
+document.getElementById("username")
+.value.trim();
 
 const password =
-document
-.getElementById(
-"password"
-)
+document.getElementById("password")
 .value;
 
 const msg =
-document
-.getElementById(
-"loginMsg"
-);
+document.getElementById("loginMsg");
 
-msg.className =
-"msg";
+msg.className = "msg";
+msg.textContent = "";
 
-msg.textContent =
-"";
+if(!username || !password){
 
-
-if(
-!username ||
-!password
-){
-
-msg.className =
-"msg error";
+msg.className = "msg error";
 
 msg.textContent =
 "Username and password required.";
@@ -1454,7 +1297,6 @@ msg.textContent =
 return;
 
 }
-
 
 try{
 
@@ -1470,7 +1312,6 @@ password
 }
 );
 
-
 token =
 data.token;
 
@@ -1479,9 +1320,7 @@ localStorage.setItem(
 token
 );
 
-
 await showAdmin();
-
 
 }catch(error){
 
@@ -1521,30 +1360,19 @@ Authorization:
 
 }catch(e){}
 
-
 token = "";
 
 localStorage.removeItem(
 "smAdminToken"
 );
 
+document
+.getElementById("adminPage")
+.classList.add("hidden");
 
 document
-.getElementById(
-"adminPage"
-)
-.classList.add(
-"hidden"
-);
-
-
-document
-.getElementById(
-"loginPage"
-)
-.classList.remove(
-"hidden"
-);
+.getElementById("loginPage")
+.classList.remove("hidden");
 
 }
 
@@ -1556,22 +1384,12 @@ document
 async function showAdmin(){
 
 document
-.getElementById(
-"loginPage"
-)
-.classList.add(
-"hidden"
-);
-
+.getElementById("loginPage")
+.classList.add("hidden");
 
 document
-.getElementById(
-"adminPage"
-)
-.classList.remove(
-"hidden"
-);
-
+.getElementById("adminPage")
+.classList.remove("hidden");
 
 await loadProducts();
 
@@ -1586,47 +1404,25 @@ await loadSettings();
    TABS
 ===================================================== */
 
-function showTab(
-name,
-button
-){
+function showTab(name, button){
 
 document
-.querySelectorAll(
-".tabContent"
-)
+.querySelectorAll(".tabContent")
 .forEach(
-x =>
-x.classList.add(
-"hidden"
-)
+x => x.classList.add("hidden")
 );
 
+document
+.getElementById(name + "Tab")
+.classList.remove("hidden");
 
 document
-.getElementById(
-name + "Tab"
-)
-.classList.remove(
-"hidden"
-);
-
-
-document
-.querySelectorAll(
-".tab"
-)
+.querySelectorAll(".tab")
 .forEach(
-x =>
-x.classList.remove(
-"active"
-)
+x => x.classList.remove("active")
 );
 
-
-button.classList.add(
-"active"
-);
+button.classList.add("active");
 
 }
 
@@ -1639,33 +1435,21 @@ async function loadProducts(){
 
 try{
 
-const data =
-await api(
-"/api/admin/products"
-);
-
-
-/* SUPPORT ARRAY RESPONSE */
+const result =
+await api("/api/admin/products");
 
 products =
-Array.isArray(data)
-? data
-: (
-data.products ||
-[]
-);
-
+Array.isArray(result)
+? result
+: result.products || [];
 
 renderProducts();
 
 updateStats();
 
-
 }catch(error){
 
-alert(
-error.message
-);
+alert(error.message);
 
 }
 
@@ -1676,19 +1460,12 @@ error.message
    RENDER PRODUCTS
 ===================================================== */
 
-function renderProducts(
-list = products
-){
+function renderProducts(list = products){
 
 const grid =
-document.getElementById(
-"productGrid"
-);
+document.getElementById("productGrid");
 
-
-if(
-!list.length
-){
+if(!Array.isArray(list) || !list.length){
 
 grid.innerHTML =
 "<p>No products found.</p>";
@@ -1697,7 +1474,6 @@ return;
 
 }
 
-
 grid.innerHTML =
 list.map(
 p => `
@@ -1705,42 +1481,31 @@ p => `
 <div class="product">
 
 <img
-src="${escapeHtml(
-p.image || ""
-)}"
+src="${escapeHtml(p.image || "")}"
 onerror="this.style.display='none'"
 >
 
 <div class="productBody">
 
 <h3>
-${escapeHtml(
-p.name
-)}
+${escapeHtml(p.name || "")}
 </h3>
 
 <small>
-${escapeHtml(
-p.category
-)}
+${escapeHtml(p.category || "")}
 </small>
 
 <p class="price">
 
 ৳${Number(
-p.price
-).toLocaleString(
-"en-BD"
-)}
+p.price || 0
+).toLocaleString("en-BD")}
 
 <span class="old">
 
 ৳${Number(
-p.oldPrice ||
-p.price
-).toLocaleString(
-"en-BD"
-)}
+p.oldPrice || p.price || 0
+).toLocaleString("en-BD")}
 
 </span>
 
@@ -1749,16 +1514,12 @@ p.price
 <p>
 
 Stock:
-<b>
-${p.stock}
-</b>
+<b>${Number(p.stock || 0)}</b>
 
 &nbsp; | &nbsp;
 
 Discount:
-<b>
-${p.discount}%
-</b>
+<b>${Number(p.discount || 0)}%</b>
 
 </p>
 
@@ -1769,9 +1530,7 @@ style="
 background:#fff0f5;
 color:#f41470
 "
-onclick="
-editProduct(${Number(p.id)})
-"
+onclick="editProduct(${Number(p.id)})"
 >
 ✏️ Edit
 </button>
@@ -1781,9 +1540,7 @@ style="
 background:#ffecee;
 color:#c00
 "
-onclick="
-deleteProduct(${Number(p.id)})
-"
+onclick="deleteProduct(${Number(p.id)})"
 >
 🗑 Delete
 </button>
@@ -1808,28 +1565,21 @@ function searchProducts(){
 
 const q =
 document
-.getElementById(
-"productSearch"
-)
+.getElementById("productSearch")
 .value
 .toLowerCase();
 
-
 renderProducts(
-
 products.filter(
 p =>
-
 (
-String(p.name || "") +
+(p.name || "") +
 " " +
-String(p.category || "")
+(p.category || "")
 )
 .toLowerCase()
 .includes(q)
-
 )
-
 );
 
 }
@@ -1839,9 +1589,7 @@ String(p.category || "")
    IMAGE PREVIEW
 ===================================================== */
 
-function previewImage(
-event
-){
+function previewImage(event){
 
 const file =
 event.target.files[0];
@@ -1850,22 +1598,13 @@ if(!file){
 return;
 }
 
-
 const preview =
-document.getElementById(
-"imagePreview"
-);
-
+document.getElementById("imagePreview");
 
 preview.src =
-URL.createObjectURL(
-file
-);
+URL.createObjectURL(file);
 
-
-preview.classList.remove(
-"hidden"
-);
+preview.classList.remove("hidden");
 
 }
 
@@ -1878,28 +1617,18 @@ async function uploadImage(){
 
 const file =
 document
-.getElementById(
-"pImageFile"
-)
+.getElementById("pImageFile")
 .files[0];
-
 
 if(!file){
 
 return document
-.getElementById(
-"pImage"
-)
-.value
-.trim();
+.getElementById("pImage")
+.value.trim();
 
 }
 
-
-if(
-file.size >
-10 * 1024 * 1024
-){
+if(file.size > 10 * 1024 * 1024){
 
 throw new Error(
 "Image must be smaller than 10MB."
@@ -1907,13 +1636,11 @@ throw new Error(
 
 }
 
-
 return new Promise(
 (resolve,reject)=>{
 
 const reader =
 new FileReader();
-
 
 reader.onload =
 async () => {
@@ -1926,28 +1653,20 @@ await api(
 {
 method:"POST",
 body:{
-image:
-reader.result
+image:reader.result
 }
 }
 );
 
-
-resolve(
-data.url
-);
-
+resolve(data.url);
 
 }catch(error){
 
-reject(
-error
-);
+reject(error);
 
 }
 
 };
-
 
 reader.onerror =
 () => {
@@ -1960,13 +1679,9 @@ new Error(
 
 };
 
-
-reader.readAsDataURL(
-file
-);
+reader.readAsDataURL(file);
 
 }
-
 );
 
 }
@@ -1979,35 +1694,22 @@ file
 async function saveProduct(){
 
 const msg =
-document.getElementById(
-"productMsg"
-);
+document.getElementById("productMsg");
 
-
-msg.className =
-"msg";
-
+msg.className = "msg";
 
 try{
 
 const name =
 document
-.getElementById(
-"pName"
-)
-.value
-.trim();
-
+.getElementById("pName")
+.value.trim();
 
 const price =
 Number(
-document
-.getElementById(
-"pPrice"
-)
+document.getElementById("pPrice")
 .value
 );
-
 
 if(!name){
 
@@ -2017,7 +1719,6 @@ throw new Error(
 
 }
 
-
 if(price <= 0){
 
 throw new Error(
@@ -2026,17 +1727,14 @@ throw new Error(
 
 }
 
-
 msg.className =
 "msg success";
 
 msg.textContent =
 "Saving product...";
 
-
 const image =
 await uploadImage();
-
 
 const body = {
 
@@ -2044,9 +1742,7 @@ name,
 
 category:
 document
-.getElementById(
-"pCategory"
-)
+.getElementById("pCategory")
 .value,
 
 price,
@@ -2054,27 +1750,21 @@ price,
 oldPrice:
 Number(
 document
-.getElementById(
-"pOldPrice"
-)
+.getElementById("pOldPrice")
 .value
 ) || price,
 
 discount:
 Number(
 document
-.getElementById(
-"pDiscount"
-)
+.getElementById("pDiscount")
 .value
 ) || 0,
 
 stock:
 Number(
 document
-.getElementById(
-"pStock"
-)
+.getElementById("pStock")
 .value
 ) || 0,
 
@@ -2082,31 +1772,21 @@ image
 
 };
 
-
 const editId =
 document
-.getElementById(
-"editId"
-)
+.getElementById("editId")
 .value;
-
 
 if(editId){
 
 await api(
-
 "/api/admin/products/" +
-encodeURIComponent(
-editId
-),
-
+encodeURIComponent(editId),
 {
 method:"PUT",
 body
 }
-
 );
-
 
 msg.textContent =
 "Product updated successfully.";
@@ -2121,17 +1801,14 @@ body
 }
 );
 
-
 msg.textContent =
 "Product added successfully.";
 
 }
 
-
 await loadProducts();
 
 resetProductForm();
-
 
 }catch(error){
 
@@ -2150,112 +1827,68 @@ error.message;
    EDIT PRODUCT
 ===================================================== */
 
-function editProduct(
-id
-){
+function editProduct(id){
 
 const p =
 products.find(
 x =>
-Number(x.id) ===
-Number(id)
+Number(x.id) === Number(id)
 );
-
 
 if(!p){
 return;
 }
 
+document
+.getElementById("editId")
+.value = p.id;
 
 document
-.getElementById(
-"editId"
-)
-.value =
-p.id;
-
+.getElementById("pName")
+.value = p.name || "";
 
 document
-.getElementById(
-"pName"
-)
-.value =
-p.name || "";
-
-
-document
-.getElementById(
-"pCategory"
-)
+.getElementById("pCategory")
 .value =
 p.category || "General";
 
-
 document
-.getElementById(
-"pPrice"
-)
+.getElementById("pPrice")
 .value =
 p.price || "";
 
-
 document
-.getElementById(
-"pOldPrice"
-)
+.getElementById("pOldPrice")
 .value =
 p.oldPrice || "";
 
-
 document
-.getElementById(
-"pDiscount"
-)
+.getElementById("pDiscount")
 .value =
 p.discount || "";
 
-
 document
-.getElementById(
-"pStock"
-)
+.getElementById("pStock")
 .value =
 p.stock || "";
 
-
 document
-.getElementById(
-"pImage"
-)
+.getElementById("pImage")
 .value =
 p.image || "";
 
-
 document
-.getElementById(
-"formTitle"
-)
+.getElementById("formTitle")
 .textContent =
 "Edit Product";
 
+document
+.getElementById("addTab")
+.classList.remove("hidden");
 
 document
-.getElementById(
-"addTab"
-)
-.classList.remove(
-"hidden"
-);
-
-
-document
-.getElementById(
-"productsTab"
-)
-.classList.add(
-"hidden"
-);
-
+.getElementById("productsTab")
+.classList.add("hidden");
 
 window.scrollTo({
 top:0,
@@ -2269,27 +1902,22 @@ behavior:"smooth"
    DELETE PRODUCT
 ===================================================== */
 
-async function deleteProduct(
-id
-){
+async function deleteProduct(id){
 
 const p =
 products.find(
 x =>
-Number(x.id) ===
-Number(id)
+Number(x.id) === Number(id)
 );
-
 
 if(!p){
 return;
 }
 
-
 if(
 !confirm(
 'Delete "' +
-p.name +
+(p.name || "product") +
 '"?'
 )
 ){
@@ -2298,36 +1926,25 @@ return;
 
 }
 
-
 try{
 
 await api(
-
 "/api/admin/products/" +
-encodeURIComponent(
-id
-),
-
+encodeURIComponent(id),
 {
 method:"DELETE"
 }
-
 );
 
-
 await loadProducts();
-
 
 alert(
 "Product deleted successfully."
 );
 
-
 }catch(error){
 
-alert(
-error.message
-);
+alert(error.message);
 
 }
 
@@ -2341,74 +1958,43 @@ error.message
 function resetProductForm(){
 
 document
-.getElementById(
-"editId"
-)
+.getElementById("editId")
 .value = "";
 
-
 document
-.getElementById(
-"pName"
-)
+.getElementById("pName")
 .value = "";
 
-
 document
-.getElementById(
-"pPrice"
-)
+.getElementById("pPrice")
 .value = "";
 
-
 document
-.getElementById(
-"pOldPrice"
-)
+.getElementById("pOldPrice")
 .value = "";
 
-
 document
-.getElementById(
-"pDiscount"
-)
+.getElementById("pDiscount")
 .value = "";
 
-
 document
-.getElementById(
-"pStock"
-)
+.getElementById("pStock")
 .value = "";
 
-
 document
-.getElementById(
-"pImage"
-)
+.getElementById("pImage")
 .value = "";
 
-
 document
-.getElementById(
-"pImageFile"
-)
+.getElementById("pImageFile")
 .value = "";
 
+document
+.getElementById("imagePreview")
+.classList.add("hidden");
 
 document
-.getElementById(
-"imagePreview"
-)
-.classList.add(
-"hidden"
-);
-
-
-document
-.getElementById(
-"formTitle"
-)
+.getElementById("formTitle")
 .textContent =
 "Add New Product";
 
@@ -2423,27 +2009,37 @@ async function loadOrders(){
 
 try{
 
-const data =
-await api(
-"/api/admin/orders"
-);
-
-
-/* SUPPORT ARRAY OR OBJECT RESPONSE */
+const result =
+await api("/api/admin/orders");
 
 orders =
-Array.isArray(data)
-? data
-: (
-data.orders ||
-[]
-);
+Array.isArray(result)
+? result
+: result.orders || [];
 
+/*
+IMPORTANT FIX:
+
+Cancelled orders are kept in the database,
+but they are removed from the ACTIVE admin list.
+
+This means:
+- Cancel → Update
+- Immediately disappears
+- Refresh → still does not appear
+*/
+
+orders =
+orders.filter(
+order =>
+String(
+order.status || "Pending"
+).toLowerCase() !== "cancelled"
+);
 
 renderOrders();
 
 updateStats();
-
 
 }catch(error){
 
@@ -2453,16 +2049,12 @@ error
 );
 
 const box =
-document.getElementById(
-"ordersList"
-);
+document.getElementById("ordersList");
 
 box.innerHTML =
 `
 <div class="msg error" style="display:block">
-${escapeHtml(
-error.message
-)}
+${escapeHtml(error.message)}
 </div>
 `;
 
@@ -2475,13 +2067,9 @@ error.message
    ORDER STATUS CLASS
 ===================================================== */
 
-function getStatusClass(
-status
-){
+function getStatusClass(status){
 
-switch(
-String(status || "Pending")
-){
+switch(status){
 
 case "Confirmed":
 return "statusConfirmed";
@@ -2510,13 +2098,9 @@ return "statusPending";
    PAYMENT CLASS
 ===================================================== */
 
-function getPaymentClass(
-status
-){
+function getPaymentClass(status){
 
-switch(
-String(status || "Pending")
-){
+switch(status){
 
 case "Paid":
 return "paymentPaid";
@@ -2542,34 +2126,40 @@ return "paymentPending";
 function renderOrders(){
 
 const box =
-document.getElementById(
-"ordersList"
-);
-
+document.getElementById("ordersList");
 
 let list =
 [...orders];
 
-
-/* FILTER STATUS */
-
-const statusFilter =
-document
-.getElementById(
-"orderStatusFilter"
-)
-.value;
-
-
-if(statusFilter){
+/*
+IMPORTANT:
+Never show Cancelled orders in active list.
+This protects the UI even if loadOrders()
+has not run again yet.
+*/
 
 list =
 list.filter(
 order =>
 String(
 order.status || "Pending"
-) ===
-statusFilter
+).toLowerCase() !== "cancelled"
+);
+
+
+/* FILTER STATUS */
+
+const statusFilter =
+document
+.getElementById("orderStatusFilter")
+.value;
+
+if(statusFilter){
+
+list =
+list.filter(
+order =>
+order.status === statusFilter
 );
 
 }
@@ -2579,21 +2169,16 @@ statusFilter
 
 const paymentFilter =
 document
-.getElementById(
-"paymentStatusFilter"
-)
+.getElementById("paymentStatusFilter")
 .value;
-
 
 if(paymentFilter){
 
 list =
 list.filter(
 order =>
-String(
-order.paymentStatus ||
-"Pending"
-) ===
+(order.paymentStatus || "Pending")
+===
 paymentFilter
 );
 
@@ -2604,13 +2189,10 @@ paymentFilter
 
 const search =
 document
-.getElementById(
-"orderSearch"
-)
+.getElementById("orderSearch")
 .value
 .toLowerCase()
 .trim();
-
 
 if(search){
 
@@ -2619,41 +2201,25 @@ list.filter(
 order => {
 
 const customer =
-order.customer ||
-{};
-
+order.customer || {};
 
 return (
 
-String(
-order.id
-)
+String(order.id || "")
 .toLowerCase()
-.includes(
-search
-)
+.includes(search)
 
 ||
 
-String(
-customer.phone ||
-""
-)
+String(customer.phone || "")
 .toLowerCase()
-.includes(
-search
-)
+.includes(search)
 
 ||
 
-String(
-customer.name ||
-""
-)
+String(customer.name || "")
 .toLowerCase()
-.includes(
-search
-)
+.includes(search)
 
 );
 
@@ -2663,64 +2229,39 @@ search
 }
 
 
-/* NO ORDERS */
-
-if(
-!list.length
-){
+if(!list.length){
 
 box.innerHTML =
-"<p>No orders found.</p>";
+"<p>No active orders found.</p>";
 
 return;
 
 }
 
 
-/* RENDER */
-
 box.innerHTML =
 list.map(
 order => {
 
 const customer =
-order.customer ||
-{};
-
+order.customer || {};
 
 const items =
-Array.isArray(
-order.items
-)
+Array.isArray(order.items)
 ? order.items
 : [];
 
-
-const orderStatus =
-String(
-order.status ||
-"Pending"
-);
-
-
 const paymentStatus =
-String(
-order.paymentStatus ||
-"Pending"
-);
+order.paymentStatus || "Pending";
 
-
-const safeOrderId =
-escapeHtml(
-String(order.id)
-);
-
+const orderId =
+String(order.id || "");
 
 return `
 
 <div
 class="order"
-data-order-id="${safeOrderId}"
+id="order-card-${escapeHtml(orderId)}"
 >
 
 <div class="orderHead">
@@ -2730,7 +2271,7 @@ data-order-id="${safeOrderId}"
 <div class="orderId">
 
 Order #
-${safeOrderId}
+${escapeHtml(orderId)}
 
 </div>
 
@@ -2741,9 +2282,7 @@ order.createdAt
 ?
 new Date(
 order.createdAt
-).toLocaleString(
-"en-BD"
-)
+).toLocaleString("en-BD")
 :
 ""
 }
@@ -2758,14 +2297,12 @@ order.createdAt
 <span
 class="
 status
-${getStatusClass(
-orderStatus
-)}
+${getStatusClass(order.status)}
 "
 >
 
 ${escapeHtml(
-orderStatus
+order.status || "Pending"
 )}
 
 </span>
@@ -2786,24 +2323,21 @@ Customer
 
 Name:
 ${escapeHtml(
-customer.name ||
-""
+customer.name || ""
 )}
 
 <br>
 
 Phone:
 ${escapeHtml(
-customer.phone ||
-""
+customer.phone || ""
 )}
 
 <br>
 
 Address:
 ${escapeHtml(
-customer.address ||
-""
+customer.address || ""
 )}
 
 </p>
@@ -2812,8 +2346,7 @@ customer.address ||
 <div
 style="
 display:grid;
-grid-template-columns:
-1fr 1fr;
+grid-template-columns:1fr 1fr;
 gap:10px;
 margin-top:10px
 "
@@ -2827,47 +2360,47 @@ Order Status
 
 <select
 class="statusSelect"
-data-role="order-status"
+id="status-${escapeHtml(orderId)}"
 >
 
 <option
 value="Pending"
-${orderStatus === "Pending" ? "selected" : ""}
+${order.status==="Pending"?"selected":""}
 >
 Pending
 </option>
 
 <option
 value="Confirmed"
-${orderStatus === "Confirmed" ? "selected" : ""}
+${order.status==="Confirmed"?"selected":""}
 >
 Confirmed
 </option>
 
 <option
 value="Processing"
-${orderStatus === "Processing" ? "selected" : ""}
+${order.status==="Processing"?"selected":""}
 >
 Processing
 </option>
 
 <option
 value="Shipped"
-${orderStatus === "Shipped" ? "selected" : ""}
+${order.status==="Shipped"?"selected":""}
 >
 Shipped
 </option>
 
 <option
 value="Delivered"
-${orderStatus === "Delivered" ? "selected" : ""}
+${order.status==="Delivered"?"selected":""}
 >
 Delivered
 </option>
 
 <option
 value="Cancelled"
-${orderStatus === "Cancelled" ? "selected" : ""}
+${order.status==="Cancelled"?"selected":""}
 >
 Cancelled
 </option>
@@ -2885,33 +2418,33 @@ Payment Status
 
 <select
 class="paymentSelect"
-data-role="payment-status"
+id="payment-${escapeHtml(orderId)}"
 >
 
 <option
 value="Pending"
-${paymentStatus === "Pending" ? "selected" : ""}
+${paymentStatus==="Pending"?"selected":""}
 >
 Pending
 </option>
 
 <option
 value="Paid"
-${paymentStatus === "Paid" ? "selected" : ""}
+${paymentStatus==="Paid"?"selected":""}
 >
 Paid
 </option>
 
 <option
 value="Failed"
-${paymentStatus === "Failed" ? "selected" : ""}
+${paymentStatus==="Failed"?"selected":""}
 >
 Failed
 </option>
 
 <option
 value="Refunded"
-${paymentStatus === "Refunded" ? "selected" : ""}
+${paymentStatus==="Refunded"?"selected":""}
 >
 Refunded
 </option>
@@ -2927,34 +2460,25 @@ Refunded
 style="
 display:flex;
 gap:8px;
-margin-top:10px;
+margin-top:8px;
 flex-wrap:wrap
 "
 >
 
 <button
 class="btn"
-data-action="update-order"
-onclick="updateOrderStatus(this)"
+onclick="updateOrderStatus('${escapeHtml(orderId)}')"
 >
 💾 Update Order
 </button>
 
 <button
 class="btn green"
-data-action="update-payment"
-onclick="updatePaymentStatus(this)"
+onclick="updatePaymentStatus('${escapeHtml(orderId)}')"
 >
 💳 Update Payment
 </button>
 
-</div>
-
-
-<div
-class="updateMsg"
-data-role="update-message"
->
 </div>
 
 
@@ -2965,8 +2489,7 @@ Payment Method:
 </b>
 
 ${escapeHtml(
-order.paymentMethod ||
-"cod"
+order.paymentMethod || "cod"
 )}
 
 &nbsp; | &nbsp;
@@ -2978,15 +2501,11 @@ Payment:
 <span
 class="
 status
-${getPaymentClass(
-paymentStatus
-)}
+${getPaymentClass(paymentStatus)}
 "
 >
 
-${escapeHtml(
-paymentStatus
-)}
+${escapeHtml(paymentStatus)}
 
 </span>
 
@@ -3008,30 +2527,25 @@ item => `
 <div class="orderItem">
 
 ${escapeHtml(
-item.name ||
-"Product"
+item.name || ""
 )}
 
 ×
-${Number(
-item.qty || 0
-)}
+${Number(item.qty || 0)}
 
 =
 
 ৳${Number(
-(item.price || 0) *
-(item.qty || 0)
-).toLocaleString(
-"en-BD"
-)}
+Number(item.price || 0) *
+Number(item.qty || 0)
+).toLocaleString("en-BD")}
 
 </div>
 
 `
 ).join("")
 :
-"<div>No items found.</div>"
+"<div class='orderItem'>No products</div>"
 }
 
 
@@ -3043,9 +2557,7 @@ item.qty || 0
 Total:
 ৳${Number(
 order.total || 0
-).toLocaleString(
-"en-BD"
-)}
+).toLocaleString("en-BD")}
 
 </b>
 
@@ -3063,242 +2575,172 @@ order.total || 0
 
 /* =====================================================
    UPDATE ORDER STATUS
-   IMPORTANT FIX
 ===================================================== */
 
-async function updateOrderStatus(
-button
-){
-
-/*
-Find the exact order card.
-This avoids problems with order IDs
-inside HTML element IDs.
-*/
-
-const orderCard =
-button.closest(
-".order"
-);
-
-
-if(!orderCard){
-
-alert(
-"Order box not found."
-);
-
-return;
-
-}
-
-
-const orderId =
-orderCard
-.getAttribute(
-"data-order-id"
-);
-
+async function updateOrderStatus(orderId){
 
 const select =
-orderCard.querySelector(
-'[data-role="order-status"]'
+document.getElementById(
+"status-" + orderId
 );
-
-
-const message =
-orderCard.querySelector(
-'[data-role="update-message"]'
-);
-
-
-if(!orderId){
-
-alert(
-"Order ID not found."
-);
-
-return;
-
-}
-
 
 if(!select){
-
-alert(
-"Order status selector not found."
-);
-
 return;
-
 }
-
 
 const status =
 select.value;
 
 
-/* BUTTON LOADING */
+/*
+SPECIAL CANCEL HANDLING
 
-const oldText =
-button.innerHTML;
+If admin selects Cancelled:
+1. Send status to server
+2. Remove order from local array
+3. Remove card immediately
+4. Refresh order data from server
+5. Cancelled order will remain hidden after refresh
+*/
 
-button.disabled =
-true;
+if(status === "Cancelled"){
 
-button.innerHTML =
-"⏳ Updating...";
+const confirmed =
+confirm(
+"Are you sure you want to cancel Order #" +
+orderId +
+"?\n\nThis order will be removed from the active order list."
+);
 
-
-message.className =
-"updateMsg";
-
-message.textContent =
-"";
-
+if(!confirmed){
+return;
+}
 
 try{
 
-/*
-Send exactly:
-
-PUT /api/admin/orders/:id/status
-
-{
-  status: "Cancelled"
-}
-*/
-
-const result =
 await api(
-
 "/api/admin/orders/" +
-encodeURIComponent(
-orderId
-) +
+encodeURIComponent(orderId) +
 "/status",
-
 {
 method:"PUT",
-
 body:{
-status:String(
-status
-)
+status:"Cancelled"
 }
-
 }
-
 );
 
 
-/* SUCCESS */
-
-message.className =
-"updateMsg success";
-
-message.textContent =
-"Order status updated to " +
-status;
-
-
 /*
-Immediately update local order
-so UI does not show old Pending.
+Remove from local orders immediately
 */
 
-const localOrder =
-orders.find(
-x =>
-String(x.id) ===
+orders =
+orders.filter(
+order =>
+String(order.id) !==
 String(orderId)
 );
 
 
-if(localOrder){
-
-localOrder.status =
-status;
-
-}
-
-
 /*
-Update badge immediately.
+Remove card immediately
 */
 
-const badge =
-orderCard.querySelector(
-".orderHead .status"
+const card =
+document.getElementById(
+"order-card-" + orderId
 );
 
+if(card){
 
-if(badge){
-
-badge.className =
-"status " +
-getStatusClass(
-status
-);
-
-badge.textContent =
-status;
+card.remove();
 
 }
 
 
 /*
-Update stats.
+Update statistics
 */
 
 updateStats();
 
 
 /*
-Reload fresh orders from server
-after a short moment.
+If there are no orders left
 */
 
-setTimeout(
-async () => {
+const box =
+document.getElementById("ordersList");
 
-try{
+if(
+!box.querySelector(".order")
+){
 
-await loadOrders();
-
-}catch(e){
-
-console.error(e);
+box.innerHTML =
+"<p>No active orders found.</p>";
 
 }
 
-},
-300
-);
 
+/*
+Reload from server.
+Because renderOrders/loadOrders
+filters Cancelled, it will remain hidden
+after refresh.
+*/
+
+await loadOrders();
+
+
+alert(
+"Order #" +
+orderId +
+" cancelled successfully."
+);
 
 }catch(error){
 
-message.className =
-"updateMsg error";
-
-message.textContent =
-"Update failed: " +
-error.message;
-
-console.error(
-"Order status update error:",
-error
+alert(
+"Could not cancel order: " +
+error.message
 );
 
+}
 
-}finally{
+return;
 
-button.disabled =
-false;
+}
 
-button.innerHTML =
-oldText;
+
+/* =====================================================
+   NORMAL STATUS UPDATE
+===================================================== */
+
+try{
+
+await api(
+"/api/admin/orders/" +
+encodeURIComponent(orderId) +
+"/status",
+{
+method:"PUT",
+body:{
+status
+}
+}
+);
+
+await loadOrders();
+
+alert(
+"Order status updated to " +
+status
+);
+
+}catch(error){
+
+alert(error.message);
 
 }
 
@@ -3309,185 +2751,44 @@ oldText;
    UPDATE PAYMENT STATUS
 ===================================================== */
 
-async function updatePaymentStatus(
-button
-){
-
-const orderCard =
-button.closest(
-".order"
-);
-
-
-if(!orderCard){
-
-alert(
-"Order box not found."
-);
-
-return;
-
-}
-
-
-const orderId =
-orderCard
-.getAttribute(
-"data-order-id"
-);
-
+async function updatePaymentStatus(orderId){
 
 const select =
-orderCard.querySelector(
-'[data-role="payment-status"]'
+document.getElementById(
+"payment-" + orderId
 );
-
-
-const message =
-orderCard.querySelector(
-'[data-role="update-message"]'
-);
-
-
-if(!orderId){
-
-alert(
-"Order ID not found."
-);
-
-return;
-
-}
-
 
 if(!select){
-
-alert(
-"Payment status selector not found."
-);
-
 return;
-
 }
-
 
 const paymentStatus =
 select.value;
 
-
-const oldText =
-button.innerHTML;
-
-
-button.disabled =
-true;
-
-button.innerHTML =
-"⏳ Updating...";
-
-
-message.className =
-"updateMsg";
-
-message.textContent =
-"";
-
-
 try{
 
 await api(
-
 "/api/admin/orders/" +
-encodeURIComponent(
-orderId
-) +
+encodeURIComponent(orderId) +
 "/payment-status",
-
 {
 method:"PUT",
-
 body:{
-paymentStatus:String(
 paymentStatus
-)
 }
-
 }
-
 );
-
-
-message.className =
-"updateMsg success";
-
-message.textContent =
-"Payment status updated to " +
-paymentStatus;
-
-
-/*
-Update local data.
-*/
-
-const localOrder =
-orders.find(
-x =>
-String(x.id) ===
-String(orderId)
-);
-
-
-if(localOrder){
-
-localOrder.paymentStatus =
-paymentStatus;
-
-}
-
-
-updateStats();
-
-
-setTimeout(
-async () => {
-
-try{
 
 await loadOrders();
 
-}catch(e){
-
-console.error(e);
-
-}
-
-},
-300
+alert(
+"Payment status updated to " +
+paymentStatus
 );
-
 
 }catch(error){
 
-message.className =
-"updateMsg error";
-
-message.textContent =
-"Payment update failed: " +
-error.message;
-
-console.error(
-"Payment status update error:",
-error
-);
-
-
-}finally{
-
-button.disabled =
-false;
-
-button.innerHTML =
-oldText;
+alert(error.message);
 
 }
 
@@ -3503,73 +2804,45 @@ async function loadSettings(){
 try{
 
 const data =
-await api(
-"/api/store"
-);
-
+await api("/api/store");
 
 const s =
-data.settings ||
-{};
-
+data.settings || {};
 
 document
-.getElementById(
-"shopName"
-)
+.getElementById("shopName")
 .value =
-s.shopName ||
-"";
-
+s.shopName || "";
 
 document
-.getElementById(
-"tagline"
-)
+.getElementById("tagline")
 .value =
-s.tagline ||
-"";
-
+s.tagline || "";
 
 document
-.getElementById(
-"phone1"
-)
+.getElementById("phone1")
 .value =
-s.phone1 ||
-"";
-
+s.phone1 || "";
 
 document
-.getElementById(
-"phone2"
-)
+.getElementById("phone2")
 .value =
-s.phone2 ||
-"";
-
+s.phone2 || "";
 
 document
-.getElementById(
-"facebook"
-)
+.getElementById("facebook")
 .value =
-s.facebook ||
-"";
-
+s.facebook || "";
 
 document
-.getElementById(
-"currency"
-)
+.getElementById("currency")
 .value =
-s.currency ||
-"BDT";
-
+s.currency || "BDT";
 
 }catch(error){
 
 console.error(
+"Settings error:",
 error
 );
 
@@ -3585,82 +2858,57 @@ error
 async function saveSettings(){
 
 const msg =
-document.getElementById(
-"settingsMsg"
-);
+document.getElementById("settingsMsg");
 
-
-msg.className =
-"msg";
-
+msg.className = "msg";
 
 try{
 
 await api(
-
 "/api/admin/settings",
-
 {
-
 method:"PUT",
-
 body:{
 
 shopName:
 document
-.getElementById(
-"shopName"
-)
+.getElementById("shopName")
 .value,
 
 tagline:
 document
-.getElementById(
-"tagline"
-)
+.getElementById("tagline")
 .value,
 
 phone1:
 document
-.getElementById(
-"phone1"
-)
+.getElementById("phone1")
 .value,
 
 phone2:
 document
-.getElementById(
-"phone2"
-)
+.getElementById("phone2")
 .value,
 
 facebook:
 document
-.getElementById(
-"facebook"
-)
+.getElementById("facebook")
 .value,
 
 currency:
 document
-.getElementById(
-"currency"
-)
+.getElementById("currency")
 .value
 
 }
-
 }
-
 );
-
 
 msg.className =
 "msg success";
 
 msg.textContent =
 "Settings saved successfully.";
-
 
 }catch(error){
 
@@ -3681,65 +2929,58 @@ error.message;
 
 function updateStats(){
 
+/*
+products
+*/
+
 document
-.getElementById(
-"productCount"
-)
+.getElementById("productCount")
 .textContent =
 products.length;
 
 
-document
-.getElementById(
-"orderCount"
-)
-.textContent =
-orders.length;
+/*
+Only active orders are counted.
+*/
 
-
-document
-.getElementById(
-"pendingCount"
-)
-.textContent =
-
+const activeOrders =
 orders.filter(
 x =>
 String(
-x.status ||
-"Pending"
-) ===
-"Pending"
+x.status || "Pending"
+).toLowerCase() !== "cancelled"
+);
+
+
+document
+.getElementById("orderCount")
+.textContent =
+activeOrders.length;
+
+
+document
+.getElementById("pendingCount")
+.textContent =
+
+activeOrders.filter(
+x =>
+x.status === "Pending"
 ).length;
 
 
 /*
-Cancelled orders are excluded
-from total sales.
+TOTAL SALES
+
+Cancelled orders are excluded.
 */
 
 const sales =
-orders.reduce(
+activeOrders.reduce(
 (sum,x) => {
-
-if(
-String(
-x.status ||
-"Pending"
-) ===
-"Cancelled"
-){
-
-return sum;
-
-}
-
 
 return (
 sum +
-Number(
-x.total || 0
-)
+Number(x.total || 0)
 );
 
 },
@@ -3748,14 +2989,10 @@ x.total || 0
 
 
 document
-.getElementById(
-"salesTotal"
-)
+.getElementById("salesTotal")
 .textContent =
 "৳" +
-sales.toLocaleString(
-"en-BD"
-);
+sales.toLocaleString("en-BD");
 
 }
 
@@ -3764,42 +3001,59 @@ sales.toLocaleString(
    SECURITY / ESCAPE HTML
 ===================================================== */
 
-function escapeHtml(
-value
+function escapeHtml(value){
+
+return String(value ?? "")
+
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+   AUTO REFRESH ACTIVE ORDERS
+===================================================== */
+
+/*
+Every 30 seconds the admin panel checks
+for new/updated orders.
+
+Cancelled orders remain hidden because
+loadOrders() filters them.
+*/
+
+setInterval(
+async function(){
+
+if(
+token &&
+!document
+.getElementById("adminPage")
+.classList.contains("hidden")
 ){
 
-return String(
-value == null
-? ""
-: value
-)
+try{
 
-.replace(
-/&/g,
-"&amp;"
-)
+await loadOrders();
 
-.replace(
-/</g,
-"&lt;"
-)
+}catch(e){
 
-.replace(
-/>/g,
-"&gt;"
-)
-
-.replace(
-/"/g,
-"&quot;"
-)
-
-.replace(
-/'/g,
-"&#039;"
+console.error(
+"Auto refresh error:",
+e
 );
 
 }
+
+}
+
+},
+30000
+);
 
 
 /* =====================================================
