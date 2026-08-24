@@ -94,6 +94,14 @@ const adminSessions = new Map();
 
 
 /* =====================================================
+   ADMIN LOGIN DETAILS
+===================================================== */
+
+const ADMIN_USERNAME = "SMADMIN";
+const ADMIN_PASSWORD = "SM2728";
+
+
+/* =====================================================
    HELPERS
 ===================================================== */
 
@@ -201,6 +209,74 @@ async function initDatabase() {
 
 
     /* =================================================
+       STORE SETTINGS MIGRATION
+    ================================================= */
+
+    await client.query(`
+
+      ALTER TABLE store_settings
+
+      ADD COLUMN IF NOT EXISTS
+      shop_name TEXT DEFAULT 'SM Online Shop'
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE store_settings
+
+      ADD COLUMN IF NOT EXISTS
+      tagline TEXT DEFAULT ''
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE store_settings
+
+      ADD COLUMN IF NOT EXISTS
+      phone1 TEXT DEFAULT ''
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE store_settings
+
+      ADD COLUMN IF NOT EXISTS
+      phone2 TEXT DEFAULT ''
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE store_settings
+
+      ADD COLUMN IF NOT EXISTS
+      facebook TEXT DEFAULT ''
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE store_settings
+
+      ADD COLUMN IF NOT EXISTS
+      currency TEXT DEFAULT 'BDT'
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE store_settings
+
+      ADD COLUMN IF NOT EXISTS
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+
+    `);
+
+
+    /* =================================================
        PRODUCTS
     ================================================= */
 
@@ -237,7 +313,6 @@ async function initDatabase() {
 
     /* =================================================
        PRODUCTS MIGRATION
-       SAFE FOR EXISTING DATABASE
     ================================================= */
 
     await client.query(`
@@ -249,6 +324,59 @@ async function initDatabase() {
 
     `);
 
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      category TEXT DEFAULT 'General'
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      old_price NUMERIC(12,2) DEFAULT 0
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      discount NUMERIC(6,2) DEFAULT 0
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      stock INTEGER DEFAULT 0
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      image TEXT DEFAULT ''
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      created_at TIMESTAMPTZ DEFAULT NOW()
+
+    `);
 
     await client.query(`
 
@@ -260,20 +388,16 @@ async function initDatabase() {
     `);
 
 
-    /*
-      Make sure old products have
-      updated_at values.
-    */
-
     await client.query(`
 
       UPDATE products
 
-      SET updated_at = COALESCE(
-        updated_at,
-        created_at,
-        NOW()
-      )
+      SET updated_at =
+        COALESCE(
+          updated_at,
+          created_at,
+          NOW()
+        )
 
       WHERE updated_at IS NULL
 
@@ -320,10 +444,45 @@ async function initDatabase() {
       ALTER TABLE orders
 
       ADD COLUMN IF NOT EXISTS
-      payment_status TEXT DEFAULT 'Pending'
+      customer JSONB DEFAULT '{}'::jsonb
 
     `);
 
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      items JSONB DEFAULT '[]'::jsonb
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      total NUMERIC(12,2) DEFAULT 0
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      status TEXT DEFAULT 'Pending'
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      payment_status TEXT DEFAULT 'Pending'
+
+    `);
 
     await client.query(`
 
@@ -334,6 +493,14 @@ async function initDatabase() {
 
     `);
 
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      created_at TIMESTAMPTZ DEFAULT NOW()
+
+    `);
 
     await client.query(`
 
@@ -345,20 +512,16 @@ async function initDatabase() {
     `);
 
 
-    /*
-      Make sure old orders have
-      updated_at values.
-    */
-
     await client.query(`
 
       UPDATE orders
 
-      SET updated_at = COALESCE(
-        updated_at,
-        created_at,
-        NOW()
-      )
+      SET updated_at =
+        COALESCE(
+          updated_at,
+          created_at,
+          NOW()
+        )
 
       WHERE updated_at IS NULL
 
@@ -366,15 +529,20 @@ async function initDatabase() {
 
 
     /* =================================================
-       DEFAULT SETTINGS
+       DEFAULT STORE SETTINGS
     ================================================= */
 
     const settingsResult =
       await client.query(`
+
         SELECT id
+
         FROM store_settings
+
         ORDER BY id
+
         LIMIT 1
+
       `);
 
 
@@ -385,17 +553,27 @@ async function initDatabase() {
       await client.query(`
 
         INSERT INTO store_settings
+
         (
           shop_name,
           tagline,
-          currency
+          phone1,
+          phone2,
+          facebook,
+          currency,
+          updated_at
         )
 
         VALUES
+
         (
           'SM Online Shop',
           '',
-          'BDT'
+          '',
+          '',
+          '',
+          'BDT',
+          NOW()
         )
 
       `);
@@ -405,9 +583,11 @@ async function initDatabase() {
 
     await client.query("COMMIT");
 
+
     console.log(
       "Database initialized successfully."
     );
+
 
   } catch (error) {
 
@@ -444,8 +624,11 @@ app.get(
       );
 
       res.json({
+
         ok: true,
+
         status: "online"
+
       });
 
     } catch (error) {
@@ -458,8 +641,12 @@ app.get(
       res
         .status(500)
         .json({
+
           ok: false,
-          status: "database error"
+
+          status:
+            "database error"
+
         });
 
     }
@@ -543,6 +730,7 @@ app.get(
         settings:
           settingsResult.rows[0] ||
           {
+
             shopName:
               "SM Online Shop",
 
@@ -560,12 +748,14 @@ app.get(
 
             currency:
               "BDT"
+
           },
 
         products:
           productsResult.rows
 
       });
+
 
     } catch (error) {
 
@@ -577,8 +767,10 @@ app.get(
       res
         .status(500)
         .json({
+
           error:
             "Could not load store."
+
         });
 
     }
@@ -637,6 +829,7 @@ app.get(
         result.rows
       );
 
+
     } catch (error) {
 
       console.error(
@@ -647,8 +840,10 @@ app.get(
       res
         .status(500)
         .json({
+
           error:
             "Could not load products."
+
         });
 
     }
@@ -669,38 +864,39 @@ app.post(
 
       const username =
         String(
-          req.body.username ||
-          ""
+          req.body.username || ""
         ).trim();
 
       const password =
         String(
-          req.body.password ||
-          ""
+          req.body.password || ""
         );
 
 
-      const adminUsername =
-        process.env.ADMIN_USERNAME ||
-        "admin";
+      console.log(
+        "Admin login attempt:",
+        username
+      );
 
-      const adminPassword =
-        process.env.ADMIN_PASSWORD ||
-        "admin123";
 
+      /* ===============================================
+         FIXED ADMIN LOGIN
+         Username: SMADMIN
+         Password: SM2728
+      =============================================== */
 
       if (
-        username !==
-        adminUsername ||
-        password !==
-        adminPassword
+        username !== ADMIN_USERNAME ||
+        password !== ADMIN_PASSWORD
       ) {
 
         return res
           .status(401)
           .json({
+
             error:
               "Invalid username or password."
+
           });
 
       }
@@ -713,16 +909,34 @@ app.post(
       adminSessions.set(
         token,
         {
-          username,
+
+          username:
+            ADMIN_USERNAME,
+
           createdAt:
             Date.now()
+
         }
       );
 
 
+      console.log(
+        "Admin login successful."
+      );
+
+
       res.json({
-        token
+
+        success:
+          true,
+
+        token,
+
+        username:
+          ADMIN_USERNAME
+
       });
+
 
     } catch (error) {
 
@@ -734,11 +948,45 @@ app.post(
       res
         .status(500)
         .json({
+
           error:
             "Login failed."
+
         });
 
     }
+
+  }
+);
+
+
+/* =====================================================
+   ADMIN SESSION CHECK
+===================================================== */
+
+app.get(
+  "/api/admin/check",
+  requireAdmin,
+  async (req, res) => {
+
+    const token =
+      getAdminToken(req);
+
+    const session =
+      adminSessions.get(token);
+
+
+    res.json({
+
+      success:
+        true,
+
+      username:
+        session
+          ? session.username
+          : ADMIN_USERNAME
+
+    });
 
   }
 );
@@ -760,8 +1008,12 @@ app.post(
       token
     );
 
+
     res.json({
-      success: true
+
+      success:
+        true
+
     });
 
   }
@@ -817,6 +1069,7 @@ app.get(
         result.rows
       );
 
+
     } catch (error) {
 
       console.error(
@@ -827,8 +1080,10 @@ app.get(
       res
         .status(500)
         .json({
+
           error:
             "Could not load products."
+
         });
 
     }
@@ -880,8 +1135,10 @@ app.post(
         return res
           .status(400)
           .json({
+
             error:
               "Product name is required."
+
           });
 
       }
@@ -898,8 +1155,10 @@ app.post(
         return res
           .status(400)
           .json({
+
             error:
               "Valid product price is required."
+
           });
 
       }
@@ -909,29 +1168,51 @@ app.post(
         await pool.query(`
 
           INSERT INTO products
+
           (
+
             name,
+
             category,
+
             description,
+
             price,
+
             old_price,
+
             discount,
+
             stock,
+
             image,
+
             updated_at
+
           )
 
           VALUES
+
           (
+
             $1,
+
             $2,
+
             $3,
+
             $4,
+
             $5,
+
             $6,
+
             $7,
+
             $8,
+
             NOW()
+
           )
 
           RETURNING
@@ -988,9 +1269,7 @@ app.post(
           Math.max(
             0,
             Math.floor(
-              safeNumber(
-                stock
-              )
+              safeNumber(stock)
             )
           ),
 
@@ -1002,9 +1281,12 @@ app.post(
         ]);
 
 
-      res.status(201).json(
-        result.rows[0]
-      );
+      res
+        .status(201)
+        .json(
+          result.rows[0]
+        );
+
 
     } catch (error) {
 
@@ -1016,8 +1298,10 @@ app.post(
       res
         .status(500)
         .json({
+
           error:
             "Could not create product."
+
         });
 
     }
@@ -1050,8 +1334,10 @@ app.put(
         return res
           .status(400)
           .json({
+
             error:
               "Invalid product ID."
+
           });
 
       }
@@ -1089,8 +1375,10 @@ app.put(
         return res
           .status(400)
           .json({
+
             error:
               "Product name is required."
+
           });
 
       }
@@ -1107,8 +1395,10 @@ app.put(
         return res
           .status(400)
           .json({
+
             error:
               "Valid product price is required."
+
           });
 
       }
@@ -1195,9 +1485,7 @@ app.put(
           Math.max(
             0,
             Math.floor(
-              safeNumber(
-                stock
-              )
+              safeNumber(stock)
             )
           ),
 
@@ -1218,8 +1506,10 @@ app.put(
         return res
           .status(404)
           .json({
+
             error:
               "Product not found."
+
           });
 
       }
@@ -1228,6 +1518,7 @@ app.put(
       res.json(
         result.rows[0]
       );
+
 
     } catch (error) {
 
@@ -1239,8 +1530,10 @@ app.put(
       res
         .status(500)
         .json({
+
           error:
             "Could not update product."
+
         });
 
     }
@@ -1273,8 +1566,10 @@ app.delete(
         return res
           .status(400)
           .json({
+
             error:
               "Invalid product ID."
+
           });
 
       }
@@ -1301,17 +1596,22 @@ app.delete(
         return res
           .status(404)
           .json({
+
             error:
               "Product not found."
+
           });
 
       }
 
 
       res.json({
+
         success:
           true
+
       });
+
 
     } catch (error) {
 
@@ -1323,8 +1623,10 @@ app.delete(
       res
         .status(500)
         .json({
+
           error:
             "Could not delete product."
+
         });
 
     }
@@ -1353,8 +1655,10 @@ app.post(
         return res
           .status(500)
           .json({
+
             error:
               "Cloudinary is not configured."
+
           });
 
       }
@@ -1372,8 +1676,10 @@ app.post(
         return res
           .status(400)
           .json({
+
             error:
               "Image is required."
+
           });
 
       }
@@ -1383,8 +1689,10 @@ app.post(
         await cloudinary.uploader.upload(
           image,
           {
+
             folder:
               "sm-online-shop/products"
+
           }
         );
 
@@ -1399,6 +1707,7 @@ app.post(
 
       });
 
+
     } catch (error) {
 
       console.error(
@@ -1409,8 +1718,10 @@ app.post(
       res
         .status(500)
         .json({
+
           error:
             "Image upload failed."
+
         });
 
     }
@@ -1467,6 +1778,7 @@ app.get(
         result.rows
       );
 
+
     } catch (error) {
 
       console.error(
@@ -1477,8 +1789,10 @@ app.get(
       res
         .status(500)
         .json({
+
           error:
             "Could not load orders."
+
         });
 
     }
@@ -1521,8 +1835,10 @@ app.post(
         return res
           .status(400)
           .json({
+
             error:
               "Order items are required."
+
           });
 
       }
@@ -1670,8 +1986,11 @@ app.post(
           `,
 
           [
+
             qty,
+
             productId
+
           ]
 
         );
@@ -1773,8 +2092,7 @@ app.post(
           [
 
             JSON.stringify(
-              customer ||
-              {}
+              customer || {}
             ),
 
             JSON.stringify(
@@ -1798,9 +2116,12 @@ app.post(
       );
 
 
-      res.status(201).json(
-        result.rows[0]
-      );
+      res
+        .status(201)
+        .json(
+          result.rows[0]
+        );
+
 
     } catch (error) {
 
@@ -1818,10 +2139,13 @@ app.post(
       res
         .status(400)
         .json({
+
           error:
             error.message ||
             "Could not create order."
+
         });
+
 
     } finally {
 
@@ -1882,8 +2206,10 @@ app.put(
         return res
           .status(400)
           .json({
+
             error:
               "Invalid order ID."
+
           });
 
       }
@@ -1898,8 +2224,10 @@ app.put(
         return res
           .status(400)
           .json({
+
             error:
               "Invalid order status."
+
           });
 
       }
@@ -1941,8 +2269,11 @@ app.put(
         `,
 
         [
+
           status,
+
           id
+
         ]);
 
 
@@ -1953,8 +2284,10 @@ app.put(
         return res
           .status(404)
           .json({
+
             error:
               "Order not found."
+
           });
 
       }
@@ -1975,6 +2308,7 @@ app.put(
 
       });
 
+
     } catch (error) {
 
       console.error(
@@ -1985,8 +2319,10 @@ app.put(
       res
         .status(500)
         .json({
+
           error:
             "Could not update order status."
+
         });
 
     }
@@ -2039,8 +2375,10 @@ app.put(
         return res
           .status(400)
           .json({
+
             error:
               "Invalid order ID."
+
           });
 
       }
@@ -2055,8 +2393,10 @@ app.put(
         return res
           .status(400)
           .json({
+
             error:
               "Invalid payment status."
+
           });
 
       }
@@ -2098,8 +2438,11 @@ app.put(
         `,
 
         [
+
           paymentStatus,
+
           id
+
         ]);
 
 
@@ -2110,8 +2453,10 @@ app.put(
         return res
           .status(404)
           .json({
+
             error:
               "Order not found."
+
           });
 
       }
@@ -2127,6 +2472,7 @@ app.put(
 
       });
 
+
     } catch (error) {
 
       console.error(
@@ -2137,8 +2483,10 @@ app.put(
       res
         .status(500)
         .json({
+
           error:
             "Could not update payment status."
+
         });
 
     }
@@ -2271,6 +2619,7 @@ app.put(
 
       });
 
+
     } catch (error) {
 
       console.error(
@@ -2281,8 +2630,10 @@ app.put(
       res
         .status(500)
         .json({
+
           error:
             "Could not save settings."
+
         });
 
     }
@@ -2340,8 +2691,10 @@ app.use(
     res
       .status(404)
       .json({
+
         error:
           "API endpoint not found."
+
       });
 
   }
@@ -2380,8 +2733,10 @@ app.use(
     res
       .status(500)
       .json({
+
         error:
           "Internal server error."
+
       });
 
   }
@@ -2410,6 +2765,7 @@ async function startServer() {
 
       }
     );
+
 
   } catch (error) {
 
