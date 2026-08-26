@@ -512,6 +512,88 @@ async function initDatabase() {
     `);
 
 
+    /* =================================================
+       ⭐ IMPORTANT ORDER ID FIX
+       
+       Fixes:
+       null value in column "id"
+       of relation "orders"
+       
+       This is needed because your existing
+       PostgreSQL orders table was created before
+       and its ID was not auto-generating.
+    ================================================= */
+
+    await client.query(`
+
+      CREATE SEQUENCE IF NOT EXISTS
+      orders_id_seq
+
+    `);
+
+
+    await client.query(`
+
+      ALTER SEQUENCE
+      orders_id_seq
+      OWNED BY orders.id
+
+    `);
+
+
+    /* =================================================
+       CHECK CURRENT MAX ORDER ID
+    ================================================= */
+
+    await client.query(`
+
+      SELECT setval(
+
+        'orders_id_seq',
+
+        COALESCE(
+          (SELECT MAX(id) FROM orders),
+          0
+        ) + 1,
+
+        false
+
+      )
+
+    `);
+
+
+    /* =================================================
+       SET AUTO ID
+    ================================================= */
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ALTER COLUMN id
+
+      SET DEFAULT
+      nextval('orders_id_seq')
+
+    `);
+
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ALTER COLUMN id
+
+      SET NOT NULL
+
+    `);
+
+
+    /* =================================================
+       UPDATE ORDER TIMESTAMP
+    ================================================= */
+
     await client.query(`
 
       UPDATE orders
@@ -526,6 +608,11 @@ async function initDatabase() {
       WHERE updated_at IS NULL
 
     `);
+
+
+    console.log(
+      "Orders ID auto-generation fixed successfully."
+    );
 
 
     /* =================================================
@@ -879,12 +966,6 @@ app.post(
       );
 
 
-      /* ===============================================
-         FIXED ADMIN LOGIN
-         Username: SMADMIN
-         Password: SM2728
-      =============================================== */
-
       if (
         username !== ADMIN_USERNAME ||
         password !== ADMIN_PASSWORD
@@ -1164,6 +1245,29 @@ app.post(
       }
 
 
+      const cleanStock =
+        Math.max(
+          0,
+          Math.floor(
+            safeNumber(stock)
+          )
+        );
+
+
+      const cleanDiscount =
+        Math.max(
+          0,
+          safeNumber(discount)
+        );
+
+
+      const cleanOldPrice =
+        safeNumber(
+          oldPrice,
+          cleanPrice
+        );
+
+
       const result =
         await pool.query(`
 
@@ -1257,21 +1361,11 @@ app.post(
 
           cleanPrice,
 
-          safeNumber(
-            oldPrice,
-            cleanPrice
-          ),
+          cleanOldPrice,
 
-          safeNumber(
-            discount
-          ),
+          cleanDiscount,
 
-          Math.max(
-            0,
-            Math.floor(
-              safeNumber(stock)
-            )
-          ),
+          cleanStock,
 
           String(
             image ||
@@ -1404,6 +1498,29 @@ app.put(
       }
 
 
+      const cleanStock =
+        Math.max(
+          0,
+          Math.floor(
+            safeNumber(stock)
+          )
+        );
+
+
+      const cleanDiscount =
+        Math.max(
+          0,
+          safeNumber(discount)
+        );
+
+
+      const cleanOldPrice =
+        safeNumber(
+          oldPrice,
+          cleanPrice
+        );
+
+
       const result =
         await pool.query(`
 
@@ -1473,21 +1590,11 @@ app.put(
 
           cleanPrice,
 
-          safeNumber(
-            oldPrice,
-            cleanPrice
-          ),
+          cleanOldPrice,
 
-          safeNumber(
-            discount
-          ),
+          cleanDiscount,
 
-          Math.max(
-            0,
-            Math.floor(
-              safeNumber(stock)
-            )
-          ),
+          cleanStock,
 
           String(
             image ||
@@ -1820,12 +1927,35 @@ app.post(
 
         items,
 
-        total,
-
         paymentMethod
 
       } = req.body;
 
+
+      /* ===============================================
+         VALIDATE CUSTOMER
+      =============================================== */
+
+      if (
+        !customer ||
+        typeof customer !== "object"
+      ) {
+
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Customer information is required."
+
+          });
+
+      }
+
+
+      /* ===============================================
+         VALIDATE ITEMS
+      =============================================== */
 
       if (
         !Array.isArray(items) ||
@@ -1852,13 +1982,17 @@ app.post(
       const finalItems = [];
 
 
+      /* ===============================================
+         PROCESS EACH PRODUCT
+      =============================================== */
+
       for (
         const item of items
       ) {
 
         const productId =
           Number(
-            item.productId ||
+            item.productId ??
             item.id
           );
 
@@ -1878,7 +2012,8 @@ app.post(
         if (
           !Number.isInteger(
             productId
-          )
+          ) ||
+          productId <= 0
         ) {
 
           throw new Error(
@@ -1887,6 +2022,10 @@ app.post(
 
         }
 
+
+        /* =============================================
+           LOCK PRODUCT ROW
+        ============================================= */
 
         const productResult =
           await client.query(
@@ -1933,9 +2072,18 @@ app.post(
           productResult.rows[0];
 
 
+        const currentStock =
+          Number(
+            product.stock
+          );
+
+
+        /* =============================================
+           STOCK CHECK
+        ============================================= */
+
         if (
-          Number(product.stock) <
-          qty
+          currentStock < qty
         ) {
 
           throw new Error(
@@ -1945,10 +2093,16 @@ app.post(
         }
 
 
+        /* =============================================
+           SAVE FINAL ITEM
+        ============================================= */
+
         finalItems.push({
 
           productId:
-            product.id,
+            Number(
+              product.id
+            ),
 
           name:
             product.name,
@@ -1966,6 +2120,10 @@ app.post(
 
         });
 
+
+        /* =============================================
+           REDUCE STOCK
+        ============================================= */
 
         await client.query(
 
@@ -1998,6 +2156,11 @@ app.post(
       }
 
 
+      /* ===============================================
+         CALCULATE TOTAL FROM DATABASE
+         DO NOT TRUST CUSTOMER TOTAL
+      =============================================== */
+
       const calculatedTotal =
         finalItems.reduce(
           (
@@ -2021,6 +2184,27 @@ app.post(
           0
         );
 
+
+      /* ===============================================
+         PAYMENT METHOD
+      =============================================== */
+
+      const cleanPaymentMethod =
+        String(
+          paymentMethod ||
+          "cod"
+        ).trim();
+
+
+      /* ===============================================
+         ⭐ INSERT ORDER
+         
+         IMPORTANT:
+         id is NOT included.
+         
+         PostgreSQL automatically creates
+         the order ID using orders_id_seq.
+      =============================================== */
 
       const result =
         await client.query(
@@ -2092,7 +2276,7 @@ app.post(
           [
 
             JSON.stringify(
-              customer || {}
+              customer
             ),
 
             JSON.stringify(
@@ -2101,33 +2285,69 @@ app.post(
 
             calculatedTotal,
 
-            String(
-              paymentMethod ||
-              "cod"
-            )
+            cleanPaymentMethod
 
           ]
 
         );
 
 
+      /* ===============================================
+         COMMIT
+      =============================================== */
+
       await client.query(
         "COMMIT"
       );
 
 
+      console.log(
+        `New order created successfully. Order ID: ${result.rows[0].id}`
+      );
+
+
+      /* ===============================================
+         RESPONSE
+      =============================================== */
+
       res
         .status(201)
-        .json(
-          result.rows[0]
-        );
+        .json({
+
+          success:
+            true,
+
+          order:
+            result.rows[0]
+
+        });
 
 
     } catch (error) {
 
-      await client.query(
-        "ROLLBACK"
-      );
+      /* =============================================
+         ROLLBACK
+         
+         If anything fails, stock changes are
+         also cancelled.
+      ============================================= */
+
+      try {
+
+        await client.query(
+          "ROLLBACK"
+        );
+
+      } catch (
+        rollbackError
+      ) {
+
+        console.error(
+          "Rollback error:",
+          rollbackError
+        );
+
+      }
 
 
       console.error(
@@ -2139,6 +2359,9 @@ app.post(
       res
         .status(400)
         .json({
+
+          success:
+            false,
 
           error:
             error.message ||
@@ -2200,7 +2423,8 @@ app.put(
 
 
       if (
-        !Number.isInteger(id)
+        !Number.isInteger(id) ||
+        id <= 0
       ) {
 
         return res
@@ -2369,7 +2593,8 @@ app.put(
 
 
       if (
-        !Number.isInteger(id)
+        !Number.isInteger(id) ||
+        id <= 0
       ) {
 
         return res
@@ -2607,6 +2832,22 @@ app.put(
           )
 
         ]);
+
+
+      if (
+        result.rows.length === 0
+      ) {
+
+        return res
+          .status(404)
+          .json({
+
+            error:
+              "Store settings not found."
+
+          });
+
+      }
 
 
       res.json({
