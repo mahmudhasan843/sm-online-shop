@@ -60,14 +60,14 @@ if (
 
 app.use(
   express.json({
-    limit: "20mb"
+    limit: "15mb"
   })
 );
 
 app.use(
   express.urlencoded({
     extended: true,
-    limit: "20mb"
+    limit: "15mb"
   })
 );
 
@@ -94,7 +94,7 @@ const adminSessions = new Map();
 
 
 /* =====================================================
-   ADMIN LOGIN
+   ADMIN LOGIN DETAILS
 ===================================================== */
 
 const ADMIN_USERNAME = "SMADMIN";
@@ -116,7 +116,9 @@ function getAdminToken(req) {
   const header =
     req.headers.authorization || "";
 
-  if (!header.startsWith("Bearer ")) {
+  if (
+    !header.startsWith("Bearer ")
+  ) {
     return "";
   }
 
@@ -126,273 +128,40 @@ function getAdminToken(req) {
 }
 
 
-function requireAdmin(req, res, next) {
-  const token = getAdminToken(req);
+function requireAdmin(
+  req,
+  res,
+  next
+) {
+  const token =
+    getAdminToken(req);
 
   if (
     !token ||
     !adminSessions.has(token)
   ) {
-    return res.status(401).json({
-      error:
-        "Unauthorized. Please login again."
-    });
+    return res
+      .status(401)
+      .json({
+        error:
+          "Unauthorized. Please login again."
+      });
   }
 
   next();
 }
 
 
-function safeNumber(value, fallback = 0) {
-  const number = Number(value);
+function safeNumber(
+  value,
+  fallback = 0
+) {
+  const number =
+    Number(value);
 
   return Number.isFinite(number)
     ? number
     : fallback;
-}
-
-
-function safeInteger(value, fallback = 0) {
-  const number = Number(value);
-
-  if (!Number.isFinite(number)) {
-    return fallback;
-  }
-
-  return Math.floor(number);
-}
-
-
-function cleanText(value, fallback = "") {
-  if (
-    value === undefined ||
-    value === null
-  ) {
-    return fallback;
-  }
-
-  return String(value).trim();
-}
-
-
-/* =====================================================
-   DATABASE HELPERS
-===================================================== */
-
-async function columnExists(
-  client,
-  tableName,
-  columnName
-) {
-  const result = await client.query(
-    `
-      SELECT
-        1
-      FROM information_schema.columns
-      WHERE table_schema = 'public'
-        AND table_name = $1
-        AND column_name = $2
-      LIMIT 1
-    `,
-    [
-      tableName,
-      columnName
-    ]
-  );
-
-  return result.rows.length > 0;
-}
-
-
-async function getColumnType(
-  client,
-  tableName,
-  columnName
-) {
-  const result = await client.query(
-    `
-      SELECT
-        data_type,
-        udt_name
-      FROM information_schema.columns
-      WHERE table_schema = 'public'
-        AND table_name = $1
-        AND column_name = $2
-      LIMIT 1
-    `,
-    [
-      tableName,
-      columnName
-    ]
-  );
-
-  if (result.rows.length === 0) {
-    return null;
-  }
-
-  return result.rows[0];
-}
-
-
-/* =====================================================
-   FIX TIMESTAMP COLUMN
-===================================================== */
-
-async function ensureTimestampColumn(
-  client,
-  tableName,
-  columnName
-) {
-  const typeInfo =
-    await getColumnType(
-      client,
-      tableName,
-      columnName
-    );
-
-  if (!typeInfo) {
-    return;
-  }
-
-  const dataType =
-    typeInfo.data_type;
-
-  const udtName =
-    typeInfo.udt_name;
-
-  const alreadyTimestamp =
-    dataType === "timestamp with time zone" ||
-    dataType === "timestamp without time zone";
-
-  if (alreadyTimestamp) {
-    return;
-  }
-
-
-  console.log(
-    `Migrating ${tableName}.${columnName} from ${dataType}/${udtName} to TIMESTAMPTZ`
-  );
-
-
-  if (
-    dataType === "integer" ||
-    dataType === "bigint" ||
-    dataType === "smallint" ||
-    dataType === "numeric"
-  ) {
-
-    await client.query(`
-      ALTER TABLE "${tableName}"
-      ALTER COLUMN "${columnName}"
-      TYPE TIMESTAMPTZ
-      USING
-        CASE
-          WHEN "${columnName}" IS NULL
-            THEN NOW()
-          ELSE
-            TO_TIMESTAMP("${columnName}"::double precision)
-        END
-    `);
-
-  } else {
-
-    await client.query(`
-      ALTER TABLE "${tableName}"
-      ALTER COLUMN "${columnName}"
-      TYPE TIMESTAMPTZ
-      USING
-        CASE
-          WHEN "${columnName}" IS NULL
-            THEN NOW()
-
-          WHEN TRIM("${columnName}"::text) = ''
-            THEN NOW()
-
-          WHEN "${columnName}"::text ~ '^[0-9]+$'
-            THEN TO_TIMESTAMP(
-              "${columnName}"::double precision
-            )
-
-          ELSE
-            "${columnName}"::text::TIMESTAMPTZ
-        END
-    `);
-
-  }
-}
-
-
-/* =====================================================
-   FIX ORDER ID
-===================================================== */
-
-async function ensureOrderId(client) {
-
-  const typeInfo =
-    await getColumnType(
-      client,
-      "orders",
-      "id"
-    );
-
-  if (!typeInfo) {
-    return;
-  }
-
-
-  console.log(
-    "Checking orders.id..."
-  );
-
-
-  /*
-     If old database already has bigint/integer ID,
-     make sure it automatically generates IDs.
-  */
-
-  if (
-    typeInfo.data_type === "bigint" ||
-    typeInfo.data_type === "integer"
-  ) {
-
-    await client.query(`
-      CREATE SEQUENCE IF NOT EXISTS orders_id_seq
-    `);
-
-
-    await client.query(`
-      SELECT setval(
-        'orders_id_seq',
-        COALESCE(
-          (
-            SELECT MAX(id)
-            FROM orders
-          ),
-          0
-        ) + 1,
-        false
-      )
-    `);
-
-
-    await client.query(`
-      ALTER SEQUENCE orders_id_seq
-      OWNED BY orders.id
-    `);
-
-
-    await client.query(`
-      ALTER TABLE orders
-      ALTER COLUMN id
-      SET DEFAULT nextval('orders_id_seq')
-    `);
-
-
-    console.log(
-      "orders.id auto-increment fixed."
-    );
-
-  }
 }
 
 
@@ -415,80 +184,95 @@ async function initDatabase() {
     ================================================= */
 
     await client.query(`
+
       CREATE TABLE IF NOT EXISTS store_settings (
+
         id SERIAL PRIMARY KEY,
 
-        shop_name TEXT
-          DEFAULT 'SM Online Shop',
+        shop_name TEXT DEFAULT 'SM Online Shop',
 
-        tagline TEXT
-          DEFAULT '',
+        tagline TEXT DEFAULT '',
 
-        phone1 TEXT
-          DEFAULT '',
+        phone1 TEXT DEFAULT '',
 
-        phone2 TEXT
-          DEFAULT '',
+        phone2 TEXT DEFAULT '',
 
-        facebook TEXT
-          DEFAULT '',
+        facebook TEXT DEFAULT '',
 
-        currency TEXT
-          DEFAULT 'BDT',
+        currency TEXT DEFAULT 'BDT',
 
-        updated_at TIMESTAMPTZ
-          DEFAULT NOW()
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+
       )
+
     `);
 
 
+    /* =================================================
+       STORE SETTINGS MIGRATION
+    ================================================= */
+
     await client.query(`
+
       ALTER TABLE store_settings
+
       ADD COLUMN IF NOT EXISTS
-      shop_name TEXT
-      DEFAULT 'SM Online Shop'
+      shop_name TEXT DEFAULT 'SM Online Shop'
+
     `);
 
     await client.query(`
+
       ALTER TABLE store_settings
+
       ADD COLUMN IF NOT EXISTS
-      tagline TEXT
-      DEFAULT ''
+      tagline TEXT DEFAULT ''
+
     `);
 
     await client.query(`
+
       ALTER TABLE store_settings
+
       ADD COLUMN IF NOT EXISTS
-      phone1 TEXT
-      DEFAULT ''
+      phone1 TEXT DEFAULT ''
+
     `);
 
     await client.query(`
+
       ALTER TABLE store_settings
+
       ADD COLUMN IF NOT EXISTS
-      phone2 TEXT
-      DEFAULT ''
+      phone2 TEXT DEFAULT ''
+
     `);
 
     await client.query(`
+
       ALTER TABLE store_settings
+
       ADD COLUMN IF NOT EXISTS
-      facebook TEXT
-      DEFAULT ''
+      facebook TEXT DEFAULT ''
+
     `);
 
     await client.query(`
+
       ALTER TABLE store_settings
+
       ADD COLUMN IF NOT EXISTS
-      currency TEXT
-      DEFAULT 'BDT'
+      currency TEXT DEFAULT 'BDT'
+
     `);
 
     await client.query(`
+
       ALTER TABLE store_settings
+
       ADD COLUMN IF NOT EXISTS
-      updated_at TIMESTAMPTZ
-      DEFAULT NOW()
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+
     `);
 
 
@@ -497,97 +281,126 @@ async function initDatabase() {
     ================================================= */
 
     await client.query(`
+
       CREATE TABLE IF NOT EXISTS products (
 
         id SERIAL PRIMARY KEY,
 
         name TEXT NOT NULL,
 
-        category TEXT
-          DEFAULT 'General',
+        category TEXT DEFAULT 'General',
 
-        description TEXT
-          DEFAULT '',
+        description TEXT DEFAULT '',
 
-        price NUMERIC(12,2)
-          NOT NULL
-          DEFAULT 0,
+        price NUMERIC(12,2) NOT NULL DEFAULT 0,
 
-        old_price NUMERIC(12,2)
-          DEFAULT 0,
+        old_price NUMERIC(12,2) DEFAULT 0,
 
-        discount NUMERIC(6,2)
-          DEFAULT 0,
+        discount NUMERIC(6,2) DEFAULT 0,
 
-        stock INTEGER
-          DEFAULT 0,
+        stock INTEGER DEFAULT 0,
 
-        image TEXT
-          DEFAULT '',
+        image TEXT DEFAULT '',
 
-        created_at TIMESTAMPTZ
-          DEFAULT NOW(),
+        created_at TIMESTAMPTZ DEFAULT NOW(),
 
-        updated_at TIMESTAMPTZ
-          DEFAULT NOW()
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+
       )
+
+    `);
+
+
+    /* =================================================
+       PRODUCTS MIGRATION
+    ================================================= */
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      description TEXT DEFAULT ''
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      category TEXT DEFAULT 'General'
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      old_price NUMERIC(12,2) DEFAULT 0
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      discount NUMERIC(6,2) DEFAULT 0
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      stock INTEGER DEFAULT 0
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      image TEXT DEFAULT ''
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      created_at TIMESTAMPTZ DEFAULT NOW()
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE products
+
+      ADD COLUMN IF NOT EXISTS
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+
     `);
 
 
     await client.query(`
-      ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      description TEXT
-      DEFAULT ''
-    `);
 
-    await client.query(`
-      ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      category TEXT
-      DEFAULT 'General'
-    `);
+      UPDATE products
 
-    await client.query(`
-      ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      old_price NUMERIC(12,2)
-      DEFAULT 0
-    `);
+      SET updated_at =
+        COALESCE(
+          updated_at,
+          created_at,
+          NOW()
+        )
 
-    await client.query(`
-      ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      discount NUMERIC(6,2)
-      DEFAULT 0
-    `);
+      WHERE updated_at IS NULL
 
-    await client.query(`
-      ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      stock INTEGER
-      DEFAULT 0
-    `);
-
-    await client.query(`
-      ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      image TEXT
-      DEFAULT ''
-    `);
-
-    await client.query(`
-      ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      created_at TIMESTAMPTZ
-      DEFAULT NOW()
-    `);
-
-    await client.query(`
-      ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      updated_at TIMESTAMPTZ
-      DEFAULT NOW()
     `);
 
 
@@ -596,170 +409,189 @@ async function initDatabase() {
     ================================================= */
 
     await client.query(`
+
       CREATE TABLE IF NOT EXISTS orders (
 
         id BIGSERIAL PRIMARY KEY,
 
-        customer JSONB
-          DEFAULT '{}'::jsonb,
+        customer JSONB DEFAULT '{}'::jsonb,
 
-        items JSONB
-          DEFAULT '[]'::jsonb,
+        items JSONB DEFAULT '[]'::jsonb,
 
-        total NUMERIC(12,2)
-          DEFAULT 0,
+        total NUMERIC(12,2) DEFAULT 0,
 
-        status TEXT
-          DEFAULT 'Pending',
+        status TEXT DEFAULT 'Pending',
 
-        payment_status TEXT
-          DEFAULT 'Pending',
+        payment_status TEXT DEFAULT 'Pending',
 
-        payment_method TEXT
-          DEFAULT 'cod',
+        payment_method TEXT DEFAULT 'cod',
 
-        created_at TIMESTAMPTZ
-          DEFAULT NOW(),
+        created_at TIMESTAMPTZ DEFAULT NOW(),
 
-        updated_at TIMESTAMPTZ
-          DEFAULT NOW()
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+
       )
-    `);
 
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      customer JSONB
-      DEFAULT '{}'::jsonb
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      items JSONB
-      DEFAULT '[]'::jsonb
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      total NUMERIC(12,2)
-      DEFAULT 0
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      status TEXT
-      DEFAULT 'Pending'
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      payment_status TEXT
-      DEFAULT 'Pending'
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      payment_method TEXT
-      DEFAULT 'cod'
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      created_at TIMESTAMPTZ
-      DEFAULT NOW()
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      updated_at TIMESTAMPTZ
-      DEFAULT NOW()
     `);
 
 
     /* =================================================
-       IMPORTANT MIGRATION
-       OLD DATABASE MAY HAVE WRONG DATA TYPES
+       ORDERS ID AUTO-INCREMENT REPAIR
+       
+       FIXES:
+       null value in column "id"
+       of relation "orders"
     ================================================= */
 
-    await ensureTimestampColumn(
-      client,
-      "products",
-      "created_at"
-    );
+    await client.query(`
 
-    await ensureTimestampColumn(
-      client,
-      "products",
-      "updated_at"
-    );
+      CREATE SEQUENCE IF NOT EXISTS orders_id_seq
 
-    await ensureTimestampColumn(
-      client,
-      "orders",
-      "created_at"
-    );
+    `);
 
-    await ensureTimestampColumn(
-      client,
-      "orders",
-      "updated_at"
-    );
 
-    await ensureTimestampColumn(
-      client,
-      "store_settings",
-      "updated_at"
-    );
+    await client.query(`
+
+      ALTER SEQUENCE orders_id_seq
+
+      OWNED BY orders.id
+
+    `);
+
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ALTER COLUMN id
+
+      SET DEFAULT nextval('orders_id_seq')
+
+    `);
 
 
     /* =================================================
-       REMOVE OLD COALESCE TYPE ERROR
+       SYNC ORDER SEQUENCE WITH EXISTING ORDERS
     ================================================= */
 
     await client.query(`
-      UPDATE products
-      SET updated_at = NOW()
-      WHERE updated_at IS NULL
+
+      SELECT setval(
+
+        'orders_id_seq',
+
+        COALESCE(
+
+          (
+
+            SELECT MAX(id)
+
+            FROM orders
+
+          ),
+
+          0
+
+        ) + 1,
+
+        false
+
+      )
+
+    `);
+
+
+    /* =================================================
+       ORDERS MIGRATION
+    ================================================= */
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      customer JSONB DEFAULT '{}'::jsonb
+
     `);
 
     await client.query(`
-      UPDATE products
-      SET created_at = NOW()
-      WHERE created_at IS NULL
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      items JSONB DEFAULT '[]'::jsonb
+
     `);
 
     await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      total NUMERIC(12,2) DEFAULT 0
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      status TEXT DEFAULT 'Pending'
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      payment_status TEXT DEFAULT 'Pending'
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      payment_method TEXT DEFAULT 'cod'
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      created_at TIMESTAMPTZ DEFAULT NOW()
+
+    `);
+
+    await client.query(`
+
+      ALTER TABLE orders
+
+      ADD COLUMN IF NOT EXISTS
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+
+    `);
+
+
+    await client.query(`
+
       UPDATE orders
-      SET updated_at = NOW()
+
+      SET updated_at =
+        COALESCE(
+          updated_at,
+          created_at,
+          NOW()
+        )
+
       WHERE updated_at IS NULL
+
     `);
-
-    await client.query(`
-      UPDATE orders
-      SET created_at = NOW()
-      WHERE created_at IS NULL
-    `);
-
-    await client.query(`
-      UPDATE store_settings
-      SET updated_at = NOW()
-      WHERE updated_at IS NULL
-    `);
-
-
-    /* =================================================
-       FIX ORDER AUTO ID
-    ================================================= */
-
-    await ensureOrderId(client);
 
 
     /* =================================================
@@ -768,10 +600,15 @@ async function initDatabase() {
 
     const settingsResult =
       await client.query(`
+
         SELECT id
+
         FROM store_settings
+
         ORDER BY id
+
         LIMIT 1
+
       `);
 
 
@@ -780,26 +617,47 @@ async function initDatabase() {
     ) {
 
       await client.query(`
+
         INSERT INTO store_settings
+
         (
+
           shop_name,
+
           tagline,
+
           phone1,
+
           phone2,
+
           facebook,
+
           currency,
+
           updated_at
+
         )
+
         VALUES
+
         (
+
           'SM Online Shop',
+
           '',
+
           '',
+
           '',
+
           '',
+
           'BDT',
+
           NOW()
+
         )
+
       `);
 
     }
@@ -811,6 +669,7 @@ async function initDatabase() {
     console.log(
       "Database initialized successfully."
     );
+
 
   } catch (error) {
 
@@ -828,6 +687,7 @@ async function initDatabase() {
     client.release();
 
   }
+
 }
 
 
@@ -846,8 +706,11 @@ app.get(
       );
 
       res.json({
+
         ok: true,
+
         status: "online"
+
       });
 
     } catch (error) {
@@ -857,10 +720,16 @@ app.get(
         error
       );
 
-      res.status(500).json({
-        ok: false,
-        status: "database error"
-      });
+      res
+        .status(500)
+        .json({
+
+          ok: false,
+
+          status:
+            "database error"
+
+        });
 
     }
 
@@ -880,6 +749,7 @@ app.get(
 
       const settingsResult =
         await pool.query(`
+
           SELECT
 
             shop_name AS "shopName",
@@ -899,11 +769,13 @@ app.get(
           ORDER BY id
 
           LIMIT 1
+
         `);
 
 
       const productsResult =
         await pool.query(`
+
           SELECT
 
             id,
@@ -931,6 +803,7 @@ app.get(
           FROM products
 
           ORDER BY id DESC
+
         `);
 
 
@@ -939,6 +812,7 @@ app.get(
         settings:
           settingsResult.rows[0] ||
           {
+
             shopName:
               "SM Online Shop",
 
@@ -956,12 +830,14 @@ app.get(
 
             currency:
               "BDT"
+
           },
 
         products:
           productsResult.rows
 
       });
+
 
     } catch (error) {
 
@@ -970,10 +846,14 @@ app.get(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Could not load store."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Could not load store."
+
+        });
 
     }
 
@@ -993,6 +873,7 @@ app.get(
 
       const result =
         await pool.query(`
+
           SELECT
 
             id,
@@ -1022,12 +903,14 @@ app.get(
           WHERE stock > 0
 
           ORDER BY id DESC
+
         `);
 
 
       res.json(
         result.rows
       );
+
 
     } catch (error) {
 
@@ -1036,10 +919,14 @@ app.get(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Could not load products."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Could not load products."
+
+        });
 
     }
 
@@ -1068,15 +955,25 @@ app.post(
         );
 
 
+      console.log(
+        "Admin login attempt:",
+        username
+      );
+
+
       if (
         username !== ADMIN_USERNAME ||
         password !== ADMIN_PASSWORD
       ) {
 
-        return res.status(401).json({
-          error:
-            "Invalid username or password."
-        });
+        return res
+          .status(401)
+          .json({
+
+            error:
+              "Invalid username or password."
+
+          });
 
       }
 
@@ -1088,12 +985,19 @@ app.post(
       adminSessions.set(
         token,
         {
+
           username:
             ADMIN_USERNAME,
 
           createdAt:
             Date.now()
+
         }
+      );
+
+
+      console.log(
+        "Admin login successful."
       );
 
 
@@ -1109,6 +1013,7 @@ app.post(
 
       });
 
+
     } catch (error) {
 
       console.error(
@@ -1116,10 +1021,14 @@ app.post(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Login failed."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Login failed."
+
+        });
 
     }
 
@@ -1128,7 +1037,7 @@ app.post(
 
 
 /* =====================================================
-   ADMIN CHECK
+   ADMIN SESSION CHECK
 ===================================================== */
 
 app.get(
@@ -1171,12 +1080,16 @@ app.post(
     const token =
       getAdminToken(req);
 
-    adminSessions.delete(token);
+    adminSessions.delete(
+      token
+    );
 
 
     res.json({
+
       success:
         true
+
     });
 
   }
@@ -1196,6 +1109,7 @@ app.get(
 
       const result =
         await pool.query(`
+
           SELECT
 
             id,
@@ -1223,12 +1137,14 @@ app.get(
           FROM products
 
           ORDER BY id DESC
+
         `);
 
 
       res.json(
         result.rows
       );
+
 
     } catch (error) {
 
@@ -1237,10 +1153,14 @@ app.get(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Could not load products."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Could not load products."
+
+        });
 
     }
 
@@ -1260,27 +1180,42 @@ app.post(
     try {
 
       const {
+
         name,
+
         category,
+
         description,
+
         price,
+
         oldPrice,
+
         discount,
+
         stock,
+
         image
+
       } = req.body;
 
 
       const cleanName =
-        cleanText(name);
+        String(
+          name || ""
+        ).trim();
 
 
       if (!cleanName) {
 
-        return res.status(400).json({
-          error:
-            "Product name is required."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Product name is required."
+
+          });
 
       }
 
@@ -1289,65 +1224,73 @@ app.post(
         safeNumber(price);
 
 
-      if (cleanPrice <= 0) {
+      if (
+        cleanPrice <= 0
+      ) {
 
-        return res.status(400).json({
-          error:
-            "Valid product price is required."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Valid product price is required."
+
+          });
 
       }
 
 
-      const cleanStock =
-        Math.max(
-          0,
-          safeInteger(stock)
-        );
-
-
-      const cleanOldPrice =
-        safeNumber(
-          oldPrice,
-          cleanPrice
-        );
-
-
-      const cleanDiscount =
-        Math.max(
-          0,
-          safeNumber(discount)
-        );
-
-
       const result =
         await pool.query(`
+
           INSERT INTO products
+
           (
+
             name,
+
             category,
+
             description,
+
             price,
+
             old_price,
+
             discount,
+
             stock,
+
             image,
-            created_at,
+
             updated_at
+
           )
+
           VALUES
+
           (
+
             $1,
+
             $2,
+
             $3,
+
             $4,
+
             $5,
+
             $6,
+
             $7,
+
             $8,
-            NOW(),
+
             NOW()
+
           )
+
           RETURNING
 
             id,
@@ -1371,38 +1314,55 @@ app.post(
             created_at AS "createdAt",
 
             updated_at AS "updatedAt"
+
         `,
+
         [
 
           cleanName,
 
-          cleanText(
-            category,
+          String(
+            category ||
             "General"
           ),
 
-          cleanText(
-            description
+          String(
+            description ||
+            ""
           ),
 
           cleanPrice,
 
-          cleanOldPrice,
+          safeNumber(
+            oldPrice,
+            cleanPrice
+          ),
 
-          cleanDiscount,
+          safeNumber(
+            discount
+          ),
 
-          cleanStock,
+          Math.max(
+            0,
+            Math.floor(
+              safeNumber(stock)
+            )
+          ),
 
-          cleanText(
-            image
+          String(
+            image ||
+            ""
           )
 
         ]);
 
 
-      res.status(201).json(
-        result.rows[0]
-      );
+      res
+        .status(201)
+        .json(
+          result.rows[0]
+        );
+
 
     } catch (error) {
 
@@ -1411,10 +1371,14 @@ app.post(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Could not create product."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Could not create product."
+
+        });
 
     }
 
@@ -1443,36 +1407,55 @@ app.put(
         !Number.isInteger(id)
       ) {
 
-        return res.status(400).json({
-          error:
-            "Invalid product ID."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Invalid product ID."
+
+          });
 
       }
 
 
       const {
+
         name,
+
         category,
+
         description,
+
         price,
+
         oldPrice,
+
         discount,
+
         stock,
+
         image
+
       } = req.body;
 
 
       const cleanName =
-        cleanText(name);
+        String(
+          name || ""
+        ).trim();
 
 
       if (!cleanName) {
 
-        return res.status(400).json({
-          error:
-            "Product name is required."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Product name is required."
+
+          });
 
       }
 
@@ -1481,18 +1464,25 @@ app.put(
         safeNumber(price);
 
 
-      if (cleanPrice <= 0) {
+      if (
+        cleanPrice <= 0
+      ) {
 
-        return res.status(400).json({
-          error:
-            "Valid product price is required."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Valid product price is required."
+
+          });
 
       }
 
 
       const result =
         await pool.query(`
+
           UPDATE products
 
           SET
@@ -1540,18 +1530,21 @@ app.put(
             created_at AS "createdAt",
 
             updated_at AS "updatedAt"
+
         `,
+
         [
 
           cleanName,
 
-          cleanText(
-            category,
+          String(
+            category ||
             "General"
           ),
 
-          cleanText(
-            description
+          String(
+            description ||
+            ""
           ),
 
           cleanPrice,
@@ -1561,17 +1554,21 @@ app.put(
             cleanPrice
           ),
 
-          Math.max(
-            0,
-            safeNumber(discount)
+          safeNumber(
+            discount
           ),
 
           Math.max(
             0,
-            safeInteger(stock)
+            Math.floor(
+              safeNumber(stock)
+            )
           ),
 
-          cleanText(image),
+          String(
+            image ||
+            ""
+          ),
 
           id
 
@@ -1582,10 +1579,14 @@ app.put(
         result.rows.length === 0
       ) {
 
-        return res.status(404).json({
-          error:
-            "Product not found."
-        });
+        return res
+          .status(404)
+          .json({
+
+            error:
+              "Product not found."
+
+          });
 
       }
 
@@ -1594,6 +1595,7 @@ app.put(
         result.rows[0]
       );
 
+
     } catch (error) {
 
       console.error(
@@ -1601,10 +1603,14 @@ app.put(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Could not update product."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Could not update product."
+
+        });
 
     }
 
@@ -1633,20 +1639,29 @@ app.delete(
         !Number.isInteger(id)
       ) {
 
-        return res.status(400).json({
-          error:
-            "Invalid product ID."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Invalid product ID."
+
+          });
 
       }
 
 
       const result =
         await pool.query(`
+
           DELETE FROM products
+
           WHERE id = $1
+
           RETURNING id
+
         `,
+
         [id]);
 
 
@@ -1654,18 +1669,25 @@ app.delete(
         result.rows.length === 0
       ) {
 
-        return res.status(404).json({
-          error:
-            "Product not found."
-        });
+        return res
+          .status(404)
+          .json({
+
+            error:
+              "Product not found."
+
+          });
 
       }
 
 
       res.json({
+
         success:
           true
+
       });
+
 
     } catch (error) {
 
@@ -1674,10 +1696,14 @@ app.delete(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Could not delete product."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Could not delete product."
+
+        });
 
     }
 
@@ -1702,26 +1728,35 @@ app.post(
         !process.env.CLOUDINARY_API_SECRET
       ) {
 
-        return res.status(500).json({
-          error:
-            "Cloudinary is not configured."
-        });
+        return res
+          .status(500)
+          .json({
+
+            error:
+              "Cloudinary is not configured."
+
+          });
 
       }
 
 
       const image =
-        cleanText(
-          req.body.image
+        String(
+          req.body.image ||
+          ""
         );
 
 
       if (!image) {
 
-        return res.status(400).json({
-          error:
-            "Image is required."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Image is required."
+
+          });
 
       }
 
@@ -1730,8 +1765,10 @@ app.post(
         await cloudinary.uploader.upload(
           image,
           {
+
             folder:
               "sm-online-shop/products"
+
           }
         );
 
@@ -1746,6 +1783,7 @@ app.post(
 
       });
 
+
     } catch (error) {
 
       console.error(
@@ -1753,10 +1791,14 @@ app.post(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Image upload failed."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Image upload failed."
+
+        });
 
     }
 
@@ -1766,6 +1808,7 @@ app.post(
 
 /* =====================================================
    ADMIN ORDERS
+   CANCELLED ORDERS ARE HIDDEN
 ===================================================== */
 
 app.get(
@@ -1777,6 +1820,7 @@ app.get(
 
       const result =
         await pool.query(`
+
           SELECT
 
             id,
@@ -1802,12 +1846,14 @@ app.get(
           WHERE status IS DISTINCT FROM 'Cancelled'
 
           ORDER BY created_at DESC
+
         `);
 
 
       res.json(
         result.rows
       );
+
 
     } catch (error) {
 
@@ -1816,10 +1862,14 @@ app.get(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Could not load orders."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Could not load orders."
+
+        });
 
     }
 
@@ -1841,9 +1891,15 @@ app.post(
     try {
 
       const {
+
         customer,
+
         items,
+
+        total,
+
         paymentMethod
+
       } = req.body;
 
 
@@ -1852,10 +1908,14 @@ app.post(
         items.length === 0
       ) {
 
-        return res.status(400).json({
-          error:
-            "Order items are required."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Order items are required."
+
+          });
 
       }
 
@@ -1867,6 +1927,10 @@ app.post(
 
       const finalItems = [];
 
+
+      /* =================================================
+         VERIFY PRODUCTS AND STOCK
+      ================================================= */
 
       for (
         const item of items
@@ -1882,9 +1946,11 @@ app.post(
         const qty =
           Math.max(
             1,
-            safeInteger(
-              item.qty,
-              1
+            Math.floor(
+              safeNumber(
+                item.qty,
+                1
+              )
             )
           );
 
@@ -1904,7 +1970,9 @@ app.post(
 
         const productResult =
           await client.query(
+
             `
+
               SELECT
 
                 id,
@@ -1922,8 +1990,11 @@ app.post(
               WHERE id = $1
 
               FOR UPDATE
+
             `,
+
             [productId]
+
           );
 
 
@@ -1942,14 +2013,9 @@ app.post(
           productResult.rows[0];
 
 
-        const currentStock =
-          Number(
-            product.stock
-          );
-
-
         if (
-          currentStock < qty
+          Number(product.stock) <
+          qty
         ) {
 
           throw new Error(
@@ -1981,26 +2047,44 @@ app.post(
         });
 
 
+        /* =================================================
+           REDUCE STOCK
+        ================================================= */
+
         await client.query(
+
           `
+
             UPDATE products
 
             SET
 
-              stock = stock - $1,
+              stock =
+                stock - $1,
 
-              updated_at = NOW()
+              updated_at =
+                NOW()
 
             WHERE id = $2
+
           `,
+
           [
+
             qty,
+
             productId
+
           ]
+
         );
 
       }
 
+
+      /* =================================================
+         CALCULATE TOTAL FROM DATABASE PRICES
+      ================================================= */
 
       const calculatedTotal =
         finalItems.reduce(
@@ -2026,37 +2110,62 @@ app.post(
         );
 
 
-      /*
+      /* =================================================
+         CREATE ORDER
+         
          IMPORTANT:
-         ID is NOT inserted manually.
-         PostgreSQL will generate it automatically.
-      */
+         ID IS GENERATED BY orders_id_seq
+      ================================================= */
 
       const result =
         await client.query(
+
           `
+
             INSERT INTO orders
+
             (
+
+              id,
+
               customer,
+
               items,
+
               total,
+
               status,
+
               payment_status,
+
               payment_method,
-              created_at,
+
               updated_at
+
             )
+
             VALUES
+
             (
+
+              nextval('orders_id_seq'),
+
               $1,
+
               $2,
+
               $3,
+
               'Pending',
+
               'Pending',
+
               $4,
-              NOW(),
+
               NOW()
+
             )
+
             RETURNING
 
               id,
@@ -2076,7 +2185,9 @@ app.post(
               created_at AS "createdAt",
 
               updated_at AS "updatedAt"
+
           `,
+
           [
 
             JSON.stringify(
@@ -2089,29 +2200,53 @@ app.post(
 
             calculatedTotal,
 
-            cleanText(
-              paymentMethod,
+            String(
+              paymentMethod ||
               "cod"
             )
 
           ]
+
         );
 
+
+      /* =================================================
+         COMMIT
+      ================================================= */
 
       await client.query(
         "COMMIT"
       );
 
 
-      res.status(201).json(
-        result.rows[0]
+      console.log(
+        `Order #${result.rows[0].id} created successfully.`
       );
+
+
+      res
+        .status(201)
+        .json(
+          result.rows[0]
+        );
+
 
     } catch (error) {
 
-      await client.query(
-        "ROLLBACK"
-      );
+      try {
+
+        await client.query(
+          "ROLLBACK"
+        );
+
+      } catch (rollbackError) {
+
+        console.error(
+          "Rollback error:",
+          rollbackError
+        );
+
+      }
 
 
       console.error(
@@ -2120,11 +2255,16 @@ app.post(
       );
 
 
-      res.status(400).json({
-        error:
-          error.message ||
-          "Could not create order."
-      });
+      res
+        .status(400)
+        .json({
+
+          error:
+            error.message ||
+            "Could not create order."
+
+        });
+
 
     } finally {
 
@@ -2138,6 +2278,7 @@ app.post(
 
 /* =====================================================
    UPDATE ORDER STATUS
+   CANCEL IS PERMANENTLY SAVED
 ===================================================== */
 
 app.put(
@@ -2154,9 +2295,10 @@ app.put(
 
 
       const status =
-        cleanText(
-          req.body.status
-        );
+        String(
+          req.body.status ||
+          ""
+        ).trim();
 
 
       const allowedStatuses = [
@@ -2180,10 +2322,14 @@ app.put(
         !Number.isInteger(id)
       ) {
 
-        return res.status(400).json({
-          error:
-            "Invalid order ID."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Invalid order ID."
+
+          });
 
       }
 
@@ -2194,16 +2340,21 @@ app.put(
         )
       ) {
 
-        return res.status(400).json({
-          error:
-            "Invalid order status."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Invalid order status."
+
+          });
 
       }
 
 
       const result =
         await pool.query(`
+
           UPDATE orders
 
           SET
@@ -2233,10 +2384,15 @@ app.put(
             created_at AS "createdAt",
 
             updated_at AS "updatedAt"
+
         `,
+
         [
+
           status,
+
           id
+
         ]);
 
 
@@ -2244,12 +2400,21 @@ app.put(
         result.rows.length === 0
       ) {
 
-        return res.status(404).json({
-          error:
-            "Order not found."
-        });
+        return res
+          .status(404)
+          .json({
+
+            error:
+              "Order not found."
+
+          });
 
       }
+
+
+      console.log(
+        `Order #${id} status changed to ${status}`
+      );
 
 
       res.json({
@@ -2262,6 +2427,7 @@ app.put(
 
       });
 
+
     } catch (error) {
 
       console.error(
@@ -2269,10 +2435,14 @@ app.put(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Could not update order status."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Could not update order status."
+
+        });
 
     }
 
@@ -2298,9 +2468,10 @@ app.put(
 
 
       const paymentStatus =
-        cleanText(
-          req.body.paymentStatus
-        );
+        String(
+          req.body.paymentStatus ||
+          ""
+        ).trim();
 
 
       const allowedStatuses = [
@@ -2320,10 +2491,14 @@ app.put(
         !Number.isInteger(id)
       ) {
 
-        return res.status(400).json({
-          error:
-            "Invalid order ID."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Invalid order ID."
+
+          });
 
       }
 
@@ -2334,16 +2509,21 @@ app.put(
         )
       ) {
 
-        return res.status(400).json({
-          error:
-            "Invalid payment status."
-        });
+        return res
+          .status(400)
+          .json({
+
+            error:
+              "Invalid payment status."
+
+          });
 
       }
 
 
       const result =
         await pool.query(`
+
           UPDATE orders
 
           SET
@@ -2373,10 +2553,15 @@ app.put(
             created_at AS "createdAt",
 
             updated_at AS "updatedAt"
+
         `,
+
         [
+
           paymentStatus,
+
           id
+
         ]);
 
 
@@ -2384,10 +2569,14 @@ app.put(
         result.rows.length === 0
       ) {
 
-        return res.status(404).json({
-          error:
-            "Order not found."
-        });
+        return res
+          .status(404)
+          .json({
+
+            error:
+              "Order not found."
+
+          });
 
       }
 
@@ -2402,6 +2591,7 @@ app.put(
 
       });
 
+
     } catch (error) {
 
       console.error(
@@ -2409,10 +2599,14 @@ app.put(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Could not update payment status."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Could not update payment status."
+
+        });
 
     }
 
@@ -2432,17 +2626,25 @@ app.put(
     try {
 
       const {
+
         shopName,
+
         tagline,
+
         phone1,
+
         phone2,
+
         facebook,
+
         currency
+
       } = req.body;
 
 
       const result =
         await pool.query(`
+
           UPDATE store_settings
 
           SET
@@ -2462,10 +2664,15 @@ app.put(
             updated_at = NOW()
 
           WHERE id = (
+
             SELECT id
+
             FROM store_settings
+
             ORDER BY id
+
             LIMIT 1
+
           )
 
           RETURNING
@@ -2483,32 +2690,38 @@ app.put(
             facebook,
 
             currency
+
         `,
+
         [
 
-          cleanText(
-            shopName,
+          String(
+            shopName ||
             "SM Online Shop"
           ),
 
-          cleanText(
-            tagline
+          String(
+            tagline ||
+            ""
           ),
 
-          cleanText(
-            phone1
+          String(
+            phone1 ||
+            ""
           ),
 
-          cleanText(
-            phone2
+          String(
+            phone2 ||
+            ""
           ),
 
-          cleanText(
-            facebook
+          String(
+            facebook ||
+            ""
           ),
 
-          cleanText(
-            currency,
+          String(
+            currency ||
             "BDT"
           )
 
@@ -2525,6 +2738,7 @@ app.put(
 
       });
 
+
     } catch (error) {
 
       console.error(
@@ -2532,10 +2746,14 @@ app.put(
         error
       );
 
-      res.status(500).json({
-        error:
-          "Could not save settings."
-      });
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Could not save settings."
+
+        });
 
     }
 
@@ -2582,17 +2800,21 @@ app.get(
 
 
 /* =====================================================
-   API 404
+   404 API
 ===================================================== */
 
 app.use(
   "/api",
   (req, res) => {
 
-    res.status(404).json({
-      error:
-        "API endpoint not found."
-    });
+    res
+      .status(404)
+      .json({
+
+        error:
+          "API endpoint not found."
+
+      });
 
   }
 );
@@ -2627,10 +2849,14 @@ app.use(
     }
 
 
-    res.status(500).json({
-      error:
-        "Internal server error."
-    });
+    res
+      .status(500)
+      .json({
+
+        error:
+          "Internal server error."
+
+      });
 
   }
 );
@@ -2658,6 +2884,7 @@ async function startServer() {
 
       }
     );
+
 
   } catch (error) {
 
