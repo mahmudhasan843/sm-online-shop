@@ -97,11 +97,8 @@ const adminSessions = new Map();
    ADMIN LOGIN
 ===================================================== */
 
-const ADMIN_USERNAME =
-  process.env.ADMIN_USERNAME || "SMADMIN";
-
-const ADMIN_PASSWORD =
-  process.env.ADMIN_PASSWORD || "SM2728";
+const ADMIN_USERNAME = "SMADMIN";
+const ADMIN_PASSWORD = "SM2728";
 
 
 /* =====================================================
@@ -119,9 +116,7 @@ function getAdminToken(req) {
   const header =
     req.headers.authorization || "";
 
-  if (
-    !header.startsWith("Bearer ")
-  ) {
+  if (!header.startsWith("Bearer ")) {
     return "";
   }
 
@@ -131,13 +126,8 @@ function getAdminToken(req) {
 }
 
 
-function requireAdmin(
-  req,
-  res,
-  next
-) {
-  const token =
-    getAdminToken(req);
+function requireAdmin(req, res, next) {
+  const token = getAdminToken(req);
 
   if (
     !token ||
@@ -159,8 +149,7 @@ function safeNumber(
   value,
   fallback = 0
 ) {
-  const number =
-    Number(value);
+  const number = Number(value);
 
   return Number.isFinite(number)
     ? number
@@ -168,18 +157,15 @@ function safeNumber(
 }
 
 
-function cleanText(
+function safeInteger(
   value,
-  fallback = ""
+  fallback = 0
 ) {
-  if (
-    value === null ||
-    value === undefined
-  ) {
-    return fallback;
-  }
+  const number = Number(value);
 
-  return String(value).trim();
+  return Number.isFinite(number)
+    ? Math.floor(number)
+    : fallback;
 }
 
 
@@ -189,8 +175,7 @@ function cleanText(
 
 async function initDatabase() {
 
-  const client =
-    await pool.connect();
+  const client = await pool.connect();
 
   try {
 
@@ -221,111 +206,109 @@ async function initDatabase() {
 
     await client.query(`
       ALTER TABLE store_settings
-      ADD COLUMN IF NOT EXISTS shop_name
-      TEXT DEFAULT 'SM Online Shop'
+      ADD COLUMN IF NOT EXISTS shop_name TEXT
     `);
 
     await client.query(`
       ALTER TABLE store_settings
-      ADD COLUMN IF NOT EXISTS tagline
-      TEXT DEFAULT ''
+      ADD COLUMN IF NOT EXISTS tagline TEXT
     `);
 
     await client.query(`
       ALTER TABLE store_settings
-      ADD COLUMN IF NOT EXISTS phone1
-      TEXT DEFAULT ''
+      ADD COLUMN IF NOT EXISTS phone1 TEXT
     `);
 
     await client.query(`
       ALTER TABLE store_settings
-      ADD COLUMN IF NOT EXISTS phone2
-      TEXT DEFAULT ''
+      ADD COLUMN IF NOT EXISTS phone2 TEXT
     `);
 
     await client.query(`
       ALTER TABLE store_settings
-      ADD COLUMN IF NOT EXISTS facebook
-      TEXT DEFAULT ''
+      ADD COLUMN IF NOT EXISTS facebook TEXT
     `);
 
     await client.query(`
       ALTER TABLE store_settings
-      ADD COLUMN IF NOT EXISTS currency
-      TEXT DEFAULT 'BDT'
+      ADD COLUMN IF NOT EXISTS currency TEXT
     `);
 
     await client.query(`
       ALTER TABLE store_settings
-      ADD COLUMN IF NOT EXISTS updated_at
-      TIMESTAMPTZ DEFAULT NOW()
+      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ
     `);
 
 
     /* =================================================
-       STORE SETTINGS ID SEQUENCE REPAIR
+       FIX NULL STORE SETTINGS
+       No COALESCE type conflict
     ================================================= */
 
     await client.query(`
-      CREATE SEQUENCE IF NOT EXISTS
-      store_settings_id_seq
-      AS INTEGER
+      UPDATE store_settings
+      SET shop_name = 'SM Online Shop'
+      WHERE shop_name IS NULL
     `);
 
     await client.query(`
-      ALTER TABLE store_settings
-      ALTER COLUMN id
-      SET DEFAULT nextval(
-        'store_settings_id_seq'
-      )::integer
+      UPDATE store_settings
+      SET tagline = ''
+      WHERE tagline IS NULL
     `);
 
     await client.query(`
-      ALTER SEQUENCE store_settings_id_seq
-      OWNED BY store_settings.id
+      UPDATE store_settings
+      SET phone1 = ''
+      WHERE phone1 IS NULL
     `);
 
     await client.query(`
-      SELECT setval(
-        'store_settings_id_seq',
-        COALESCE(
-          (SELECT MAX(id) FROM store_settings),
-          0
-        ) + 1,
-        false
-      )
+      UPDATE store_settings
+      SET phone2 = ''
+      WHERE phone2 IS NULL
+    `);
+
+    await client.query(`
+      UPDATE store_settings
+      SET facebook = ''
+      WHERE facebook IS NULL
+    `);
+
+    await client.query(`
+      UPDATE store_settings
+      SET currency = 'BDT'
+      WHERE currency IS NULL
+    `);
+
+    await client.query(`
+      UPDATE store_settings
+      SET updated_at = NOW()
+      WHERE updated_at IS NULL
     `);
 
 
     /* =================================================
        PRODUCTS
+       
+       IMPORTANT:
+       BIGINT is used for ID so the old sequence
+       overflow problem cannot happen again.
     ================================================= */
 
     await client.query(`
       CREATE TABLE IF NOT EXISTS products (
-
-        id SERIAL PRIMARY KEY,
-
+        id BIGSERIAL PRIMARY KEY,
         name TEXT NOT NULL,
-
         category TEXT DEFAULT 'General',
-
         description TEXT DEFAULT '',
-
         price NUMERIC(12,2) NOT NULL DEFAULT 0,
-
         old_price NUMERIC(12,2) DEFAULT 0,
-
         discount NUMERIC(6,2) DEFAULT 0,
-
         stock INTEGER DEFAULT 0,
-
         image TEXT DEFAULT '',
-
         created_at TIMESTAMPTZ DEFAULT NOW(),
-
         updated_at TIMESTAMPTZ DEFAULT NOW()
-
       )
     `);
 
@@ -336,238 +319,58 @@ async function initDatabase() {
 
     await client.query(`
       ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      category TEXT DEFAULT 'General'
+      ADD COLUMN IF NOT EXISTS name TEXT
     `);
 
     await client.query(`
       ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      description TEXT DEFAULT ''
+      ADD COLUMN IF NOT EXISTS category TEXT
     `);
 
     await client.query(`
       ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      price NUMERIC(12,2)
-      NOT NULL DEFAULT 0
+      ADD COLUMN IF NOT EXISTS description TEXT
     `);
 
     await client.query(`
       ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      old_price NUMERIC(12,2)
-      DEFAULT 0
+      ADD COLUMN IF NOT EXISTS price NUMERIC(12,2)
     `);
 
     await client.query(`
       ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      discount NUMERIC(6,2)
-      DEFAULT 0
+      ADD COLUMN IF NOT EXISTS old_price NUMERIC(12,2)
     `);
 
     await client.query(`
       ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      stock INTEGER
-      DEFAULT 0
+      ADD COLUMN IF NOT EXISTS discount NUMERIC(6,2)
     `);
 
     await client.query(`
       ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      image TEXT
-      DEFAULT ''
+      ADD COLUMN IF NOT EXISTS stock INTEGER
     `);
 
     await client.query(`
       ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      created_at TIMESTAMPTZ
-      DEFAULT NOW()
+      ADD COLUMN IF NOT EXISTS image TEXT
     `);
 
     await client.query(`
       ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS
-      updated_at TIMESTAMPTZ
-      DEFAULT NOW()
+      ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ
+    `);
+
+    await client.query(`
+      ALTER TABLE products
+      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ
     `);
 
 
     /* =================================================
-       PRODUCTS ID SEQUENCE REPAIR
-    ================================================= */
-
-    await client.query(`
-      CREATE SEQUENCE IF NOT EXISTS
-      products_id_seq
-      AS INTEGER
-    `);
-
-    await client.query(`
-      ALTER TABLE products
-      ALTER COLUMN id
-      SET DEFAULT nextval(
-        'products_id_seq'
-      )::integer
-    `);
-
-    await client.query(`
-      ALTER SEQUENCE products_id_seq
-      OWNED BY products.id
-    `);
-
-    await client.query(`
-      SELECT setval(
-        'products_id_seq',
-        COALESCE(
-          (SELECT MAX(id) FROM products),
-          0
-        ) + 1,
-        false
-      )
-    `);
-
-
-    /* =================================================
-       ORDERS
-    ================================================= */
-
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS orders (
-
-        id BIGSERIAL PRIMARY KEY,
-
-        customer JSONB
-        DEFAULT '{}'::jsonb,
-
-        items JSONB
-        DEFAULT '[]'::jsonb,
-
-        total NUMERIC(12,2)
-        DEFAULT 0,
-
-        status TEXT
-        DEFAULT 'Pending',
-
-        payment_status TEXT
-        DEFAULT 'Pending',
-
-        payment_method TEXT
-        DEFAULT 'cod',
-
-        created_at TIMESTAMPTZ
-        DEFAULT NOW(),
-
-        updated_at TIMESTAMPTZ
-        DEFAULT NOW()
-
-      )
-    `);
-
-
-    /* =================================================
-       ORDERS MIGRATION
-    ================================================= */
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      customer JSONB
-      DEFAULT '{}'::jsonb
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      items JSONB
-      DEFAULT '[]'::jsonb
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      total NUMERIC(12,2)
-      DEFAULT 0
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      status TEXT
-      DEFAULT 'Pending'
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      payment_status TEXT
-      DEFAULT 'Pending'
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      payment_method TEXT
-      DEFAULT 'cod'
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      created_at TIMESTAMPTZ
-      DEFAULT NOW()
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ADD COLUMN IF NOT EXISTS
-      updated_at TIMESTAMPTZ
-      DEFAULT NOW()
-    `);
-
-
-    /* =================================================
-       ORDERS ID SEQUENCE REPAIR
-       IMPORTANT FIX FOR:
-       null value in column "id"
-    ================================================= */
-
-    await client.query(`
-      CREATE SEQUENCE IF NOT EXISTS
-      orders_id_seq
-      AS BIGINT
-    `);
-
-    await client.query(`
-      ALTER TABLE orders
-      ALTER COLUMN id
-      SET DEFAULT nextval(
-        'orders_id_seq'
-      )
-    `);
-
-    await client.query(`
-      ALTER SEQUENCE orders_id_seq
-      OWNED BY orders.id
-    `);
-
-    await client.query(`
-      SELECT setval(
-        'orders_id_seq',
-        COALESCE(
-          (SELECT MAX(id) FROM orders),
-          0
-        ) + 1,
-        false
-      )
-    `);
-
-
-    /* =================================================
-       REPAIR NULL DEFAULT VALUES
+       PRODUCT NULL FIXES
+       Avoids COALESCE text/integer errors
     ================================================= */
 
     await client.query(`
@@ -580,6 +383,12 @@ async function initDatabase() {
       UPDATE products
       SET description = ''
       WHERE description IS NULL
+    `);
+
+    await client.query(`
+      UPDATE products
+      SET price = 0
+      WHERE price IS NULL
     `);
 
     await client.query(`
@@ -605,6 +414,157 @@ async function initDatabase() {
       SET image = ''
       WHERE image IS NULL
     `);
+
+    await client.query(`
+      UPDATE products
+      SET created_at = NOW()
+      WHERE created_at IS NULL
+    `);
+
+    await client.query(`
+      UPDATE products
+      SET updated_at = NOW()
+      WHERE updated_at IS NULL
+    `);
+
+
+    /* =================================================
+       PRODUCT ID TYPE FIX
+       
+       If an old products table was created using
+       SERIAL, convert its ID to BIGINT.
+    ================================================= */
+
+    await client.query(`
+      ALTER TABLE products
+      ALTER COLUMN id TYPE BIGINT
+      USING id::BIGINT
+    `);
+
+
+    /* =================================================
+       PRODUCT SEQUENCE FIX
+       
+       This fixes the exact Render error:
+       "setval: value ... is out of bounds"
+    ================================================= */
+
+    await client.query(`
+      DO $$
+      DECLARE
+        seq_name TEXT;
+        max_id BIGINT;
+      BEGIN
+
+        seq_name :=
+          pg_get_serial_sequence(
+            'products',
+            'id'
+          );
+
+        IF seq_name IS NOT NULL THEN
+
+          EXECUTE
+            'ALTER SEQUENCE '
+            || seq_name
+            || ' AS BIGINT';
+
+          SELECT MAX(id)
+          INTO max_id
+          FROM products;
+
+          IF max_id IS NULL THEN
+
+            PERFORM setval(
+              seq_name::regclass,
+              1,
+              false
+            );
+
+          ELSE
+
+            PERFORM setval(
+              seq_name::regclass,
+              max_id,
+              true
+            );
+
+          END IF;
+
+        END IF;
+
+      END
+      $$;
+    `);
+
+
+    /* =================================================
+       ORDERS
+    ================================================= */
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS orders (
+        id BIGSERIAL PRIMARY KEY,
+        customer JSONB DEFAULT '{}'::jsonb,
+        items JSONB DEFAULT '[]'::jsonb,
+        total NUMERIC(12,2) DEFAULT 0,
+        status TEXT DEFAULT 'Pending',
+        payment_status TEXT DEFAULT 'Pending',
+        payment_method TEXT DEFAULT 'cod',
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+
+
+    /* =================================================
+       ORDERS MIGRATION
+    ================================================= */
+
+    await client.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS customer JSONB
+    `);
+
+    await client.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS items JSONB
+    `);
+
+    await client.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS total NUMERIC(12,2)
+    `);
+
+    await client.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS status TEXT
+    `);
+
+    await client.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS payment_status TEXT
+    `);
+
+    await client.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS payment_method TEXT
+    `);
+
+    await client.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ
+    `);
+
+    await client.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ
+    `);
+
+
+    /* =================================================
+       ORDER NULL FIXES
+    ================================================= */
 
     await client.query(`
       UPDATE orders
@@ -642,6 +602,82 @@ async function initDatabase() {
       WHERE payment_method IS NULL
     `);
 
+    await client.query(`
+      UPDATE orders
+      SET created_at = NOW()
+      WHERE created_at IS NULL
+    `);
+
+    await client.query(`
+      UPDATE orders
+      SET updated_at = NOW()
+      WHERE updated_at IS NULL
+    `);
+
+
+    /* =================================================
+       ORDER ID BIGINT
+    ================================================= */
+
+    await client.query(`
+      ALTER TABLE orders
+      ALTER COLUMN id TYPE BIGINT
+      USING id::BIGINT
+    `);
+
+
+    /* =================================================
+       ORDER SEQUENCE REPAIR
+    ================================================= */
+
+    await client.query(`
+      DO $$
+      DECLARE
+        seq_name TEXT;
+        max_id BIGINT;
+      BEGIN
+
+        seq_name :=
+          pg_get_serial_sequence(
+            'orders',
+            'id'
+          );
+
+        IF seq_name IS NOT NULL THEN
+
+          EXECUTE
+            'ALTER SEQUENCE '
+            || seq_name
+            || ' AS BIGINT';
+
+          SELECT MAX(id)
+          INTO max_id
+          FROM orders;
+
+          IF max_id IS NULL THEN
+
+            PERFORM setval(
+              seq_name::regclass,
+              1,
+              false
+            );
+
+          ELSE
+
+            PERFORM setval(
+              seq_name::regclass,
+              max_id,
+              true
+            );
+
+          END IF;
+
+        END IF;
+
+      END
+      $$;
+    `);
+
 
     /* =================================================
        DEFAULT STORE SETTINGS
@@ -671,7 +707,6 @@ async function initDatabase() {
           currency,
           updated_at
         )
-
         VALUES
         (
           'SM Online Shop',
@@ -687,21 +722,59 @@ async function initDatabase() {
     }
 
 
-    await client.query("COMMIT");
+    /* =================================================
+       FINAL SEQUENCE SAFETY CHECK
+    ================================================= */
 
+    await client.query(`
+      DO $$
+      DECLARE
+        seq_name TEXT;
+        max_id BIGINT;
+      BEGIN
+
+        seq_name :=
+          pg_get_serial_sequence(
+            'products',
+            'id'
+          );
+
+        IF seq_name IS NOT NULL THEN
+
+          SELECT MAX(id)
+          INTO max_id
+          FROM products;
+
+          IF max_id IS NULL THEN
+
+            PERFORM setval(
+              seq_name::regclass,
+              1,
+              false
+            );
+
+          ELSE
+
+            PERFORM setval(
+              seq_name::regclass,
+              max_id,
+              true
+            );
+
+          END IF;
+
+        END IF;
+
+      END
+      $$;
+    `);
+
+
+    await client.query("COMMIT");
 
     console.log(
       "Database initialized successfully."
     );
-
-    console.log(
-      "Product ID sequence repaired."
-    );
-
-    console.log(
-      "Order ID sequence repaired."
-    );
-
 
   } catch (error) {
 
@@ -810,30 +883,18 @@ app.get(
 
         settings:
           settingsResult.rows[0] || {
-            shopName:
-              "SM Online Shop",
-
-            tagline:
-              "",
-
-            phone1:
-              "",
-
-            phone2:
-              "",
-
-            facebook:
-              "",
-
-            currency:
-              "BDT"
+            shopName: "SM Online Shop",
+            tagline: "",
+            phone1: "",
+            phone2: "",
+            facebook: "",
+            currency: "BDT"
           },
 
         products:
           productsResult.rows
 
       });
-
 
     } catch (error) {
 
@@ -889,7 +950,6 @@ app.get(
         result.rows
       );
 
-
     } catch (error) {
 
       console.error(
@@ -921,14 +981,20 @@ app.post(
     try {
 
       const username =
-        cleanText(
-          req.body.username
-        );
+        String(
+          req.body.username || ""
+        ).trim();
 
       const password =
         String(
           req.body.password || ""
         );
+
+
+      console.log(
+        "Admin login attempt:",
+        username
+      );
 
 
       if (
@@ -978,7 +1044,6 @@ app.post(
           ADMIN_USERNAME
 
       });
-
 
     } catch (error) {
 
@@ -1050,8 +1115,7 @@ app.post(
 
 
     res.json({
-      success:
-        true
+      success: true
     });
 
   }
@@ -1092,7 +1156,6 @@ app.get(
         result.rows
       );
 
-
     } catch (error) {
 
       console.error(
@@ -1124,58 +1187,25 @@ app.post(
 
     try {
 
-      const name =
-        cleanText(
-          req.body.name
-        );
-
-      const category =
-        cleanText(
-          req.body.category,
-          "General"
-        ) || "General";
-
-      const description =
-        cleanText(
-          req.body.description
-        );
-
-      const price =
-        safeNumber(
-          req.body.price
-        );
-
-      const oldPrice =
-        safeNumber(
-          req.body.oldPrice,
-          price
-        );
-
-      const discount =
-        Math.max(
-          0,
-          safeNumber(
-            req.body.discount
-          )
-        );
-
-      const stock =
-        Math.max(
-          0,
-          Math.floor(
-            safeNumber(
-              req.body.stock
-            )
-          )
-        );
-
-      const image =
-        cleanText(
-          req.body.image
-        );
+      const {
+        name,
+        category,
+        description,
+        price,
+        oldPrice,
+        discount,
+        stock,
+        image
+      } = req.body;
 
 
-      if (!name) {
+      const cleanName =
+        String(
+          name || ""
+        ).trim();
+
+
+      if (!cleanName) {
 
         return res
           .status(400)
@@ -1187,10 +1217,11 @@ app.post(
       }
 
 
-      if (
-        !Number.isFinite(price) ||
-        price <= 0
-      ) {
+      const cleanPrice =
+        safeNumber(price);
+
+
+      if (cleanPrice <= 0) {
 
         return res
           .status(400)
@@ -1200,6 +1231,27 @@ app.post(
           });
 
       }
+
+
+      const cleanOldPrice =
+        safeNumber(
+          oldPrice,
+          cleanPrice
+        );
+
+
+      const cleanDiscount =
+        Math.max(
+          0,
+          safeNumber(discount)
+        );
+
+
+      const cleanStock =
+        Math.max(
+          0,
+          safeInteger(stock)
+        );
 
 
       const result =
@@ -1217,7 +1269,6 @@ app.post(
             created_at,
             updated_at
           )
-
           VALUES
           (
             $1,
@@ -1231,7 +1282,6 @@ app.post(
             NOW(),
             NOW()
           )
-
           RETURNING
             id,
             name,
@@ -1246,19 +1296,36 @@ app.post(
             updated_at AS "updatedAt"
         `,
         [
-          name,
-          category,
-          description,
-          price,
-          oldPrice,
-          discount,
-          stock,
-          image
+          cleanName,
+
+          String(
+            category ||
+            "General"
+          ),
+
+          String(
+            description ||
+            ""
+          ),
+
+          cleanPrice,
+
+          cleanOldPrice,
+
+          cleanDiscount,
+
+          cleanStock,
+
+          String(
+            image ||
+            ""
+          )
         ]);
 
 
       console.log(
-        `Product created: #${result.rows[0].id}`
+        "Product created:",
+        result.rows[0].id
       );
 
 
@@ -1267,7 +1334,6 @@ app.post(
         .json(
           result.rows[0]
         );
-
 
     } catch (error) {
 
@@ -1280,9 +1346,8 @@ app.post(
         .status(500)
         .json({
           error:
-            "Could not create product.",
-          details:
-            error.message
+            error.message ||
+            "Could not create product."
         });
 
     }
@@ -1309,7 +1374,8 @@ app.put(
 
 
       if (
-        !Number.isInteger(id)
+        !Number.isSafeInteger(id) ||
+        id <= 0
       ) {
 
         return res
@@ -1322,58 +1388,25 @@ app.put(
       }
 
 
-      const name =
-        cleanText(
-          req.body.name
-        );
-
-      const category =
-        cleanText(
-          req.body.category,
-          "General"
-        ) || "General";
-
-      const description =
-        cleanText(
-          req.body.description
-        );
-
-      const price =
-        safeNumber(
-          req.body.price
-        );
-
-      const oldPrice =
-        safeNumber(
-          req.body.oldPrice,
-          price
-        );
-
-      const discount =
-        Math.max(
-          0,
-          safeNumber(
-            req.body.discount
-          )
-        );
-
-      const stock =
-        Math.max(
-          0,
-          Math.floor(
-            safeNumber(
-              req.body.stock
-            )
-          )
-        );
-
-      const image =
-        cleanText(
-          req.body.image
-        );
+      const {
+        name,
+        category,
+        description,
+        price,
+        oldPrice,
+        discount,
+        stock,
+        image
+      } = req.body;
 
 
-      if (!name) {
+      const cleanName =
+        String(
+          name || ""
+        ).trim();
+
+
+      if (!cleanName) {
 
         return res
           .status(400)
@@ -1385,9 +1418,11 @@ app.put(
       }
 
 
-      if (
-        price <= 0
-      ) {
+      const cleanPrice =
+        safeNumber(price);
+
+
+      if (cleanPrice <= 0) {
 
         return res
           .status(400)
@@ -1402,7 +1437,6 @@ app.put(
       const result =
         await pool.query(`
           UPDATE products
-
           SET
             name = $1,
             category = $2,
@@ -1413,9 +1447,7 @@ app.put(
             stock = $7,
             image = $8,
             updated_at = NOW()
-
           WHERE id = $9
-
           RETURNING
             id,
             name,
@@ -1430,14 +1462,40 @@ app.put(
             updated_at AS "updatedAt"
         `,
         [
-          name,
-          category,
-          description,
-          price,
-          oldPrice,
-          discount,
-          stock,
-          image,
+          cleanName,
+
+          String(
+            category ||
+            "General"
+          ),
+
+          String(
+            description ||
+            ""
+          ),
+
+          cleanPrice,
+
+          safeNumber(
+            oldPrice,
+            cleanPrice
+          ),
+
+          Math.max(
+            0,
+            safeNumber(discount)
+          ),
+
+          Math.max(
+            0,
+            safeInteger(stock)
+          ),
+
+          String(
+            image ||
+            ""
+          ),
+
           id
         ]);
 
@@ -1456,10 +1514,15 @@ app.put(
       }
 
 
+      console.log(
+        "Product updated:",
+        id
+      );
+
+
       res.json(
         result.rows[0]
       );
-
 
     } catch (error) {
 
@@ -1472,9 +1535,7 @@ app.put(
         .status(500)
         .json({
           error:
-            "Could not update product.",
-          details:
-            error.message
+            "Could not update product."
         });
 
     }
@@ -1501,7 +1562,8 @@ app.delete(
 
 
       if (
-        !Number.isInteger(id)
+        !Number.isSafeInteger(id) ||
+        id <= 0
       ) {
 
         return res
@@ -1537,11 +1599,15 @@ app.delete(
       }
 
 
-      res.json({
-        success:
-          true
-      });
+      console.log(
+        "Product deleted:",
+        id
+      );
 
+
+      res.json({
+        success: true
+      });
 
     } catch (error) {
 
@@ -1591,8 +1657,9 @@ app.post(
 
 
       const image =
-        cleanText(
-          req.body.image
+        String(
+          req.body.image ||
+          ""
         );
 
 
@@ -1628,7 +1695,6 @@ app.post(
 
       });
 
-
     } catch (error) {
 
       console.error(
@@ -1640,9 +1706,7 @@ app.post(
         .status(500)
         .json({
           error:
-            "Image upload failed.",
-          details:
-            error.message
+            "Image upload failed."
         });
 
     }
@@ -1653,7 +1717,7 @@ app.post(
 
 /* =====================================================
    ADMIN ORDERS
-   CANCELLED ORDERS ARE HIDDEN
+   CANCELLED ORDERS HIDDEN
 ===================================================== */
 
 app.get(
@@ -1675,12 +1739,8 @@ app.get(
             payment_method AS "paymentMethod",
             created_at AS "createdAt",
             updated_at AS "updatedAt"
-
           FROM orders
-
-          WHERE status IS DISTINCT FROM
-          'Cancelled'
-
+          WHERE status IS DISTINCT FROM 'Cancelled'
           ORDER BY created_at DESC
         `);
 
@@ -1688,7 +1748,6 @@ app.get(
       res.json(
         result.rows
       );
-
 
     } catch (error) {
 
@@ -1723,17 +1782,11 @@ app.post(
 
     try {
 
-      const customer =
-        req.body.customer || {};
-
-      const items =
-        req.body.items;
-
-      const paymentMethod =
-        cleanText(
-          req.body.paymentMethod,
-          "cod"
-        ) || "cod";
+      const {
+        customer,
+        items,
+        paymentMethod
+      } = req.body;
 
 
       if (
@@ -1773,17 +1826,15 @@ app.post(
         const qty =
           Math.max(
             1,
-            Math.floor(
-              safeNumber(
-                item.qty,
-                1
-              )
+            safeInteger(
+              item.qty,
+              1
             )
           );
 
 
         if (
-          !Number.isInteger(
+          !Number.isSafeInteger(
             productId
           ) ||
           productId <= 0
@@ -1797,21 +1848,20 @@ app.post(
 
 
         const productResult =
-          await client.query(`
-            SELECT
-              id,
-              name,
-              price,
-              stock,
-              image
-
-            FROM products
-
-            WHERE id = $1
-
-            FOR UPDATE
-          `,
-          [productId]);
+          await client.query(
+            `
+              SELECT
+                id,
+                name,
+                price,
+                stock,
+                image
+              FROM products
+              WHERE id = $1
+              FOR UPDATE
+            `,
+            [productId]
+          );
 
 
         if (
@@ -1829,14 +1879,14 @@ app.post(
           productResult.rows[0];
 
 
-        const productStock =
+        const currentStock =
           Number(
             product.stock
           );
 
 
         if (
-          productStock < qty
+          currentStock < qty
         ) {
 
           throw new Error(
@@ -1870,19 +1920,19 @@ app.post(
         });
 
 
-        await client.query(`
-          UPDATE products
-
-          SET
-            stock = stock - $1,
-            updated_at = NOW()
-
-          WHERE id = $2
-        `,
-        [
-          qty,
-          productId
-        ]);
+        await client.query(
+          `
+            UPDATE products
+            SET
+              stock = stock - $1,
+              updated_at = NOW()
+            WHERE id = $2
+          `,
+          [
+            qty,
+            productId
+          ]
+        );
 
       }
 
@@ -1911,62 +1961,59 @@ app.post(
         );
 
 
-      /* =================================================
-         IMPORTANT:
-         DO NOT SEND id HERE.
-         PostgreSQL sequence creates it automatically.
-      ================================================= */
-
       const result =
-        await client.query(`
-          INSERT INTO orders
-          (
-            customer,
-            items,
-            total,
-            status,
-            payment_status,
-            payment_method,
-            created_at,
-            updated_at
-          )
+        await client.query(
+          `
+            INSERT INTO orders
+            (
+              customer,
+              items,
+              total,
+              status,
+              payment_status,
+              payment_method,
+              created_at,
+              updated_at
+            )
+            VALUES
+            (
+              $1,
+              $2,
+              $3,
+              'Pending',
+              'Pending',
+              $4,
+              NOW(),
+              NOW()
+            )
+            RETURNING
+              id,
+              customer,
+              items,
+              total,
+              status,
+              payment_status AS "paymentStatus",
+              payment_method AS "paymentMethod",
+              created_at AS "createdAt",
+              updated_at AS "updatedAt"
+          `,
+          [
+            JSON.stringify(
+              customer || {}
+            ),
 
-          VALUES
-          (
-            $1,
-            $2,
-            $3,
-            'Pending',
-            'Pending',
-            $4,
-            NOW(),
-            NOW()
-          )
+            JSON.stringify(
+              finalItems
+            ),
 
-          RETURNING
-            id,
-            customer,
-            items,
-            total,
-            status,
-            payment_status AS "paymentStatus",
-            payment_method AS "paymentMethod",
-            created_at AS "createdAt",
-            updated_at AS "updatedAt"
-        `,
-        [
-          JSON.stringify(
-            customer
-          ),
+            calculatedTotal,
 
-          JSON.stringify(
-            finalItems
-          ),
-
-          calculatedTotal,
-
-          paymentMethod
-        ]);
+            String(
+              paymentMethod ||
+              "cod"
+            )
+          ]
+        );
 
 
       await client.query(
@@ -1975,7 +2022,8 @@ app.post(
 
 
       console.log(
-        `Order created successfully: #${result.rows[0].id}`
+        "Order created:",
+        result.rows[0].id
       );
 
 
@@ -1985,21 +2033,11 @@ app.post(
           result.rows[0]
         );
 
-
     } catch (error) {
 
-      try {
-        await client.query(
-          "ROLLBACK"
-        );
-      } catch (
-        rollbackError
-      ) {
-        console.error(
-          "Rollback error:",
-          rollbackError
-        );
-      }
+      await client.query(
+        "ROLLBACK"
+      );
 
 
       console.error(
@@ -2015,7 +2053,6 @@ app.post(
             error.message ||
             "Could not create order."
         });
-
 
     } finally {
 
@@ -2045,30 +2082,25 @@ app.put(
 
 
       const status =
-        cleanText(
-          req.body.status
-        );
+        String(
+          req.body.status ||
+          ""
+        ).trim();
 
 
       const allowedStatuses = [
-
         "Pending",
-
         "Confirmed",
-
         "Processing",
-
         "Shipped",
-
         "Delivered",
-
         "Cancelled"
-
       ];
 
 
       if (
-        !Number.isInteger(id)
+        !Number.isSafeInteger(id) ||
+        id <= 0
       ) {
 
         return res
@@ -2100,13 +2132,10 @@ app.put(
       const result =
         await pool.query(`
           UPDATE orders
-
           SET
             status = $1,
             updated_at = NOW()
-
           WHERE id = $2
-
           RETURNING
             id,
             customer,
@@ -2153,7 +2182,6 @@ app.put(
 
       });
 
-
     } catch (error) {
 
       console.error(
@@ -2192,26 +2220,23 @@ app.put(
 
 
       const paymentStatus =
-        cleanText(
-          req.body.paymentStatus
-        );
+        String(
+          req.body.paymentStatus ||
+          ""
+        ).trim();
 
 
       const allowedStatuses = [
-
         "Pending",
-
         "Paid",
-
         "Failed",
-
         "Refunded"
-
       ];
 
 
       if (
-        !Number.isInteger(id)
+        !Number.isSafeInteger(id) ||
+        id <= 0
       ) {
 
         return res
@@ -2243,13 +2268,10 @@ app.put(
       const result =
         await pool.query(`
           UPDATE orders
-
           SET
             payment_status = $1,
             updated_at = NOW()
-
           WHERE id = $2
-
           RETURNING
             id,
             customer,
@@ -2291,7 +2313,6 @@ app.put(
 
       });
 
-
     } catch (error) {
 
       console.error(
@@ -2323,43 +2344,19 @@ app.put(
 
     try {
 
-      const shopName =
-        cleanText(
-          req.body.shopName,
-          "SM Online Shop"
-        ) || "SM Online Shop";
-
-      const tagline =
-        cleanText(
-          req.body.tagline
-        );
-
-      const phone1 =
-        cleanText(
-          req.body.phone1
-        );
-
-      const phone2 =
-        cleanText(
-          req.body.phone2
-        );
-
-      const facebook =
-        cleanText(
-          req.body.facebook
-        );
-
-      const currency =
-        cleanText(
-          req.body.currency,
-          "BDT"
-        ) || "BDT";
+      const {
+        shopName,
+        tagline,
+        phone1,
+        phone2,
+        facebook,
+        currency
+      } = req.body;
 
 
       const result =
         await pool.query(`
           UPDATE store_settings
-
           SET
             shop_name = $1,
             tagline = $2,
@@ -2368,14 +2365,12 @@ app.put(
             facebook = $5,
             currency = $6,
             updated_at = NOW()
-
           WHERE id = (
             SELECT id
             FROM store_settings
             ORDER BY id
             LIMIT 1
           )
-
           RETURNING
             id,
             shop_name AS "shopName",
@@ -2386,12 +2381,35 @@ app.put(
             currency
         `,
         [
-          shopName,
-          tagline,
-          phone1,
-          phone2,
-          facebook,
-          currency
+          String(
+            shopName ||
+            "SM Online Shop"
+          ),
+
+          String(
+            tagline ||
+            ""
+          ),
+
+          String(
+            phone1 ||
+            ""
+          ),
+
+          String(
+            phone2 ||
+            ""
+          ),
+
+          String(
+            facebook ||
+            ""
+          ),
+
+          String(
+            currency ||
+            "BDT"
+          )
         ]);
 
 
@@ -2399,58 +2417,12 @@ app.put(
         result.rows.length === 0
       ) {
 
-        const insertResult =
-          await pool.query(`
-            INSERT INTO store_settings
-            (
-              shop_name,
-              tagline,
-              phone1,
-              phone2,
-              facebook,
-              currency,
-              updated_at
-            )
-
-            VALUES
-            (
-              $1,
-              $2,
-              $3,
-              $4,
-              $5,
-              $6,
-              NOW()
-            )
-
-            RETURNING
-              id,
-              shop_name AS "shopName",
-              tagline,
-              phone1,
-              phone2,
-              facebook,
-              currency
-          `,
-          [
-            shopName,
-            tagline,
-            phone1,
-            phone2,
-            facebook,
-            currency
-          ]);
-
-
-        return res.json({
-
-          success:
-            true,
-
-          settings:
-            insertResult.rows[0]
-
-        });
+        return res
+          .status(404)
+          .json({
+            error:
+              "Store settings not found."
+          });
 
       }
 
@@ -2464,7 +2436,6 @@ app.put(
           result.rows[0]
 
       });
-
 
     } catch (error) {
 
@@ -2606,7 +2577,6 @@ async function startServer() {
       }
     );
 
-
   } catch (error) {
 
     console.error(
@@ -2628,45 +2598,33 @@ startServer();
    GRACEFUL SHUTDOWN
 ===================================================== */
 
-async function shutdown(
-  signal
-) {
+process.on(
+  "SIGTERM",
+  async () => {
 
-  console.log(
-    `${signal} received.`
-  );
-
-
-  try {
+    console.log(
+      "SIGTERM received."
+    );
 
     await pool.end();
 
-    console.log(
-      "Database pool closed."
-    );
-
     process.exit(0);
 
-  } catch (error) {
-
-    console.error(
-      "Shutdown error:",
-      error
-    );
-
-    process.exit(1);
-
   }
-
-}
-
-
-process.on(
-  "SIGTERM",
-  () => shutdown("SIGTERM")
 );
+
 
 process.on(
   "SIGINT",
-  () => shutdown("SIGINT")
+  async () => {
+
+    console.log(
+      "SIGINT received."
+    );
+
+    await pool.end();
+
+    process.exit(0);
+
+  }
 );
