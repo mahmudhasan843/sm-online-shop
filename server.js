@@ -94,7 +94,11 @@ function positiveNumber(value, fallback = 0) {
 
 function nonNegativeInt(value, fallback = 0) {
   const n = Number(value);
-  if (!Number.isFinite(n) || n < 0) return fallback;
+
+  if (!Number.isFinite(n) || n < 0) {
+    return fallback;
+  }
+
   return Math.floor(n);
 }
 
@@ -116,7 +120,10 @@ function makeId(prefix) {
 }
 
 function hashToken(token) {
-  return crypto.createHash("sha256").update(token).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
 }
 
 function createRandomToken(bytes = 32) {
@@ -153,7 +160,11 @@ function parseCookies(req) {
 }
 
 function setCustomerCookie(res, token) {
-  const maxAge = CUSTOMER_SESSION_DAYS * 24 * 60 * 60;
+  const maxAge =
+    CUSTOMER_SESSION_DAYS *
+    24 *
+    60 *
+    60;
 
   let cookie =
     `${CUSTOMER_COOKIE}=${encodeURIComponent(token)}; ` +
@@ -166,7 +177,10 @@ function setCustomerCookie(res, token) {
     cookie += "; Secure";
   }
 
-  res.setHeader("Set-Cookie", cookie);
+  res.setHeader(
+    "Set-Cookie",
+    cookie
+  );
 }
 
 function clearCustomerCookie(res) {
@@ -181,16 +195,25 @@ function clearCustomerCookie(res) {
     cookie += "; Secure";
   }
 
-  res.setHeader("Set-Cookie", cookie);
+  res.setHeader(
+    "Set-Cookie",
+    cookie
+  );
 }
 
 function getBaseUrl(req) {
   if (process.env.APP_URL) {
-    return process.env.APP_URL.replace(/\/+$/, "");
+    return process.env.APP_URL.replace(
+      /\/+$/,
+      ""
+    );
   }
 
   if (process.env.RENDER_EXTERNAL_URL) {
-    return process.env.RENDER_EXTERNAL_URL.replace(/\/+$/, "");
+    return process.env.RENDER_EXTERNAL_URL.replace(
+      /\/+$/,
+      ""
+    );
   }
 
   return `${req.protocol}://${req.get("host")}`;
@@ -202,15 +225,23 @@ function getOAuthRedirectUri(req, provider) {
 
 function redirectLoginError(res, message) {
   const params = new URLSearchParams({
-    loginError: message || "Login failed",
+    loginError:
+      message || "Login failed",
   });
 
-  res.redirect(`/?${params.toString()}`);
+  res.redirect(
+    `/?${params.toString()}`
+  );
 }
 
 async function fetchJson(url, options = {}) {
-  const response = await fetch(url, options);
-  const text = await response.text();
+  const response = await fetch(
+    url,
+    options
+  );
+
+  const text =
+    await response.text();
 
   let data;
 
@@ -230,7 +261,9 @@ async function fetchJson(url, options = {}) {
       data?.error ||
       `Request failed with status ${response.status}`;
 
-    throw new Error(String(message));
+    throw new Error(
+      String(message)
+    );
   }
 
   return data;
@@ -241,7 +274,8 @@ async function fetchJson(url, options = {}) {
 ========================================================= */
 
 async function initDatabase() {
-  const client = await pool.connect();
+  const client =
+    await pool.connect();
 
   try {
     await client.query("BEGIN");
@@ -436,30 +470,34 @@ async function initDatabase() {
 
     await client.query(`
       UPDATE customers
-      SET email = COALESCE(email, ''),
-          provider = COALESCE(provider, ''),
-          provider_id = COALESCE(provider_id, ''),
-          avatar_url = COALESCE(avatar_url, ''),
-          phone = COALESCE(phone, ''),
-          address = COALESCE(address, ''),
-          name = COALESCE(name, '')
+      SET
+        email = COALESCE(email, ''),
+        provider = COALESCE(provider, ''),
+        provider_id = COALESCE(provider_id, ''),
+        avatar_url = COALESCE(avatar_url, ''),
+        phone = COALESCE(phone, ''),
+        address = COALESCE(address, ''),
+        name = COALESCE(name, '')
     `);
 
     await client.query(`
       UPDATE products
-      SET category = COALESCE(category, ''),
-          description = COALESCE(description, ''),
-          image = COALESCE(image, ''),
-          gallery = COALESCE(gallery, '[]'::jsonb),
-          price = COALESCE(price, 0),
-          old_price = COALESCE(old_price, 0),
-          discount = COALESCE(discount, 0),
-          stock = COALESCE(stock, 0)
+      SET
+        category = COALESCE(category, ''),
+        description = COALESCE(description, ''),
+        image = COALESCE(image, ''),
+        gallery = COALESCE(gallery, '[]'::jsonb),
+        price = COALESCE(price, 0),
+        old_price = COALESCE(old_price, 0),
+        discount = COALESCE(discount, 0),
+        stock = COALESCE(stock, 0)
     `);
 
     await client.query(`
       UPDATE orders
-      SET stock_restored = COALESCE(stock_restored, FALSE)
+      SET
+        stock_restored =
+          COALESCE(stock_restored, FALSE)
     `);
 
     await client.query(`
@@ -470,7 +508,8 @@ async function initDatabase() {
     await client.query(`
       CREATE INDEX IF NOT EXISTS customers_email_lower_idx
       ON customers(LOWER(email))
-      WHERE email IS NOT NULL AND email <> ''
+      WHERE email IS NOT NULL
+        AND email <> ''
     `);
 
     await client.query(`
@@ -492,26 +531,46 @@ async function initDatabase() {
       WHERE expires_at < NOW()
     `);
 
-    const settingsResult = await client.query(`
-      SELECT id FROM store_settings WHERE id = 1
-    `);
+    const settingsResult =
+      await client.query(`
+        SELECT id
+        FROM store_settings
+        WHERE id = 1
+      `);
 
-    if (settingsResult.rows.length === 0) {
+    if (
+      settingsResult.rows.length === 0
+    ) {
       await client.query(
         `
-        INSERT INTO store_settings (id, data)
-        VALUES (1, $1::jsonb)
+        INSERT INTO store_settings
+          (id, data)
+        VALUES
+          (1, $1::jsonb)
         `,
-        [JSON.stringify(defaultSettings)]
+        [
+          JSON.stringify(
+            defaultSettings
+          ),
+        ]
       );
     }
 
     await client.query("COMMIT");
 
-    console.log("Database initialized successfully.");
+    console.log(
+      "Database initialized successfully."
+    );
   } catch (error) {
-    await client.query("ROLLBACK");
-    console.error("Database initialization error:", error);
+    await client.query(
+      "ROLLBACK"
+    );
+
+    console.error(
+      "Database initialization error:",
+      error
+    );
+
     throw error;
   } finally {
     client.release();
@@ -522,36 +581,45 @@ async function initDatabase() {
    CUSTOMER AUTHENTICATION
 ========================================================= */
 
-async function getCustomerFromSession(req) {
-  const cookies = parseCookies(req);
-  const rawToken = cookies[CUSTOMER_COOKIE];
+async function getCustomerFromSession(
+  req
+) {
+  const cookies =
+    parseCookies(req);
 
-  if (!rawToken) return null;
+  const rawToken =
+    cookies[CUSTOMER_COOKIE];
 
-  const tokenHash = hashToken(rawToken);
+  if (!rawToken) {
+    return null;
+  }
 
-  const result = await pool.query(
-    `
-    SELECT
-      c.id,
-      c.name,
-      c.phone,
-      c.address,
-      c.email,
-      c.provider,
-      c.provider_id,
-      c.avatar_url,
-      c.created_at,
-      c.updated_at
-    FROM customer_sessions s
-    JOIN customers c
-      ON c.id = s.customer_id
-    WHERE s.token_hash = $1
-      AND s.expires_at > NOW()
-    LIMIT 1
-    `,
-    [tokenHash]
-  );
+  const tokenHash =
+    hashToken(rawToken);
+
+  const result =
+    await pool.query(
+      `
+      SELECT
+        c.id,
+        c.name,
+        c.phone,
+        c.address,
+        c.email,
+        c.provider,
+        c.provider_id,
+        c.avatar_url,
+        c.created_at,
+        c.updated_at
+      FROM customer_sessions s
+      JOIN customers c
+        ON c.id = s.customer_id
+      WHERE s.token_hash = $1
+        AND s.expires_at > NOW()
+      LIMIT 1
+      `,
+      [tokenHash]
+    );
 
   if (!result.rows.length) {
     return null;
@@ -560,118 +628,115 @@ async function getCustomerFromSession(req) {
   return result.rows[0];
 }
 
-async function requireCustomer(req, res, next) {
+async function requireCustomer(
+  req,
+  res,
+  next
+) {
   try {
-    const customer = await getCustomerFromSession(req);
+    const customer =
+      await getCustomerFromSession(
+        req
+      );
 
     if (!customer) {
       return res.status(401).json({
         ok: false,
         loginRequired: true,
-        message: "Customer login required.",
+        message:
+          "Customer login required.",
       });
     }
 
     req.customer = customer;
+
     next();
   } catch (error) {
-    console.error("Customer auth error:", error);
+    console.error(
+      "Customer auth error:",
+      error
+    );
 
     res.status(500).json({
       ok: false,
-      message: "Authentication error.",
+      message:
+        "Authentication error.",
     });
   }
 }
 
-async function createCustomerSession(customerId) {
-  const rawToken = createRandomToken(32);
-  const tokenHash = hashToken(rawToken);
+async function createCustomerSession(
+  customerId
+) {
+  const rawToken =
+    createRandomToken(32);
+
+  const tokenHash =
+    hashToken(rawToken);
 
   await pool.query(
     `
     INSERT INTO customer_sessions
-      (token_hash, customer_id, expires_at)
+      (
+        token_hash,
+        customer_id,
+        expires_at
+      )
     VALUES
-      ($1, $2, NOW() + INTERVAL '30 days')
+      (
+        $1,
+        $2,
+        NOW() + INTERVAL '30 days'
+      )
     `,
-    [tokenHash, customerId]
+    [
+      tokenHash,
+      customerId,
+    ]
   );
 
   return rawToken;
 }
 
-async function findOrCreateOAuthCustomer(profile) {
-  const client = await pool.connect();
+async function findOrCreateOAuthCustomer(
+  profile
+) {
+  const client =
+    await pool.connect();
 
   try {
-    await client.query("BEGIN");
+    await client.query(
+      "BEGIN"
+    );
 
     await client.query(`
       DELETE FROM oauth_states
       WHERE expires_at < NOW()
     `);
 
-    let result = await client.query(
-      `
-      SELECT *
-      FROM customers
-      WHERE provider = $1
-        AND provider_id = $2
-      LIMIT 1
-      `,
-      [profile.provider, profile.providerId]
-    );
+    let result =
+      await client.query(
+        `
+        SELECT *
+        FROM customers
+        WHERE provider = $1
+          AND provider_id = $2
+        LIMIT 1
+        `,
+        [
+          profile.provider,
+          profile.providerId,
+        ]
+      );
 
     let customer;
 
     if (result.rows.length) {
-      const existing = result.rows[0];
+      const existing =
+        result.rows[0];
 
-      result = await client.query(
-        `
-        UPDATE customers
-        SET
-          name = $1,
-          email = $2,
-          provider = $3,
-          provider_id = $4,
-          avatar_url = $5,
-          updated_at = NOW()
-        WHERE id = $6
-        RETURNING *
-        `,
-        [
-          profile.name,
-          profile.email,
-          profile.provider,
-          profile.providerId,
-          profile.avatarUrl,
-          existing.id,
-        ]
-      );
-
-      customer = result.rows[0];
-    } else {
-      /* Try matching an existing account by email */
-      if (profile.email) {
-        result = await client.query(
-          `
-          SELECT *
-          FROM customers
-          WHERE LOWER(email) = LOWER($1)
-          LIMIT 1
-          `,
-          [profile.email]
-        );
-      } else {
-        result = { rows: [] };
-      }
-
-      if (result.rows.length) {
-        const existing = result.rows[0];
-
-        result = await client.query(
+      result =
+        await client.query(
           `
           UPDATE customers
           SET
@@ -685,55 +750,133 @@ async function findOrCreateOAuthCustomer(profile) {
           RETURNING *
           `,
           [
-            profile.name || existing.name || "",
-            profile.email || existing.email || "",
+            profile.name,
+            profile.email,
             profile.provider,
             profile.providerId,
-            profile.avatarUrl || existing.avatar_url || "",
+            profile.avatarUrl,
             existing.id,
           ]
         );
 
-        customer = result.rows[0];
+      customer =
+        result.rows[0];
+    } else {
+      /* Try matching existing account by email */
+
+      if (profile.email) {
+        result =
+          await client.query(
+            `
+            SELECT *
+            FROM customers
+            WHERE LOWER(email) =
+                  LOWER($1)
+            LIMIT 1
+            `,
+            [profile.email]
+          );
       } else {
-        const customerId = makeId("C");
+        result = {
+          rows: [],
+        };
+      }
 
-        result = await client.query(
-          `
-          INSERT INTO customers
-            (
-              id,
-              name,
-              phone,
-              address,
-              email,
-              provider,
-              provider_id,
-              avatar_url
-            )
-          VALUES
-            ($1, $2, '', '', $3, $4, $5, $6)
-          RETURNING *
-          `,
-          [
-            customerId,
-            profile.name || "Customer",
-            profile.email || "",
-            profile.provider,
-            profile.providerId,
-            profile.avatarUrl || "",
-          ]
-        );
+      if (result.rows.length) {
+        const existing =
+          result.rows[0];
 
-        customer = result.rows[0];
+        result =
+          await client.query(
+            `
+            UPDATE customers
+            SET
+              name = $1,
+              email = $2,
+              provider = $3,
+              provider_id = $4,
+              avatar_url = $5,
+              updated_at = NOW()
+            WHERE id = $6
+            RETURNING *
+            `,
+            [
+              profile.name ||
+                existing.name ||
+                "",
+              profile.email ||
+                existing.email ||
+                "",
+              profile.provider,
+              profile.providerId,
+              profile.avatarUrl ||
+                existing.avatar_url ||
+                "",
+              existing.id,
+            ]
+          );
+
+        customer =
+          result.rows[0];
+      } else {
+        const customerId =
+          makeId("C");
+
+        result =
+          await client.query(
+            `
+            INSERT INTO customers
+              (
+                id,
+                name,
+                phone,
+                address,
+                email,
+                provider,
+                provider_id,
+                avatar_url
+              )
+            VALUES
+              (
+                $1,
+                $2,
+                '',
+                '',
+                $3,
+                $4,
+                $5,
+                $6
+              )
+            RETURNING *
+            `,
+            [
+              customerId,
+              profile.name ||
+                "Customer",
+              profile.email ||
+                "",
+              profile.provider,
+              profile.providerId,
+              profile.avatarUrl ||
+                "",
+            ]
+          );
+
+        customer =
+          result.rows[0];
       }
     }
 
-    await client.query("COMMIT");
+    await client.query(
+      "COMMIT"
+    );
 
     return customer;
   } catch (error) {
-    await client.query("ROLLBACK");
+    await client.query(
+      "ROLLBACK"
+    );
+
     throw error;
   } finally {
     client.release();
@@ -744,426 +887,624 @@ async function findOrCreateOAuthCustomer(profile) {
    OAUTH STATE
 ========================================================= */
 
-async function createOAuthState(provider) {
-  const state = createRandomToken(24);
+async function createOAuthState(
+  provider
+) {
+  const state =
+    createRandomToken(24);
 
   await pool.query(
     `
     INSERT INTO oauth_states
-      (state, provider, expires_at)
+      (
+        state,
+        provider,
+        expires_at
+      )
     VALUES
-      ($1, $2, NOW() + INTERVAL '10 minutes')
+      (
+        $1,
+        $2,
+        NOW() + INTERVAL '10 minutes'
+      )
     `,
-    [state, provider]
+    [
+      state,
+      provider,
+    ]
   );
 
   return state;
 }
 
-async function consumeOAuthState(state, provider) {
-  const result = await pool.query(
-    `
-    DELETE FROM oauth_states
-    WHERE state = $1
-      AND provider = $2
-      AND expires_at > NOW()
-    RETURNING state
-    `,
-    [state, provider]
-  );
+async function consumeOAuthState(
+  state,
+  provider
+) {
+  const result =
+    await pool.query(
+      `
+      DELETE FROM oauth_states
+      WHERE state = $1
+        AND provider = $2
+        AND expires_at > NOW()
+      RETURNING state
+      `,
+      [
+        state,
+        provider,
+      ]
+    );
 
-  return result.rows.length > 0;
+  return (
+    result.rows.length > 0
+  );
 }
 
 /* =========================================================
    GOOGLE LOGIN
 ========================================================= */
 
-app.get("/auth/google", async (req, res) => {
-  try {
-    if (
-      !process.env.GOOGLE_CLIENT_ID ||
-      !process.env.GOOGLE_CLIENT_SECRET
-    ) {
-      return redirectLoginError(
+app.get(
+  "/auth/google",
+  async (req, res) => {
+    try {
+      if (
+        !process.env.GOOGLE_CLIENT_ID ||
+        !process.env.GOOGLE_CLIENT_SECRET
+      ) {
+        return redirectLoginError(
+          res,
+          "Google login is not configured."
+        );
+      }
+
+      const state =
+        await createOAuthState(
+          "google"
+        );
+
+      const redirectUri =
+        getOAuthRedirectUri(
+          req,
+          "google"
+        );
+
+      const params =
+        new URLSearchParams({
+          client_id:
+            process.env
+              .GOOGLE_CLIENT_ID,
+          redirect_uri:
+            redirectUri,
+          response_type: "code",
+          scope:
+            "openid email profile",
+          state,
+          access_type: "online",
+          prompt:
+            "select_account",
+        });
+
+      res.redirect(
+        `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
+      );
+    } catch (error) {
+      console.error(
+        "Google start error:",
+        error
+      );
+
+      redirectLoginError(
         res,
-        "Google login is not configured."
+        "Unable to start Google login."
       );
     }
-
-    const state = await createOAuthState("google");
-
-    const redirectUri = getOAuthRedirectUri(req, "google");
-
-    const params = new URLSearchParams({
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      redirect_uri: redirectUri,
-      response_type: "code",
-      scope: "openid email profile",
-      state,
-      access_type: "online",
-      prompt: "select_account",
-    });
-
-    res.redirect(
-      `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
-    );
-  } catch (error) {
-    console.error("Google start error:", error);
-    redirectLoginError(res, "Unable to start Google login.");
   }
-});
+);
 
-app.get("/auth/google/callback", async (req, res) => {
-  try {
-    const { code, state } = req.query;
+app.get(
+  "/auth/google/callback",
+  async (req, res) => {
+    try {
+      const {
+        code,
+        state,
+      } = req.query;
 
-    if (!code || !state) {
-      return redirectLoginError(res, "Invalid Google login request.");
-    }
+      if (!code || !state) {
+        return redirectLoginError(
+          res,
+          "Invalid Google login request."
+        );
+      }
 
-    const validState = await consumeOAuthState(state, "google");
+      const validState =
+        await consumeOAuthState(
+          state,
+          "google"
+        );
 
-    if (!validState) {
-      return redirectLoginError(
+      if (!validState) {
+        return redirectLoginError(
+          res,
+          "Google login session expired. Please try again."
+        );
+      }
+
+      const redirectUri =
+        getOAuthRedirectUri(
+          req,
+          "google"
+        );
+
+      const tokenData =
+        await fetchJson(
+          "https://oauth2.googleapis.com/token",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/x-www-form-urlencoded",
+            },
+            body:
+              new URLSearchParams({
+                client_id:
+                  process.env
+                    .GOOGLE_CLIENT_ID,
+                client_secret:
+                  process.env
+                    .GOOGLE_CLIENT_SECRET,
+                code: String(code),
+                grant_type:
+                  "authorization_code",
+                redirect_uri:
+                  redirectUri,
+              }).toString(),
+          }
+        );
+
+      if (
+        !tokenData.access_token
+      ) {
+        throw new Error(
+          "Google access token missing."
+        );
+      }
+
+      const userInfo =
+        await fetchJson(
+          "https://openidconnect.googleapis.com/v1/userinfo",
+          {
+            headers: {
+              Authorization:
+                `Bearer ${tokenData.access_token}`,
+            },
+          }
+        );
+
+      if (!userInfo.sub) {
+        throw new Error(
+          "Google account ID missing."
+        );
+      }
+
+      const customer =
+        await findOrCreateOAuthCustomer(
+          {
+            provider: "google",
+            providerId:
+              String(userInfo.sub),
+            name: cleanText(
+              userInfo.name,
+              "Google Customer"
+            ),
+            email: cleanText(
+              userInfo.email
+            ),
+            avatarUrl: cleanText(
+              userInfo.picture
+            ),
+          }
+        );
+
+      const sessionToken =
+        await createCustomerSession(
+          customer.id
+        );
+
+      setCustomerCookie(
         res,
-        "Google login session expired. Please try again."
+        sessionToken
+      );
+
+      res.redirect("/");
+    } catch (error) {
+      console.error(
+        "Google callback error:",
+        error
+      );
+
+      redirectLoginError(
+        res,
+        "Google login failed. Please try again."
       );
     }
-
-    const redirectUri = getOAuthRedirectUri(req, "google");
-
-    const tokenData = await fetchJson(
-      "https://oauth2.googleapis.com/token",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          client_id: process.env.GOOGLE_CLIENT_ID,
-          client_secret: process.env.GOOGLE_CLIENT_SECRET,
-          code: String(code),
-          grant_type: "authorization_code",
-          redirect_uri: redirectUri,
-        }).toString(),
-      }
-    );
-
-    if (!tokenData.access_token) {
-      throw new Error("Google access token missing.");
-    }
-
-    const userInfo = await fetchJson(
-      "https://openidconnect.googleapis.com/v1/userinfo",
-      {
-        headers: {
-          Authorization: `Bearer ${tokenData.access_token}`,
-        },
-      }
-    );
-
-    if (!userInfo.sub) {
-      throw new Error("Google account ID missing.");
-    }
-
-    const customer = await findOrCreateOAuthCustomer({
-      provider: "google",
-      providerId: String(userInfo.sub),
-      name: cleanText(userInfo.name, "Google Customer"),
-      email: cleanText(userInfo.email),
-      avatarUrl: cleanText(userInfo.picture),
-    });
-
-    const sessionToken = await createCustomerSession(customer.id);
-
-    setCustomerCookie(res, sessionToken);
-
-    res.redirect("/");
-  } catch (error) {
-    console.error("Google callback error:", error);
-    redirectLoginError(
-      res,
-      "Google login failed. Please try again."
-    );
   }
-});
+);
 
 /* =========================================================
    FACEBOOK LOGIN
 ========================================================= */
 
 const FACEBOOK_GRAPH_VERSION =
-  process.env.FACEBOOK_GRAPH_VERSION || "v24.0";
+  process.env.FACEBOOK_GRAPH_VERSION ||
+  "v24.0";
 
-app.get("/auth/facebook", async (req, res) => {
-  try {
-    if (
-      !process.env.FACEBOOK_APP_ID ||
-      !process.env.FACEBOOK_APP_SECRET
-    ) {
-      return redirectLoginError(
+app.get(
+  "/auth/facebook",
+  async (req, res) => {
+    try {
+      if (
+        !process.env.FACEBOOK_APP_ID ||
+        !process.env.FACEBOOK_APP_SECRET
+      ) {
+        return redirectLoginError(
+          res,
+          "Facebook login is not configured."
+        );
+      }
+
+      const state =
+        await createOAuthState(
+          "facebook"
+        );
+
+      const redirectUri =
+        getOAuthRedirectUri(
+          req,
+          "facebook"
+        );
+
+      const params =
+        new URLSearchParams({
+          client_id:
+            process.env
+              .FACEBOOK_APP_ID,
+          redirect_uri:
+            redirectUri,
+          state,
+          scope:
+            "email,public_profile",
+        });
+
+      res.redirect(
+        `https://www.facebook.com/${FACEBOOK_GRAPH_VERSION}/dialog/oauth?${params.toString()}`
+      );
+    } catch (error) {
+      console.error(
+        "Facebook start error:",
+        error
+      );
+
+      redirectLoginError(
         res,
-        "Facebook login is not configured."
+        "Unable to start Facebook login."
       );
     }
-
-    const state = await createOAuthState("facebook");
-
-    const redirectUri = getOAuthRedirectUri(req, "facebook");
-
-    const params = new URLSearchParams({
-      client_id: process.env.FACEBOOK_APP_ID,
-      redirect_uri: redirectUri,
-      state,
-      scope: "email,public_profile",
-    });
-
-    res.redirect(
-      `https://www.facebook.com/${FACEBOOK_GRAPH_VERSION}/dialog/oauth?${params.toString()}`
-    );
-  } catch (error) {
-    console.error("Facebook start error:", error);
-    redirectLoginError(res, "Unable to start Facebook login.");
   }
-});
+);
 
-app.get("/auth/facebook/callback", async (req, res) => {
-  try {
-    const { code, state } = req.query;
+app.get(
+  "/auth/facebook/callback",
+  async (req, res) => {
+    try {
+      const {
+        code,
+        state,
+      } = req.query;
 
-    if (!code || !state) {
-      return redirectLoginError(
+      if (!code || !state) {
+        return redirectLoginError(
+          res,
+          "Invalid Facebook login request."
+        );
+      }
+
+      const validState =
+        await consumeOAuthState(
+          state,
+          "facebook"
+        );
+
+      if (!validState) {
+        return redirectLoginError(
+          res,
+          "Facebook login session expired. Please try again."
+        );
+      }
+
+      const redirectUri =
+        getOAuthRedirectUri(
+          req,
+          "facebook"
+        );
+
+      const tokenParams =
+        new URLSearchParams({
+          client_id:
+            process.env
+              .FACEBOOK_APP_ID,
+          client_secret:
+            process.env
+              .FACEBOOK_APP_SECRET,
+          redirect_uri:
+            redirectUri,
+          code: String(code),
+        });
+
+      const tokenData =
+        await fetchJson(
+          `https://graph.facebook.com/${FACEBOOK_GRAPH_VERSION}/oauth/access_token?${tokenParams.toString()}`
+        );
+
+      if (
+        !tokenData.access_token
+      ) {
+        throw new Error(
+          "Facebook access token missing."
+        );
+      }
+
+      const profileUrl =
+        new URL(
+          `https://graph.facebook.com/${FACEBOOK_GRAPH_VERSION}/me`
+        );
+
+      profileUrl.searchParams.set(
+        "fields",
+        "id,name,email,picture"
+      );
+
+      profileUrl.searchParams.set(
+        "access_token",
+        tokenData.access_token
+      );
+
+      const profile =
+        await fetchJson(
+          profileUrl.toString()
+        );
+
+      if (!profile.id) {
+        throw new Error(
+          "Facebook account ID missing."
+        );
+      }
+
+      const avatar =
+        profile.picture?.data?.url ||
+        "";
+
+      const customer =
+        await findOrCreateOAuthCustomer(
+          {
+            provider: "facebook",
+            providerId:
+              String(profile.id),
+            name: cleanText(
+              profile.name,
+              "Facebook Customer"
+            ),
+            email: cleanText(
+              profile.email
+            ),
+            avatarUrl:
+              cleanText(avatar),
+          }
+        );
+
+      const sessionToken =
+        await createCustomerSession(
+          customer.id
+        );
+
+      setCustomerCookie(
         res,
-        "Invalid Facebook login request."
+        sessionToken
       );
-    }
 
-    const validState = await consumeOAuthState(
-      state,
-      "facebook"
-    );
+      res.redirect("/");
+    } catch (error) {
+      console.error(
+        "Facebook callback error:",
+        error
+      );
 
-    if (!validState) {
-      return redirectLoginError(
+      redirectLoginError(
         res,
-        "Facebook login session expired. Please try again."
+        "Facebook login failed. Please try again."
       );
     }
-
-    const redirectUri = getOAuthRedirectUri(
-      req,
-      "facebook"
-    );
-
-    const tokenParams = new URLSearchParams({
-      client_id: process.env.FACEBOOK_APP_ID,
-      client_secret: process.env.FACEBOOK_APP_SECRET,
-      redirect_uri: redirectUri,
-      code: String(code),
-    });
-
-    const tokenData = await fetchJson(
-      `https://graph.facebook.com/${FACEBOOK_GRAPH_VERSION}/oauth/access_token?${tokenParams.toString()}`
-    );
-
-    if (!tokenData.access_token) {
-      throw new Error(
-        "Facebook access token missing."
-      );
-    }
-
-    const profileUrl = new URL(
-      `https://graph.facebook.com/${FACEBOOK_GRAPH_VERSION}/me`
-    );
-
-    profileUrl.searchParams.set(
-      "fields",
-      "id,name,email,picture"
-    );
-
-    profileUrl.searchParams.set(
-      "access_token",
-      tokenData.access_token
-    );
-
-    const profile = await fetchJson(
-      profileUrl.toString()
-    );
-
-    if (!profile.id) {
-      throw new Error(
-        "Facebook account ID missing."
-      );
-    }
-
-    const avatar =
-      profile.picture?.data?.url || "";
-
-    const customer = await findOrCreateOAuthCustomer({
-      provider: "facebook",
-      providerId: String(profile.id),
-      name: cleanText(
-        profile.name,
-        "Facebook Customer"
-      ),
-      email: cleanText(profile.email),
-      avatarUrl: cleanText(avatar),
-    });
-
-    const sessionToken = await createCustomerSession(
-      customer.id
-    );
-
-    setCustomerCookie(res, sessionToken);
-
-    res.redirect("/");
-  } catch (error) {
-    console.error("Facebook callback error:", error);
-
-    redirectLoginError(
-      res,
-      "Facebook login failed. Please try again."
-    );
   }
-});
+);
 
 /* =========================================================
    CUSTOMER API
 ========================================================= */
 
-app.get("/api/customer/me", async (req, res) => {
-  try {
-    const customer = await getCustomerFromSession(req);
+app.get(
+  "/api/customer/me",
+  async (req, res) => {
+    try {
+      const customer =
+        await getCustomerFromSession(
+          req
+        );
 
-    res.set("Cache-Control", "no-store");
+      res.set(
+        "Cache-Control",
+        "no-store"
+      );
 
-    if (!customer) {
-      return res.json({
+      if (!customer) {
+        return res.json({
+          ok: true,
+          loggedIn: false,
+          customer: null,
+        });
+      }
+
+      res.json({
         ok: true,
-        loggedIn: false,
-        customer: null,
+        loggedIn: true,
+        customer,
+      });
+    } catch (error) {
+      console.error(
+        "Customer me error:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        message:
+          "Unable to load customer.",
       });
     }
-
-    res.json({
-      ok: true,
-      loggedIn: true,
-      customer,
-    });
-  } catch (error) {
-    console.error("Customer me error:", error);
-
-    res.status(500).json({
-      ok: false,
-      message: "Unable to load customer.",
-    });
   }
-});
+);
 
-app.post("/api/customer/logout", async (req, res) => {
-  try {
-    const cookies = parseCookies(req);
-    const rawToken = cookies[CUSTOMER_COOKIE];
+app.post(
+  "/api/customer/logout",
+  async (req, res) => {
+    try {
+      const cookies =
+        parseCookies(req);
 
-    if (rawToken) {
-      const tokenHash = hashToken(rawToken);
+      const rawToken =
+        cookies[CUSTOMER_COOKIE];
 
-      await pool.query(
-        `
-        DELETE FROM customer_sessions
-        WHERE token_hash = $1
-        `,
-        [tokenHash]
+      if (rawToken) {
+        const tokenHash =
+          hashToken(rawToken);
+
+        await pool.query(
+          `
+          DELETE FROM customer_sessions
+          WHERE token_hash = $1
+          `,
+          [tokenHash]
+        );
+      }
+
+      clearCustomerCookie(
+        res
       );
+
+      res.set(
+        "Cache-Control",
+        "no-store"
+      );
+
+      res.json({
+        ok: true,
+      });
+    } catch (error) {
+      console.error(
+        "Customer logout error:",
+        error
+      );
+
+      clearCustomerCookie(
+        res
+      );
+
+      res.status(500).json({
+        ok: false,
+        message:
+          "Logout failed.",
+      });
     }
-
-    clearCustomerCookie(res);
-
-    res.set("Cache-Control", "no-store");
-
-    res.json({
-      ok: true,
-    });
-  } catch (error) {
-    console.error("Customer logout error:", error);
-
-    clearCustomerCookie(res);
-
-    res.status(500).json({
-      ok: false,
-      message: "Logout failed.",
-    });
   }
-});
+);
 
 app.put(
   "/api/customer/profile",
   requireCustomer,
   async (req, res) => {
     try {
-      const name = cleanText(
-        req.body?.name,
-        req.customer.name
-      );
+      const name =
+        cleanText(
+          req.body?.name,
+          req.customer.name
+        );
 
-      const phone = cleanText(
-        req.body?.phone,
-        req.customer.phone
-      );
+      const phone =
+        cleanText(
+          req.body?.phone,
+          req.customer.phone
+        );
 
-      const address = cleanText(
-        req.body?.address,
-        req.customer.address
-      );
+      const address =
+        cleanText(
+          req.body?.address,
+          req.customer.address
+        );
 
       if (!name) {
         return res.status(400).json({
           ok: false,
-          message: "Name is required.",
+          message:
+            "Name is required.",
         });
       }
 
-      const result = await pool.query(
-        `
-        UPDATE customers
-        SET
-          name = $1,
-          phone = $2,
-          address = $3,
-          updated_at = NOW()
-        WHERE id = $4
-        RETURNING
-          id,
-          name,
-          phone,
-          address,
-          email,
-          provider,
-          provider_id,
-          avatar_url,
-          created_at,
-          updated_at
-        `,
-        [
-          name,
-          phone,
-          address,
-          req.customer.id,
-        ]
-      );
+      const result =
+        await pool.query(
+          `
+          UPDATE customers
+          SET
+            name = $1,
+            phone = $2,
+            address = $3,
+            updated_at = NOW()
+          WHERE id = $4
+          RETURNING
+            id,
+            name,
+            phone,
+            address,
+            email,
+            provider,
+            provider_id,
+            avatar_url,
+            created_at,
+            updated_at
+          `,
+          [
+            name,
+            phone,
+            address,
+            req.customer.id,
+          ]
+        );
 
       res.json({
         ok: true,
-        customer: result.rows[0],
+        customer:
+          result.rows[0],
       });
     } catch (error) {
-      console.error("Profile update error:", error);
+      console.error(
+        "Profile update error:",
+        error
+      );
 
       res.status(500).json({
         ok: false,
-        message: "Unable to update profile.",
+        message:
+          "Unable to update profile.",
       });
     }
   }
@@ -1178,28 +1519,30 @@ app.get(
   requireCustomer,
   async (req, res) => {
     try {
-      const result = await pool.query(
-        `
-        SELECT
-          id,
-          customer,
-          items,
-          total,
-          payment_method,
-          status,
-          payment_status,
-          created_at,
-          updated_at
-        FROM orders
-        WHERE customer_id = $1
-        ORDER BY created_at DESC
-        `,
-        [req.customer.id]
-      );
+      const result =
+        await pool.query(
+          `
+          SELECT
+            id,
+            customer,
+            items,
+            total,
+            payment_method,
+            status,
+            payment_status,
+            created_at,
+            updated_at
+          FROM orders
+          WHERE customer_id = $1
+          ORDER BY created_at DESC
+          `,
+          [req.customer.id]
+        );
 
       res.json({
         ok: true,
-        orders: result.rows,
+        orders:
+          result.rows,
       });
     } catch (error) {
       console.error(
@@ -1209,7 +1552,8 @@ app.get(
 
       res.status(500).json({
         ok: false,
-        message: "Unable to load orders.",
+        message:
+          "Unable to load orders.",
       });
     }
   }
@@ -1220,30 +1564,35 @@ app.get(
   requireCustomer,
   async (req, res) => {
     try {
-      const result = await pool.query(
-        `
-        SELECT *
-        FROM orders
-        WHERE id = $1
-          AND customer_id = $2
-        LIMIT 1
-        `,
-        [
-          cleanText(req.params.id),
-          req.customer.id,
-        ]
-      );
+      const result =
+        await pool.query(
+          `
+          SELECT *
+          FROM orders
+          WHERE id = $1
+            AND customer_id = $2
+          LIMIT 1
+          `,
+          [
+            cleanText(
+              req.params.id
+            ),
+            req.customer.id,
+          ]
+        );
 
       if (!result.rows.length) {
         return res.status(404).json({
           ok: false,
-          message: "Order not found.",
+          message:
+            "Order not found.",
         });
       }
 
       res.json({
         ok: true,
-        order: result.rows[0],
+        order:
+          result.rows[0],
       });
     } catch (error) {
       console.error(
@@ -1253,7 +1602,8 @@ app.get(
 
       res.status(500).json({
         ok: false,
-        message: "Unable to load order.",
+        message:
+          "Unable to load order.",
       });
     }
   }
@@ -1269,46 +1619,54 @@ app.get(
   requireCustomer,
   async (req, res) => {
     try {
-      const settingsResult = await pool.query(`
-        SELECT data
-        FROM store_settings
-        WHERE id = 1
-        LIMIT 1
-      `);
+      const settingsResult =
+        await pool.query(`
+          SELECT data
+          FROM store_settings
+          WHERE id = 1
+          LIMIT 1
+        `);
 
-      const productsResult = await pool.query(`
-        SELECT
-          id,
-          name,
-          category,
-          description,
-          price,
-          old_price AS "oldPrice",
-          discount,
-          stock,
-          image,
-          gallery,
-          created_at,
-          updated_at
-        FROM products
-        ORDER BY created_at DESC
-      `);
+      const productsResult =
+        await pool.query(`
+          SELECT
+            id,
+            name,
+            category,
+            description,
+            price,
+            old_price AS "oldPrice",
+            discount,
+            stock,
+            image,
+            gallery,
+            created_at,
+            updated_at
+          FROM products
+          ORDER BY created_at DESC
+        `);
 
       const settings =
-        settingsResult.rows[0]?.data ||
+        settingsResult.rows[0]
+          ?.data ||
         defaultSettings;
 
       res.json({
         ok: true,
         settings,
-        products: productsResult.rows,
+        products:
+          productsResult.rows,
       });
     } catch (error) {
-      console.error("Store API error:", error);
+      console.error(
+        "Store API error:",
+        error
+      );
 
       res.status(500).json({
         ok: false,
-        message: "Unable to load store.",
+        message:
+          "Unable to load store.",
       });
     }
   }
@@ -1319,34 +1677,40 @@ app.get(
   requireCustomer,
   async (req, res) => {
     try {
-      const result = await pool.query(`
-        SELECT
-          id,
-          name,
-          category,
-          description,
-          price,
-          old_price AS "oldPrice",
-          discount,
-          stock,
-          image,
-          gallery,
-          created_at,
-          updated_at
-        FROM products
-        ORDER BY created_at DESC
-      `);
+      const result =
+        await pool.query(`
+          SELECT
+            id,
+            name,
+            category,
+            description,
+            price,
+            old_price AS "oldPrice",
+            discount,
+            stock,
+            image,
+            gallery,
+            created_at,
+            updated_at
+          FROM products
+          ORDER BY created_at DESC
+        `);
 
       res.json({
         ok: true,
-        products: result.rows,
+        products:
+          result.rows,
       });
     } catch (error) {
-      console.error("Products API error:", error);
+      console.error(
+        "Products API error:",
+        error
+      );
 
       res.status(500).json({
         ok: false,
-        message: "Unable to load products.",
+        message:
+          "Unable to load products.",
       });
     }
   }
@@ -1356,72 +1720,118 @@ app.get(
    ADMIN AUTH
 ========================================================= */
 
-const adminSessions = new Map();
+const adminSessions =
+  new Map();
 
 function createAdminToken() {
-  const timestamp = Date.now().toString();
+  const timestamp =
+    Date.now().toString();
 
-  const signature = crypto
-    .createHmac("sha256", SESSION_SECRET)
-    .update(`${ADMIN_USERNAME}:${timestamp}`)
-    .digest("hex");
+  const signature =
+    crypto
+      .createHmac(
+        "sha256",
+        SESSION_SECRET
+      )
+      .update(
+        `${ADMIN_USERNAME}:${timestamp}`
+      )
+      .digest("hex");
 
   return Buffer.from(
     `${timestamp}.${signature}`
-  ).toString("base64url");
+  ).toString(
+    "base64url"
+  );
 }
 
-function verifyAdminToken(token) {
+function verifyAdminToken(
+  token
+) {
   if (!token) return false;
 
   try {
-    const decoded = Buffer.from(
-      token,
-      "base64url"
-    ).toString("utf8");
+    const decoded =
+      Buffer.from(
+        token,
+        "base64url"
+      ).toString("utf8");
 
-    const [timestamp, signature] =
-      decoded.split(".");
-
-    if (!timestamp || !signature) {
-      return false;
-    }
-
-    const age = Date.now() - Number(timestamp);
+    const [
+      timestamp,
+      signature,
+    ] = decoded.split(".");
 
     if (
-      !Number.isFinite(age) ||
-      age < 0 ||
-      age > 24 * 60 * 60 * 1000
+      !timestamp ||
+      !signature
     ) {
       return false;
     }
 
-    const expected = crypto
-      .createHmac("sha256", SESSION_SECRET)
-      .update(`${ADMIN_USERNAME}:${timestamp}`)
-      .digest("hex");
+    const age =
+      Date.now() -
+      Number(timestamp);
+
+    if (
+      !Number.isFinite(age) ||
+      age < 0 ||
+      age >
+        24 *
+          60 *
+          60 *
+          1000
+    ) {
+      return false;
+    }
+
+    const expected =
+      crypto
+        .createHmac(
+          "sha256",
+          SESSION_SECRET
+        )
+        .update(
+          `${ADMIN_USERNAME}:${timestamp}`
+        )
+        .digest("hex");
 
     return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expected)
+      Buffer.from(
+        signature
+      ),
+      Buffer.from(
+        expected
+      )
     );
   } catch {
     return false;
   }
 }
 
-function adminAuth(req, res, next) {
-  const auth = req.headers.authorization || "";
+function adminAuth(
+  req,
+  res,
+  next
+) {
+  const auth =
+    req.headers.authorization ||
+    "";
 
-  if (!auth.startsWith("Bearer ")) {
+  if (
+    !auth.startsWith(
+      "Bearer "
+    )
+  ) {
     return res.status(401).json({
       ok: false,
-      message: "Admin login required.",
+      message:
+        "Admin login required.",
     });
   }
 
-  const token = auth.slice(7);
+  const token =
+    auth.slice(7);
 
   if (
     !verifyAdminToken(token) ||
@@ -1429,7 +1839,8 @@ function adminAuth(req, res, next) {
   ) {
     return res.status(401).json({
       ok: false,
-      message: "Invalid or expired admin session.",
+      message:
+        "Invalid or expired admin session.",
     });
   }
 
@@ -1440,31 +1851,49 @@ function adminAuth(req, res, next) {
    ADMIN LOGIN
 ========================================================= */
 
-app.post("/api/admin/login", (req, res) => {
-  const username = cleanText(req.body?.username);
-  const password = cleanText(req.body?.password);
+app.post(
+  "/api/admin/login",
+  (req, res) => {
+    const username =
+      cleanText(
+        req.body?.username
+      );
 
-  if (
-    username !== ADMIN_USERNAME ||
-    password !== ADMIN_PASSWORD
-  ) {
-    return res.status(401).json({
-      ok: false,
-      message: "Invalid username or password.",
+    const password =
+      cleanText(
+        req.body?.password
+      );
+
+    if (
+      username !==
+        ADMIN_USERNAME ||
+      password !==
+        ADMIN_PASSWORD
+    ) {
+      return res.status(401).json({
+        ok: false,
+        message:
+          "Invalid username or password.",
+      });
+    }
+
+    const token =
+      createAdminToken();
+
+    adminSessions.set(
+      token,
+      {
+        createdAt:
+          Date.now(),
+      }
+    );
+
+    res.json({
+      ok: true,
+      token,
     });
   }
-
-  const token = createAdminToken();
-
-  adminSessions.set(token, {
-    createdAt: Date.now(),
-  });
-
-  res.json({
-    ok: true,
-    token,
-  });
-});
+);
 
 app.get(
   "/api/admin/check",
@@ -1481,10 +1910,16 @@ app.post(
   "/api/admin/logout",
   adminAuth,
   (req, res) => {
-    const auth = req.headers.authorization || "";
-    const token = auth.slice(7);
+    const auth =
+      req.headers.authorization ||
+      "";
 
-    adminSessions.delete(token);
+    const token =
+      auth.slice(7);
+
+    adminSessions.delete(
+      token
+    );
 
     res.json({
       ok: true,
@@ -1501,26 +1936,28 @@ app.get(
   adminAuth,
   async (req, res) => {
     try {
-      const result = await pool.query(`
-        SELECT
-          id,
-          name,
-          category,
-          description,
-          price,
-          old_price AS "oldPrice",
-          discount,
-          stock,
-          image,
-          gallery,
-          created_at,
-          updated_at
-        FROM products
-        ORDER BY created_at DESC
-      `);
+      const result =
+        await pool.query(`
+          SELECT
+            id,
+            name,
+            category,
+            description,
+            price,
+            old_price AS "oldPrice",
+            discount,
+            stock,
+            image,
+            gallery,
+            created_at,
+            updated_at
+          FROM products
+          ORDER BY created_at DESC
+        `);
 
-      /* Existing admin.html expects an array */
-      res.json(result.rows);
+      res.json(
+        result.rows
+      );
     } catch (error) {
       console.error(
         "Admin products GET error:",
@@ -1529,7 +1966,8 @@ app.get(
 
       res.status(500).json({
         ok: false,
-        message: "Unable to load products.",
+        message:
+          "Unable to load products.",
       });
     }
   }
@@ -1552,34 +1990,45 @@ app.post(
       if (!image) {
         return res.status(400).json({
           ok: false,
-          message: "Image data is required.",
+          message:
+            "Image data is required.",
         });
       }
 
       if (
-        !process.env.CLOUDINARY_CLOUD_NAME ||
-        !process.env.CLOUDINARY_API_KEY ||
-        !process.env.CLOUDINARY_API_SECRET
+        !process.env
+          .CLOUDINARY_CLOUD_NAME ||
+        !process.env
+          .CLOUDINARY_API_KEY ||
+        !process.env
+          .CLOUDINARY_API_SECRET
       ) {
         return res.status(500).json({
           ok: false,
-          message: "Cloudinary is not configured.",
+          message:
+            "Cloudinary is not configured.",
         });
       }
 
       const result =
-        await cloudinary.uploader.upload(
-          image,
-          {
-            folder: "sm-online-shop",
-            resource_type: "image",
-          }
-        );
+        await cloudinary
+          .uploader
+          .upload(
+            image,
+            {
+              folder:
+                "sm-online-shop",
+              resource_type:
+                "image",
+            }
+          );
 
       res.json({
         ok: true,
-        url: result.secure_url,
-        publicId: result.public_id,
+        url:
+          result.secure_url,
+        publicId:
+          result.public_id,
       });
     } catch (error) {
       console.error(
@@ -1606,115 +2055,151 @@ app.post(
   adminAuth,
   async (req, res) => {
     try {
-      const body = req.body || {};
+      const body =
+        req.body || {};
 
-      const name = cleanText(body.name);
+      const name =
+        cleanText(body.name);
 
       if (!name) {
         return res.status(400).json({
           ok: false,
-          message: "Product name is required.",
+          message:
+            "Product name is required.",
         });
       }
 
-      const category = cleanText(
-        body.category
-      );
+      const category =
+        cleanText(
+          body.category
+        );
 
-      const description = cleanText(
-        body.description
-      );
+      const description =
+        cleanText(
+          body.description
+        );
 
-      const price = positiveNumber(
-        body.price
-      );
+      const price =
+        positiveNumber(
+          body.price
+        );
 
-      const oldPrice = positiveNumber(
-        body.oldPrice ??
-          body.old_price
-      );
+      const oldPrice =
+        positiveNumber(
+          body.oldPrice ??
+            body.old_price
+        );
 
-      const discount = positiveNumber(
-        body.discount
-      );
+      const discount =
+        positiveNumber(
+          body.discount
+        );
 
-      const stock = nonNegativeInt(
-        body.stock
-      );
+      const stock =
+        nonNegativeInt(
+          body.stock
+        );
 
-      const image = cleanText(
-        body.image
-      );
+      const image =
+        cleanText(
+          body.image
+        );
 
-      let gallery = body.gallery;
+      let gallery =
+        body.gallery;
 
-      if (!Array.isArray(gallery)) {
+      if (
+        !Array.isArray(
+          gallery
+        )
+      ) {
         gallery = [];
       }
 
-      gallery = gallery
-        .map((item) =>
-          cleanText(item)
-        )
-        .filter(Boolean);
+      gallery =
+        gallery
+          .map((item) =>
+            cleanText(item)
+          )
+          .filter(Boolean);
 
       if (
         image &&
-        !gallery.includes(image)
+        !gallery.includes(
+          image
+        )
       ) {
-        gallery.unshift(image);
+        gallery.unshift(
+          image
+        );
       }
 
-      const id = makeId("P");
+      const id =
+        makeId("P");
 
-      const result = await pool.query(
-        `
-        INSERT INTO products
-          (
+      const result =
+        await pool.query(
+          `
+          INSERT INTO products
+            (
+              id,
+              name,
+              category,
+              description,
+              price,
+              old_price,
+              discount,
+              stock,
+              image,
+              gallery
+            )
+          VALUES
+            (
+              $1,
+              $2,
+              $3,
+              $4,
+              $5,
+              $6,
+              $7,
+              $8,
+              $9,
+              $10::jsonb
+            )
+          RETURNING
             id,
             name,
             category,
             description,
             price,
-            old_price,
+            old_price AS "oldPrice",
             discount,
             stock,
             image,
-            gallery
-          )
-        VALUES
-          ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb)
-        RETURNING
-          id,
-          name,
-          category,
-          description,
-          price,
-          old_price AS "oldPrice",
-          discount,
-          stock,
-          image,
-          gallery,
-          created_at,
-          updated_at
-        `,
-        [
-          id,
-          name,
-          category,
-          description,
-          price,
-          oldPrice,
-          discount,
-          stock,
-          image,
-          JSON.stringify(gallery),
-        ]
-      );
+            gallery,
+            created_at,
+            updated_at
+          `,
+          [
+            id,
+            name,
+            category,
+            description,
+            price,
+            oldPrice,
+            discount,
+            stock,
+            image,
+            JSON.stringify(
+              gallery
+            ),
+          ]
+        );
 
       res.json({
         ok: true,
-        product: result.rows[0],
+        product:
+          result.rows[0],
       });
     } catch (error) {
       console.error(
@@ -1741,122 +2226,150 @@ app.put(
   adminAuth,
   async (req, res) => {
     try {
-      const id = cleanText(
-        req.params.id
-      );
+      const id =
+        cleanText(
+          req.params.id
+        );
 
-      const body = req.body || {};
+      const body =
+        req.body || {};
 
-      const name = cleanText(body.name);
+      const name =
+        cleanText(body.name);
 
       if (!name) {
         return res.status(400).json({
           ok: false,
-          message: "Product name is required.",
+          message:
+            "Product name is required.",
         });
       }
 
-      const category = cleanText(
-        body.category
-      );
+      const category =
+        cleanText(
+          body.category
+        );
 
-      const description = cleanText(
-        body.description
-      );
+      const description =
+        cleanText(
+          body.description
+        );
 
-      const price = positiveNumber(
-        body.price
-      );
+      const price =
+        positiveNumber(
+          body.price
+        );
 
-      const oldPrice = positiveNumber(
-        body.oldPrice ??
-          body.old_price
-      );
+      const oldPrice =
+        positiveNumber(
+          body.oldPrice ??
+            body.old_price
+        );
 
-      const discount = positiveNumber(
-        body.discount
-      );
+      const discount =
+        positiveNumber(
+          body.discount
+        );
 
-      const stock = nonNegativeInt(
-        body.stock
-      );
+      const stock =
+        nonNegativeInt(
+          body.stock
+        );
 
-      const image = cleanText(
-        body.image
-      );
+      const image =
+        cleanText(
+          body.image
+        );
 
-      let gallery = body.gallery;
+      let gallery =
+        body.gallery;
 
-      if (!Array.isArray(gallery)) {
+      if (
+        !Array.isArray(
+          gallery
+        )
+      ) {
         gallery = [];
       }
 
-      gallery = gallery
-        .map((item) =>
-          cleanText(item)
-        )
-        .filter(Boolean);
+      gallery =
+        gallery
+          .map((item) =>
+            cleanText(item)
+          )
+          .filter(Boolean);
 
       if (
         image &&
-        !gallery.includes(image)
+        !gallery.includes(
+          image
+        )
       ) {
-        gallery.unshift(image);
+        gallery.unshift(
+          image
+        );
       }
 
-      const result = await pool.query(
-        `
-        UPDATE products
-        SET
-          name = $1,
-          category = $2,
-          description = $3,
-          price = $4,
-          old_price = $5,
-          discount = $6,
-          stock = $7,
-          image = $8,
-          gallery = $9::jsonb,
-          updated_at = NOW()
-        WHERE id = $10
-        RETURNING
-          id,
-          name,
-          category,
-          description,
-          price,
-          old_price AS "oldPrice",
-          discount,
-          stock,
-          image,
-          gallery,
-          created_at,
-          updated_at
-        `,
-        [
-          name,
-          category,
-          description,
-          price,
-          oldPrice,
-          discount,
-          stock,
-          image,
-          JSON.stringify(gallery),
-          id,
-        ]
-      );
+      const result =
+        await pool.query(
+          `
+          UPDATE products
+          SET
+            name = $1,
+            category = $2,
+            description = $3,
+            price = $4,
+            old_price = $5,
+            discount = $6,
+            stock = $7,
+            image = $8,
+            gallery = $9::jsonb,
+            updated_at = NOW()
+          WHERE id = $10
+          RETURNING
+            id,
+            name,
+            category,
+            description,
+            price,
+            old_price AS "oldPrice",
+            discount,
+            stock,
+            image,
+            gallery,
+            created_at,
+            updated_at
+          `,
+          [
+            name,
+            category,
+            description,
+            price,
+            oldPrice,
+            discount,
+            stock,
+            image,
+            JSON.stringify(
+              gallery
+            ),
+            id,
+          ]
+        );
 
-      if (!result.rows.length) {
+      if (
+        !result.rows.length
+      ) {
         return res.status(404).json({
           ok: false,
-          message: "Product not found.",
+          message:
+            "Product not found.",
         });
       }
 
       res.json({
         ok: true,
-        product: result.rows[0],
+        product:
+          result.rows[0],
       });
     } catch (error) {
       console.error(
@@ -1883,23 +2396,28 @@ app.delete(
   adminAuth,
   async (req, res) => {
     try {
-      const id = cleanText(
-        req.params.id
-      );
+      const id =
+        cleanText(
+          req.params.id
+        );
 
-      const result = await pool.query(
-        `
-        DELETE FROM products
-        WHERE id = $1
-        RETURNING id
-        `,
-        [id]
-      );
+      const result =
+        await pool.query(
+          `
+          DELETE FROM products
+          WHERE id = $1
+          RETURNING id
+          `,
+          [id]
+        );
 
-      if (!result.rows.length) {
+      if (
+        !result.rows.length
+      ) {
         return res.status(404).json({
           ok: false,
-          message: "Product not found.",
+          message:
+            "Product not found.",
         });
       }
 
@@ -1931,46 +2449,64 @@ async function restoreOrderStock(
   client,
   orderId
 ) {
-  const orderResult = await client.query(
-    `
-    SELECT *
-    FROM orders
-    WHERE id = $1
-    FOR UPDATE
-    `,
-    [orderId]
-  );
+  const orderResult =
+    await client.query(
+      `
+      SELECT *
+      FROM orders
+      WHERE id = $1
+      FOR UPDATE
+      `,
+      [orderId]
+    );
 
-  if (!orderResult.rows.length) {
-    throw new Error("Order not found.");
+  if (
+    !orderResult.rows.length
+  ) {
+    throw new Error(
+      "Order not found."
+    );
   }
 
-  const order = orderResult.rows[0];
+  const order =
+    orderResult.rows[0];
 
-  if (order.stock_restored) {
+  if (
+    order.stock_restored
+  ) {
     return order;
   }
 
-  const items = Array.isArray(order.items)
-    ? order.items
-    : safeJsonParse(
-        order.items,
-        []
+  const items =
+    Array.isArray(
+      order.items
+    )
+      ? order.items
+      : safeJsonParse(
+          order.items,
+          []
+        );
+
+  for (
+    const item of items
+  ) {
+    const productId =
+      cleanText(
+        item.productId ??
+          item.id
       );
 
-  for (const item of items) {
-    const productId = cleanText(
-      item.productId ??
-        item.id
-    );
+    const quantity =
+      nonNegativeInt(
+        item.quantity ??
+          item.qty,
+        0
+      );
 
-    const quantity = nonNegativeInt(
-      item.quantity ??
-        item.qty,
-      0
-    );
-
-    if (!productId || quantity <= 0) {
+    if (
+      !productId ||
+      quantity <= 0
+    ) {
       continue;
     }
 
@@ -1989,17 +2525,18 @@ async function restoreOrderStock(
     );
   }
 
-  const updated = await client.query(
-    `
-    UPDATE orders
-    SET
-      stock_restored = TRUE,
-      updated_at = NOW()
-    WHERE id = $1
-    RETURNING *
-    `,
-    [orderId]
-  );
+  const updated =
+    await client.query(
+      `
+      UPDATE orders
+      SET
+        stock_restored = TRUE,
+        updated_at = NOW()
+      WHERE id = $1
+      RETURNING *
+      `,
+      [orderId]
+    );
 
   return updated.rows[0];
 }
@@ -2013,20 +2550,27 @@ app.post(
   "/api/orders",
   requireCustomer,
   async (req, res) => {
-    const client = await pool.connect();
+    const client =
+      await pool.connect();
 
     try {
-      const body = req.body || {};
-      const rawItems = Array.isArray(
-        body.items
-      )
-        ? body.items
-        : [];
+      const body =
+        req.body || {};
 
-      if (!rawItems.length) {
+      const rawItems =
+        Array.isArray(
+          body.items
+        )
+          ? body.items
+          : [];
+
+      if (
+        !rawItems.length
+      ) {
         return res.status(400).json({
           ok: false,
-          message: "Your cart is empty.",
+          message:
+            "Your cart is empty.",
         });
       }
 
@@ -2041,15 +2585,17 @@ app.post(
         req.customer.name ||
         "Customer";
 
-      const phone = cleanText(
-        checkoutCustomer.phone,
-        req.customer.phone
-      );
+      const phone =
+        cleanText(
+          checkoutCustomer.phone,
+          req.customer.phone
+        );
 
-      const address = cleanText(
-        checkoutCustomer.address,
-        req.customer.address
-      );
+      const address =
+        cleanText(
+          checkoutCustomer.address,
+          req.customer.address
+        );
 
       if (!phone) {
         return res.status(400).json({
@@ -2073,22 +2619,30 @@ app.post(
           "COD"
         );
 
-      await client.query("BEGIN");
+      await client.query(
+        "BEGIN"
+      );
 
-      const normalizedItems = [];
+      const normalizedItems =
+        [];
+
       let total = 0;
 
-      for (const rawItem of rawItems) {
-        const productId = cleanText(
-          rawItem.productId ??
-            rawItem.id
-        );
+      for (
+        const rawItem of rawItems
+      ) {
+        const productId =
+          cleanText(
+            rawItem.productId ??
+              rawItem.id
+          );
 
-        const quantity = nonNegativeInt(
-          rawItem.quantity ??
-            rawItem.qty,
-          0
-        );
+        const quantity =
+          nonNegativeInt(
+            rawItem.quantity ??
+              rawItem.qty,
+            0
+          );
 
         if (
           !productId ||
@@ -2110,7 +2664,10 @@ app.post(
             [productId]
           );
 
-        if (!productResult.rows.length) {
+        if (
+          !productResult.rows
+            .length
+        ) {
           throw new Error(
             "A product in your cart no longer exists."
           );
@@ -2120,17 +2677,19 @@ app.post(
           productResult.rows[0];
 
         if (
-          Number(product.stock) <
-          quantity
+          Number(
+            product.stock
+          ) < quantity
         ) {
           throw new Error(
             `${product.name} does not have enough stock.`
           );
         }
 
-        const price = Number(
-          product.price
-        );
+        const price =
+          Number(
+            product.price
+          );
 
         const lineTotal =
           price * quantity;
@@ -2138,13 +2697,17 @@ app.post(
         total += lineTotal;
 
         normalizedItems.push({
-          productId: product.id,
+          productId:
+            product.id,
           id: product.id,
-          name: product.name,
+          name:
+            product.name,
           price,
           quantity,
           qty: quantity,
-          image: product.image || "",
+          image:
+            product.image ||
+            "",
           lineTotal,
         });
 
@@ -2163,59 +2726,66 @@ app.post(
         );
       }
 
-      const orderId = makeId("SM");
+      const orderId =
+        makeId("SM");
 
-      const customerSnapshot = {
-        id: req.customer.id,
-        name,
-        email: req.customer.email || "",
-        provider:
-          req.customer.provider || "",
-        phone,
-        address,
-      };
+      const customerSnapshot =
+        {
+          id:
+            req.customer.id,
+          name,
+          email:
+            req.customer.email ||
+            "",
+          provider:
+            req.customer.provider ||
+            "",
+          phone,
+          address,
+        };
 
-      const result = await client.query(
-        `
-        INSERT INTO orders
-          (
-            id,
-            customer,
-            items,
+      const result =
+        await client.query(
+          `
+          INSERT INTO orders
+            (
+              id,
+              customer,
+              items,
+              total,
+              payment_method,
+              status,
+              payment_status,
+              stock_restored,
+              customer_id
+            )
+          VALUES
+            (
+              $1,
+              $2::jsonb,
+              $3::jsonb,
+              $4,
+              $5,
+              'Pending',
+              'Pending',
+              FALSE,
+              $6
+            )
+          RETURNING *
+          `,
+          [
+            orderId,
+            JSON.stringify(
+              customerSnapshot
+            ),
+            JSON.stringify(
+              normalizedItems
+            ),
             total,
-            payment_method,
-            status,
-            payment_status,
-            stock_restored,
-            customer_id
-          )
-        VALUES
-          (
-            $1,
-            $2::jsonb,
-            $3::jsonb,
-            $4,
-            $5,
-            'Pending',
-            'Pending',
-            FALSE,
-            $6
-          )
-        RETURNING *
-        `,
-        [
-          orderId,
-          JSON.stringify(
-            customerSnapshot
-          ),
-          JSON.stringify(
-            normalizedItems
-          ),
-          total,
-          paymentMethod,
-          req.customer.id,
-        ]
-      );
+            paymentMethod,
+            req.customer.id,
+          ]
+        );
 
       await client.query(
         `
@@ -2235,12 +2805,15 @@ app.post(
         ]
       );
 
-      await client.query("COMMIT");
+      await client.query(
+        "COMMIT"
+      );
 
       res.json({
         ok: true,
         orderId,
-        order: result.rows[0],
+        order:
+          result.rows[0],
       });
     } catch (error) {
       await client
@@ -2273,26 +2846,28 @@ app.get(
   adminAuth,
   async (req, res) => {
     try {
-      const result = await pool.query(`
-        SELECT
-          id,
-          customer,
-          items,
-          total,
-          payment_method,
-          status,
-          payment_status,
-          stock_restored,
-          customer_id,
-          created_at,
-          updated_at
-        FROM orders
-        WHERE status <> 'Cancelled'
-        ORDER BY created_at DESC
-      `);
+      const result =
+        await pool.query(`
+          SELECT
+            id,
+            customer,
+            items,
+            total,
+            payment_method,
+            status,
+            payment_status,
+            stock_restored,
+            customer_id,
+            created_at,
+            updated_at
+          FROM orders
+          WHERE status <> 'Cancelled'
+          ORDER BY created_at DESC
+        `);
 
-      /* Existing admin.html expects an array */
-      res.json(result.rows);
+      res.json(
+        result.rows
+      );
     } catch (error) {
       console.error(
         "Admin orders error:",
@@ -2301,7 +2876,8 @@ app.get(
 
       res.status(500).json({
         ok: false,
-        message: "Unable to load orders.",
+        message:
+          "Unable to load orders.",
       });
     }
   }
@@ -2315,16 +2891,19 @@ app.put(
   "/api/admin/orders/:id/status",
   adminAuth,
   async (req, res) => {
-    const client = await pool.connect();
+    const client =
+      await pool.connect();
 
     try {
-      const id = cleanText(
-        req.params.id
-      );
+      const id =
+        cleanText(
+          req.params.id
+        );
 
-      const status = cleanText(
-        req.body?.status
-      );
+      const status =
+        cleanText(
+          req.body?.status
+        );
 
       if (
         !ORDER_STATUSES.includes(
@@ -2333,11 +2912,14 @@ app.put(
       ) {
         return res.status(400).json({
           ok: false,
-          message: "Invalid order status.",
+          message:
+            "Invalid order status.",
         });
       }
 
-      await client.query("BEGIN");
+      await client.query(
+        "BEGIN"
+      );
 
       const orderResult =
         await client.query(
@@ -2350,12 +2932,18 @@ app.put(
           [id]
         );
 
-      if (!orderResult.rows.length) {
-        await client.query("ROLLBACK");
+      if (
+        !orderResult.rows
+          .length
+      ) {
+        await client.query(
+          "ROLLBACK"
+        );
 
         return res.status(404).json({
           ok: false,
-          message: "Order not found.",
+          message:
+            "Order not found.",
         });
       }
 
@@ -2389,11 +2977,14 @@ app.put(
           ]
         );
 
-      await client.query("COMMIT");
+      await client.query(
+        "COMMIT"
+      );
 
       res.json({
         ok: true,
-        order: result.rows[0],
+        order:
+          result.rows[0],
       });
     } catch (error) {
       await client
@@ -2425,14 +3016,18 @@ app.put(
   "/api/orders/:id/cancel",
   requireCustomer,
   async (req, res) => {
-    const client = await pool.connect();
+    const client =
+      await pool.connect();
 
     try {
-      const id = cleanText(
-        req.params.id
-      );
+      const id =
+        cleanText(
+          req.params.id
+        );
 
-      await client.query("BEGIN");
+      await client.query(
+        "BEGIN"
+      );
 
       const orderResult =
         await client.query(
@@ -2449,8 +3044,13 @@ app.put(
           ]
         );
 
-      if (!orderResult.rows.length) {
-        await client.query("ROLLBACK");
+      if (
+        !orderResult.rows
+          .length
+      ) {
+        await client.query(
+          "ROLLBACK"
+        );
 
         return res.status(404).json({
           ok: false,
@@ -2463,9 +3063,12 @@ app.put(
         orderResult.rows[0];
 
       if (
-        order.status === "Cancelled"
+        order.status ===
+        "Cancelled"
       ) {
-        await client.query("COMMIT");
+        await client.query(
+          "COMMIT"
+        );
 
         return res.json({
           ok: true,
@@ -2474,9 +3077,12 @@ app.put(
       }
 
       if (
-        order.status === "Delivered"
+        order.status ===
+        "Delivered"
       ) {
-        await client.query("ROLLBACK");
+        await client.query(
+          "ROLLBACK"
+        );
 
         return res.status(400).json({
           ok: false,
@@ -2485,7 +3091,9 @@ app.put(
         });
       }
 
-      if (!order.stock_restored) {
+      if (
+        !order.stock_restored
+      ) {
         order =
           await restoreOrderStock(
             client,
@@ -2506,11 +3114,14 @@ app.put(
           [id]
         );
 
-      await client.query("COMMIT");
+      await client.query(
+        "COMMIT"
+      );
 
       res.json({
         ok: true,
-        order: result.rows[0],
+        order:
+          result.rows[0],
       });
     } catch (error) {
       await client
@@ -2543,9 +3154,10 @@ app.put(
   adminAuth,
   async (req, res) => {
     try {
-      const id = cleanText(
-        req.params.id
-      );
+      const id =
+        cleanText(
+          req.params.id
+        );
 
       const paymentStatus =
         cleanText(
@@ -2580,7 +3192,9 @@ app.put(
           ]
         );
 
-      if (!result.rows.length) {
+      if (
+        !result.rows.length
+      ) {
         return res.status(404).json({
           ok: false,
           message:
@@ -2590,7 +3204,8 @@ app.put(
 
       res.json({
         ok: true,
-        order: result.rows[0],
+        order:
+          result.rows[0],
       });
     } catch (error) {
       console.error(
@@ -2618,9 +3233,10 @@ app.get(
   requireCustomer,
   async (req, res) => {
     try {
-      const id = cleanText(
-        req.params.id
-      );
+      const id =
+        cleanText(
+          req.params.id
+        );
 
       const result =
         await pool.query(
@@ -2637,7 +3253,9 @@ app.get(
           ]
         );
 
-      if (!result.rows.length) {
+      if (
+        !result.rows.length
+      ) {
         return res.status(404).json({
           ok: false,
           message:
@@ -2647,7 +3265,8 @@ app.get(
 
       res.json({
         ok: true,
-        order: result.rows[0],
+        order:
+          result.rows[0],
       });
     } catch (error) {
       console.error(
@@ -2689,12 +3308,13 @@ app.get(
   adminAuth,
   async (req, res) => {
     try {
-      const result = await pool.query(`
-        SELECT data
-        FROM store_settings
-        WHERE id = 1
-        LIMIT 1
-      `);
+      const result =
+        await pool.query(`
+          SELECT data
+          FROM store_settings
+          WHERE id = 1
+          LIMIT 1
+        `);
 
       res.json({
         ok: true,
@@ -2734,34 +3354,48 @@ app.put(
         currentResult.rows[0]?.data ||
         defaultSettings;
 
-      const body = req.body || {};
+      const body =
+        req.body || {};
 
       const settings = {
         ...current,
-        shopName: cleanText(
-          body.shopName,
-          current.shopName
-        ),
-        tagline: cleanText(
-          body.tagline,
-          current.tagline
-        ),
-        phone1: cleanText(
-          body.phone1,
-          current.phone1
-        ),
-        phone2: cleanText(
-          body.phone2,
-          current.phone2
-        ),
-        facebook: cleanText(
-          body.facebook,
-          current.facebook
-        ),
-        currency: cleanText(
-          body.currency,
-          current.currency || "৳"
-        ),
+
+        shopName:
+          cleanText(
+            body.shopName,
+            current.shopName
+          ),
+
+        tagline:
+          cleanText(
+            body.tagline,
+            current.tagline
+          ),
+
+        phone1:
+          cleanText(
+            body.phone1,
+            current.phone1
+          ),
+
+        phone2:
+          cleanText(
+            body.phone2,
+            current.phone2
+          ),
+
+        facebook:
+          cleanText(
+            body.facebook,
+            current.facebook
+          ),
+
+        currency:
+          cleanText(
+            body.currency,
+            current.currency ||
+              "৳"
+          ),
       };
 
       const result =
@@ -2774,7 +3408,11 @@ app.put(
           WHERE id = 1
           RETURNING data
           `,
-          [JSON.stringify(settings)]
+          [
+            JSON.stringify(
+              settings
+            ),
+          ]
         );
 
       res.json({
@@ -2827,11 +3465,18 @@ setInterval(
    STATIC FILES
 ========================================================= */
 
-if (fs.existsSync(PUBLIC_DIR)) {
+if (
+  fs.existsSync(
+    PUBLIC_DIR
+  )
+) {
   app.use(
-    express.static(PUBLIC_DIR, {
-      index: "index.html",
-    })
+    express.static(
+      PUBLIC_DIR,
+      {
+        index: "index.html",
+      }
+    )
   );
 }
 
@@ -2839,90 +3484,139 @@ if (fs.existsSync(PUBLIC_DIR)) {
    ADMIN PAGE
 ========================================================= */
 
-app.get("/admin", (req, res) => {
-  const adminFile = path.join(
-    PUBLIC_DIR,
-    "admin.html"
-  );
+app.get(
+  "/admin",
+  (req, res) => {
+    const adminFile =
+      path.join(
+        PUBLIC_DIR,
+        "admin.html"
+      );
 
-  if (fs.existsSync(adminFile)) {
-    return res.sendFile(adminFile);
+    if (
+      fs.existsSync(
+        adminFile
+      )
+    ) {
+      return res.sendFile(
+        adminFile
+      );
+    }
+
+    res.status(404).send(
+      "Admin page not found."
+    );
   }
+);
 
-  res.status(404).send("Admin page not found.");
-});
+app.get(
+  "/admin.html",
+  (req, res) => {
+    const adminFile =
+      path.join(
+        PUBLIC_DIR,
+        "admin.html"
+      );
 
-app.get("/admin.html", (req, res) => {
-  const adminFile = path.join(
-    PUBLIC_DIR,
-    "admin.html"
-  );
+    if (
+      fs.existsSync(
+        adminFile
+      )
+    ) {
+      return res.sendFile(
+        adminFile
+      );
+    }
 
-  if (fs.existsSync(adminFile)) {
-    return res.sendFile(adminFile);
+    res.status(404).send(
+      "Admin page not found."
+    );
   }
-
-  res.status(404).send("Admin page not found.");
-});
+);
 
 /* =========================================================
    WEBSITE FALLBACK
+   FIXED FOR NEW EXPRESS VERSION
 ========================================================= */
 
-app.get("*", (req, res, next) => {
-  if (
-    req.path.startsWith("/api/") ||
-    req.path.startsWith("/auth/")
-  ) {
-    return next();
+app.use(
+  (req, res, next) => {
+    if (
+      req.path.startsWith(
+        "/api/"
+      ) ||
+      req.path.startsWith(
+        "/auth/"
+      )
+    ) {
+      return next();
+    }
+
+    const indexFile =
+      path.join(
+        PUBLIC_DIR,
+        "index.html"
+      );
+
+    if (
+      fs.existsSync(
+        indexFile
+      )
+    ) {
+      return res.sendFile(
+        indexFile
+      );
+    }
+
+    res.status(404).send(
+      "SM Online Shop website not found."
+    );
   }
-
-  const indexFile = path.join(
-    PUBLIC_DIR,
-    "index.html"
-  );
-
-  if (fs.existsSync(indexFile)) {
-    return res.sendFile(indexFile);
-  }
-
-  res.status(404).send(
-    "SM Online Shop website not found."
-  );
-});
+);
 
 /* =========================================================
    404
 ========================================================= */
 
-app.use((req, res) => {
-  res.status(404).json({
-    ok: false,
-    message: "Not found.",
-  });
-});
+app.use(
+  (req, res) => {
+    res.status(404).json({
+      ok: false,
+      message: "Not found.",
+    });
+  }
+);
 
 /* =========================================================
    ERROR HANDLER
 ========================================================= */
 
-app.use((error, req, res, next) => {
-  console.error(
-    "Unhandled server error:",
-    error
-  );
+app.use(
+  (
+    error,
+    req,
+    res,
+    next
+  ) => {
+    console.error(
+      "Unhandled server error:",
+      error
+    );
 
-  if (res.headersSent) {
-    return next(error);
+    if (
+      res.headersSent
+    ) {
+      return next(error);
+    }
+
+    res.status(500).json({
+      ok: false,
+      message:
+        error?.message ||
+        "Internal server error.",
+    });
   }
-
-  res.status(500).json({
-    ok: false,
-    message:
-      error?.message ||
-      "Internal server error.",
-  });
-});
+);
 
 /* =========================================================
    START SERVER
@@ -2932,15 +3626,18 @@ async function startServer() {
   try {
     await initDatabase();
 
-    app.listen(PORT, () => {
-      console.log(
-        `SM Online Shop running on port ${PORT}`
-      );
+    app.listen(
+      PORT,
+      () => {
+        console.log(
+          `SM Online Shop running on port ${PORT}`
+        );
 
-      console.log(
-        `Admin: /admin.html`
-      );
-    });
+        console.log(
+          `Admin: /admin.html`
+        );
+      }
+    );
   } catch (error) {
     console.error(
       "Server startup failed:",
@@ -2955,7 +3652,9 @@ async function startServer() {
    GRACEFUL SHUTDOWN
 ========================================================= */
 
-async function shutdown(signal) {
+async function shutdown(
+  signal
+) {
   console.log(
     `${signal} received. Shutting down...`
   );
@@ -2974,12 +3673,14 @@ async function shutdown(signal) {
 
 process.on(
   "SIGTERM",
-  () => shutdown("SIGTERM")
+  () =>
+    shutdown("SIGTERM")
 );
 
 process.on(
   "SIGINT",
-  () => shutdown("SIGINT")
+  () =>
+    shutdown("SIGINT")
 );
 
 startServer();
