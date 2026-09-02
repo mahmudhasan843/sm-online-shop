@@ -23,7 +23,9 @@
   --border:#eee;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 html{
   scroll-behavior:smooth;
@@ -36,7 +38,10 @@ body{
   background:#fff;
 }
 
-button,input,textarea,select{
+button,
+input,
+textarea,
+select{
   font:inherit;
 }
 
@@ -48,7 +53,193 @@ a{
   color:inherit;
 }
 
-/* TOP BAR */
+/* =========================
+   CUSTOMER LOGIN
+========================= */
+
+#loginScreen{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:
+    linear-gradient(135deg,#fff0f6,#fff,#ffe5ef);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  overflow:auto;
+}
+
+.loginBox{
+  width:min(430px,100%);
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:24px;
+  padding:28px 22px;
+  box-shadow:0 15px 50px #0002;
+  text-align:center;
+}
+
+.loginLogo{
+  width:72px;
+  height:72px;
+  margin:0 auto 12px;
+  border-radius:50%;
+  background:var(--dark);
+  color:#fff;
+  border:4px solid var(--pink);
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  font-weight:900;
+}
+
+.loginBox h1{
+  margin:5px 0;
+  font:700 28px Georgia,serif;
+}
+
+.loginBox .loginTagline{
+  color:var(--pink);
+  font-size:12px;
+  font-weight:bold;
+  margin-bottom:22px;
+}
+
+.loginBox h2{
+  margin:10px 0 5px;
+  font-size:21px;
+}
+
+.loginSub{
+  color:#777;
+  font-size:13px;
+  margin:0 0 18px;
+}
+
+.socialBtn{
+  width:100%;
+  border:1px solid #ddd;
+  background:#fff;
+  border-radius:10px;
+  padding:12px;
+  margin:6px 0;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.socialBtn:hover{
+  background:#fafafa;
+}
+
+.googleBtn{
+  color:#333;
+}
+
+.facebookBtn{
+  background:#1877f2;
+  color:#fff;
+  border-color:#1877f2;
+}
+
+.phoneLoginBtn{
+  background:var(--pink);
+  color:#fff;
+  border-color:var(--pink);
+}
+
+.loginDivider{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:17px 0;
+  color:#aaa;
+  font-size:12px;
+}
+
+.loginDivider::before,
+.loginDivider::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:#eee;
+}
+
+.phoneForm{
+  text-align:left;
+}
+
+.phoneForm label{
+  font-size:12px;
+  font-weight:bold;
+  display:block;
+  margin:7px 0 4px;
+}
+
+.phoneForm input{
+  width:100%;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:9px;
+  outline:none;
+}
+
+.phoneForm input:focus{
+  border-color:var(--pink);
+}
+
+.otpBox{
+  display:none;
+}
+
+.otpBox.show{
+  display:block;
+}
+
+.otpInfo{
+  background:#fff4f8;
+  color:#555;
+  padding:10px;
+  border-radius:8px;
+  font-size:12px;
+  margin:10px 0;
+}
+
+.loginError{
+  display:none;
+  background:#ffecec;
+  color:#c00;
+  padding:9px;
+  border-radius:8px;
+  font-size:12px;
+  margin:10px 0;
+}
+
+.loginError.show{
+  display:block;
+}
+
+.loginTerms{
+  color:#888;
+  font-size:10px;
+  line-height:1.5;
+  margin-top:18px;
+}
+
+#customerApp{
+  display:none;
+}
+
+#customerApp.loggedIn{
+  display:block;
+}
+
+/* =========================
+   TOP BAR
+========================= */
 
 .top{
   background:var(--dark);
@@ -60,11 +251,9 @@ a{
   font-size:12px;
 }
 
-.top b{
-  color:#ff75ae;
-}
-
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 
 header{
   padding:14px 5%;
@@ -108,7 +297,9 @@ header{
   font-weight:bold;
 }
 
-/* SEARCH */
+/* =========================
+   SEARCH
+========================= */
 
 .search{
   display:flex;
@@ -133,11 +324,14 @@ header{
   color:#fff;
 }
 
-/* HEADER ACTIONS */
+/* =========================
+   HEADER ACTIONS
+========================= */
 
 .acts{
   display:flex;
-  gap:10px;
+  gap:8px;
+  align-items:center;
 }
 
 .acts button{
@@ -157,7 +351,72 @@ header{
   font-weight:bold;
 }
 
-/* NAV */
+.accountBtn{
+  min-width:55px;
+}
+
+.accountIcon{
+  font-size:20px;
+}
+
+/* =========================
+   CUSTOMER MENU
+========================= */
+
+.accountMenu{
+  display:none;
+  position:absolute;
+  right:5%;
+  top:78px;
+  width:260px;
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:14px;
+  box-shadow:0 12px 35px #0002;
+  padding:15px;
+  z-index:100;
+}
+
+.accountMenu.open{
+  display:block;
+}
+
+.accountHeader{
+  border-bottom:1px solid #eee;
+  padding-bottom:12px;
+  margin-bottom:10px;
+}
+
+.accountName{
+  font-weight:bold;
+}
+
+.accountPhone{
+  color:#777;
+  font-size:12px;
+  margin-top:3px;
+}
+
+.accountMenu button{
+  width:100%;
+  border:0;
+  background:#fff;
+  text-align:left;
+  padding:11px;
+  border-radius:8px;
+}
+
+.accountMenu button:hover{
+  background:#fff1f7;
+}
+
+.logoutBtn{
+  color:#e00000 !important;
+}
+
+/* =========================
+   NAV
+========================= */
 
 nav{
   display:flex;
@@ -177,7 +436,9 @@ nav a:hover{
   color:var(--pink);
 }
 
-/* INSTALL */
+/* =========================
+   INSTALL
+========================= */
 
 .installBtn{
   display:none;
@@ -190,7 +451,9 @@ nav a:hover{
   margin:10px auto;
 }
 
-/* HERO */
+/* =========================
+   HERO
+========================= */
 
 .hero{
   max-width:1350px;
@@ -247,7 +510,9 @@ nav a:hover{
   opacity:.9;
 }
 
-/* BENEFITS */
+/* =========================
+   BENEFITS
+========================= */
 
 .benefits{
   max-width:1250px;
@@ -278,7 +543,9 @@ nav a:hover{
   color:var(--muted);
 }
 
-/* SECTION */
+/* =========================
+   SECTION
+========================= */
 
 .section{
   max-width:1250px;
@@ -299,7 +566,9 @@ nav a:hover{
   color:var(--muted);
 }
 
-/* CATEGORIES */
+/* =========================
+   CATEGORIES
+========================= */
 
 .cats{
   display:grid;
@@ -337,7 +606,9 @@ nav a:hover{
   margin-top:7px;
 }
 
-/* OFFER */
+/* =========================
+   OFFER
+========================= */
 
 .offer{
   max-width:1250px;
@@ -352,7 +623,9 @@ nav a:hover{
   gap:15px;
 }
 
-/* PRODUCTS */
+/* =========================
+   PRODUCTS
+========================= */
 
 .grid{
   display:grid;
@@ -442,7 +715,9 @@ nav a:hover{
   cursor:not-allowed;
 }
 
-/* REVIEWS */
+/* =========================
+   REVIEWS
+========================= */
 
 .reviews{
   background:#fff7fb;
@@ -469,7 +744,9 @@ nav a:hover{
   line-height:1.5;
 }
 
-/* CONTACT */
+/* =========================
+   CONTACT
+========================= */
 
 .contact{
   max-width:1250px;
@@ -488,7 +765,9 @@ nav a:hover{
   text-decoration:none;
 }
 
-/* FOOTER */
+/* =========================
+   FOOTER
+========================= */
 
 footer{
   background:var(--dark);
@@ -520,7 +799,9 @@ footer p{
   font-size:12px;
 }
 
-/* CART DRAWER */
+/* =========================
+   CART DRAWER
+========================= */
 
 .drawer{
   position:fixed;
@@ -529,7 +810,7 @@ footer p{
   width:min(430px,100%);
   height:100%;
   background:#fff;
-  z-index:30;
+  z-index:300;
   padding:20px;
   box-shadow:-10px 0 30px #0003;
   transition:.25s;
@@ -545,7 +826,7 @@ footer p{
   position:fixed;
   inset:0;
   background:#0008;
-  z-index:20;
+  z-index:250;
 }
 
 .shade.on{
@@ -610,7 +891,52 @@ footer p{
   margin-right:8px;
 }
 
-/* MOBILE */
+/* =========================
+   ORDER MODAL
+========================= */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:500;
+  background:#0008;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal.open{
+  display:flex;
+}
+
+.modalBox{
+  width:min(550px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+}
+
+.orderItem{
+  border-bottom:1px solid #eee;
+  padding:10px 0;
+}
+
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:15px;
+  background:#fff1f7;
+  color:var(--pink);
+  font-size:11px;
+  font-weight:bold;
+}
+
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:850px){
 
@@ -742,9 +1068,16 @@ footer p{
     grid-template-columns:1fr;
   }
 
+  .accountMenu{
+    right:10px;
+    top:68px;
+  }
+
 }
 
-/* EMPTY PRODUCTS */
+/* =========================
+   EMPTY PRODUCTS
+========================= */
 
 .empty{
   grid-column:1/-1;
@@ -757,12 +1090,145 @@ footer p{
 
 <body>
 
+<!-- =========================
+     CUSTOMER LOGIN SCREEN
+========================= -->
+
+<div id="loginScreen">
+
+  <div class="loginBox">
+
+    <div class="loginLogo">SM</div>
+
+    <h1>SM Online Shop</h1>
+
+    <div class="loginTagline">
+      Style • Comfort • Confidence ♥
+    </div>
+
+    <h2>Welcome 👋</h2>
+
+    <p class="loginSub">
+      Login or create your customer account to continue shopping.
+    </p>
+
+    <div id="loginError" class="loginError"></div>
+
+    <button
+      class="socialBtn googleBtn"
+      type="button"
+      onclick="loginWithGoogle()">
+      <span>🔴</span>
+      Continue with Google
+    </button>
+
+    <button
+      class="socialBtn facebookBtn"
+      type="button"
+      onclick="loginWithFacebook()">
+      <span>🔵</span>
+      Continue with Facebook
+    </button>
+
+    <div class="loginDivider">
+      OR
+    </div>
+
+    <div class="phoneForm">
+
+      <label for="loginPhone">
+        📱 Phone Number
+      </label>
+
+      <input
+        id="loginPhone"
+        type="tel"
+        inputmode="numeric"
+        maxlength="11"
+        placeholder="018XXXXXXXX"
+        autocomplete="tel">
+
+      <button
+        id="sendOtpBtn"
+        class="socialBtn phoneLoginBtn"
+        type="button"
+        onclick="sendOTP()">
+        📱 Send OTP
+      </button>
+
+      <div
+        id="otpBox"
+        class="otpBox">
+
+        <div class="otpInfo">
+          Enter the OTP sent to your phone number.
+        </div>
+
+        <label for="loginOtp">
+          🔐 OTP Code
+        </label>
+
+        <input
+          id="loginOtp"
+          type="text"
+          inputmode="numeric"
+          maxlength="6"
+          placeholder="Enter 6 digit OTP"
+          autocomplete="one-time-code">
+
+        <button
+          id="verifyOtpBtn"
+          class="socialBtn phoneLoginBtn"
+          type="button"
+          onclick="verifyOTP()">
+          ✅ Verify OTP & Login
+        </button>
+
+      </div>
+
+    </div>
+
+    <p class="loginTerms">
+      By continuing, you agree to use SM Online Shop's
+      customer account and ordering service.
+    </p>
+
+  </div>
+
+</div>
+
+<!-- =========================
+     CUSTOMER WEBSITE
+========================= -->
+
+<div id="customerApp">
+
 <!-- TOP BAR -->
 
 <div class="top">
-  <span>💗 <b id="topShopName">SM Online Shop</b></span>
-  <span>🚚 Fast Delivery All Over Bangladesh</span>
-  <span>☎ <span id="topPhone1">01827872334</span> | <span id="topPhone2">01886995687</span></span>
+
+  <span>
+    💗
+    <b id="topShopName">
+      SM Online Shop
+    </b>
+  </span>
+
+  <span>
+    🚚 Fast Delivery All Over Bangladesh
+  </span>
+
+  <span>
+    ☎
+    <span id="topPhone1">
+      01827872334
+    </span>
+    |
+    <span id="topPhone2">
+      01886995687
+    </span>
+  </span>
+
 </div>
 
 <!-- HEADER -->
@@ -770,82 +1236,217 @@ footer p{
 <header>
 
 <a class="logo" href="/">
-  <span class="mark">SM</span>
+
+  <span class="mark">
+    SM
+  </span>
 
   <span>
-    <h1 id="shopName">SM Online Shop</h1>
-    <small id="tagline">Style • Comfort • Confidence ♥</small>
+
+    <h1 id="shopName">
+      SM Online Shop
+    </h1>
+
+    <small id="tagline">
+      Style • Comfort • Confidence ♥
+    </small>
+
   </span>
+
 </a>
 
 <div class="search">
+
   <input
     id="search"
     type="search"
     placeholder="Search products..."
     autocomplete="off">
-  <button type="button" onclick="doSearch()">⌕</button>
+
+  <button
+    type="button"
+    onclick="doSearch()">
+    ⌕
+  </button>
+
 </div>
 
 <div class="acts">
 
-  <button type="button" onclick="alert('Wishlist coming soon ❤️')">
+  <button
+    type="button"
+    onclick="alert('Wishlist coming soon ❤️')">
     ♡
     <i>Wishlist</i>
   </button>
 
-  <button type="button" onclick="openCart()">
+  <button
+    type="button"
+    onclick="openCart()">
     🛍
-    <i>Cart <span class="cartBadge" id="count">0</span></i>
+    <i>
+      Cart
+      <span
+        class="cartBadge"
+        id="count">
+        0
+      </span>
+    </i>
+  </button>
+
+  <button
+    class="accountBtn"
+    type="button"
+    onclick="toggleAccountMenu()">
+
+    <span
+      class="accountIcon">
+      👤
+    </span>
+
+    <i>
+      Account
+    </i>
+
   </button>
 
 </div>
 
 </header>
 
+<!-- ACCOUNT MENU -->
+
+<div
+  class="accountMenu"
+  id="accountMenu">
+
+  <div class="accountHeader">
+
+    <div
+      class="accountName"
+      id="accountName">
+      Customer
+    </div>
+
+    <div
+      class="accountPhone"
+      id="accountPhone">
+      -
+    </div>
+
+  </div>
+
+  <button
+    type="button"
+    onclick="showMyOrders()">
+    📦 My Orders
+  </button>
+
+  <button
+    type="button"
+    onclick="showProfile()">
+    👤 My Profile
+  </button>
+
+  <button
+    type="button"
+    onclick="openCart()">
+    🛍 My Cart
+  </button>
+
+  <button
+    type="button"
+    onclick="trackOrderPrompt()">
+    🔎 Track Order
+  </button>
+
+  <button
+    type="button"
+    class="logoutBtn"
+    onclick="logoutCustomer()">
+    🚪 Logout
+  </button>
+
+</div>
+
 <!-- APP INSTALL -->
 
-<button id="installBtn" class="installBtn">
-📱 Install SM Online Shop App
+<button
+  id="installBtn"
+  class="installBtn">
+  📱 Install SM Online Shop App
 </button>
 
 <!-- NAVIGATION -->
 
 <nav>
-  <a href="/">Home</a>
-  <a href="#products">New Arrivals</a>
-  <a href="#products">Best Seller</a>
-  <a href="#products">Women Fashion</a>
-  <a href="#offers">Sale</a>
-  <a href="#contact">Contact</a>
-  <a href="/admin" target="_blank">Admin</a>
+
+  <a href="/">
+    Home
+  </a>
+
+  <a href="#products">
+    New Arrivals
+  </a>
+
+  <a href="#products">
+    Best Seller
+  </a>
+
+  <a href="#products">
+    Women Fashion
+  </a>
+
+  <a href="#offers">
+    Sale
+  </a>
+
+  <a href="#contact">
+    Contact
+  </a>
+
+  <a
+    href="/admin"
+    target="_blank">
+    Admin
+  </a>
+
 </nav>
 
 <!-- HERO -->
 
 <section class="hero">
 
-<div class="copy">
+  <div class="copy">
 
-<p>NEW COLLECTION 2026</p>
+    <p>
+      NEW COLLECTION 2026
+    </p>
 
-<h2>
-Be Stylish.<br>
-<em>Be Confident.</em>
-</h2>
+    <h2>
+      Be Stylish.
+      <br>
+      <em>
+        Be Confident.
+      </em>
+    </h2>
 
-<p>Trendy • Elegant • Affordable</p>
+    <p>
+      Trendy • Elegant • Affordable
+    </p>
 
-<button
-  class="btn"
-  type="button"
-  onclick="document.getElementById('products').scrollIntoView()">
-  Shop Now →
-</button>
+    <button
+      class="btn"
+      type="button"
+      onclick="document.getElementById('products').scrollIntoView()">
+      Shop Now →
+    </button>
 
-</div>
+  </div>
 
-<div class="heroArt">👗</div>
+  <div class="heroArt">
+    👗
+  </div>
 
 </section>
 
@@ -853,35 +1454,55 @@ Be Stylish.<br>
 
 <div class="benefits">
 
-<div>
-  🚚
-  <b>Fast Delivery</b>
-  <small>All Over Bangladesh</small>
-</div>
+  <div>
+    🚚
+    <b>
+      Fast Delivery
+    </b>
+    <small>
+      All Over Bangladesh
+    </small>
+  </div>
 
-<div>
-  🛡️
-  <b>100% Trusted</b>
-  <small>Quality Products</small>
-</div>
+  <div>
+    🛡️
+    <b>
+      100% Trusted
+    </b>
+    <small>
+      Quality Products
+    </small>
+  </div>
 
-<div>
-  🎧
-  <b>Support</b>
-  <small>We're here to help</small>
-</div>
+  <div>
+    🎧
+    <b>
+      Support
+    </b>
+    <small>
+      We're here to help
+    </small>
+  </div>
 
-<div>
-  💵
-  <b>Cash on Delivery</b>
-  <small>Pay when received</small>
-</div>
+  <div>
+    💵
+    <b>
+      Cash on Delivery
+    </b>
+    <small>
+      Pay when received
+    </small>
+  </div>
 
-<div>
-  ↩️
-  <b>Easy Return</b>
-  <small>Customer friendly</small>
-</div>
+  <div>
+    ↩️
+    <b>
+      Easy Return
+    </b>
+    <small>
+      Customer friendly
+    </small>
+  </div>
 
 </div>
 
@@ -889,93 +1510,198 @@ Be Stylish.<br>
 
 <section class="section">
 
-<div class="title">
-  <h2>Shop by Category</h2>
-  <p>Find your perfect style</p>
-</div>
+  <div class="title">
 
-<div class="cats">
+    <h2>
+      Shop by Category
+    </h2>
 
-<button class="cat" type="button" onclick="filter('Dresses')">
-  <div class="ico">👗</div>
-  <b>Dresses</b>
-</button>
+    <p>
+      Find your perfect style
+    </p>
 
-<button class="cat" type="button" onclick="filter('Tops')">
-  <div class="ico">👚</div>
-  <b>Tops</b>
-</button>
+  </div>
 
-<button class="cat" type="button" onclick="filter('Saree')">
-  <div class="ico">🥻</div>
-  <b>Saree</b>
-</button>
+  <div class="cats">
 
-<button class="cat" type="button" onclick="filter('Hijab')">
-  <div class="ico">🧕</div>
-  <b>Hijab</b>
-</button>
+    <button
+      class="cat"
+      type="button"
+      onclick="filter('Dresses')">
 
-<button class="cat" type="button" onclick="filter('Bags')">
-  <div class="ico">👜</div>
-  <b>Bags</b>
-</button>
+      <div class="ico">
+        👗
+      </div>
 
-<button class="cat" type="button" onclick="filter('Shoes')">
-  <div class="ico">👠</div>
-  <b>Shoes</b>
-</button>
+      <b>
+        Dresses
+      </b>
 
-<button class="cat" type="button" onclick="filter('Jewellery')">
-  <div class="ico">💎</div>
-  <b>Jewellery</b>
-</button>
+    </button>
 
-<button class="cat" type="button" onclick="filter('Accessories')">
-  <div class="ico">🕶️</div>
-  <b>Accessories</b>
-</button>
+    <button
+      class="cat"
+      type="button"
+      onclick="filter('Tops')">
 
-</div>
+      <div class="ico">
+        👚
+      </div>
+
+      <b>
+        Tops
+      </b>
+
+    </button>
+
+    <button
+      class="cat"
+      type="button"
+      onclick="filter('Saree')">
+
+      <div class="ico">
+        🥻
+      </div>
+
+      <b>
+        Saree
+      </b>
+
+    </button>
+
+    <button
+      class="cat"
+      type="button"
+      onclick="filter('Hijab')">
+
+      <div class="ico">
+        🧕
+      </div>
+
+      <b>
+        Hijab
+      </b>
+
+    </button>
+
+    <button
+      class="cat"
+      type="button"
+      onclick="filter('Bags')">
+
+      <div class="ico">
+        👜
+      </div>
+
+      <b>
+        Bags
+      </b>
+
+    </button>
+
+    <button
+      class="cat"
+      type="button"
+      onclick="filter('Shoes')">
+
+      <div class="ico">
+        👠
+      </div>
+
+      <b>
+        Shoes
+      </b>
+
+    </button>
+
+    <button
+      class="cat"
+      type="button"
+      onclick="filter('Jewellery')">
+
+      <div class="ico">
+        💎
+      </div>
+
+      <b>
+        Jewellery
+      </b>
+
+    </button>
+
+    <button
+      class="cat"
+      type="button"
+      onclick="filter('Accessories')">
+
+      <div class="ico">
+        🕶️
+      </div>
+
+      <b>
+        Accessories
+      </b>
+
+    </button>
+
+  </div>
 
 </section>
 
 <!-- OFFER -->
 
-<div class="offer" id="offers">
+<div
+  class="offer"
+  id="offers">
 
-<b>🎁 Special Offer</b>
+  <b>
+    🎁 Special Offer
+  </b>
 
-<span>Buy More, Save More</span>
+  <span>
+    Buy More, Save More
+  </span>
 
-<b>Up to 50% OFF</b>
+  <b>
+    Up to 50% OFF
+  </b>
 
-<button
-  class="btn"
-  type="button"
-  onclick="document.getElementById('products').scrollIntoView()">
-  Shop Deals
-</button>
+  <button
+    class="btn"
+    type="button"
+    onclick="document.getElementById('products').scrollIntoView()">
+    Shop Deals
+  </button>
 
 </div>
 
 <!-- PRODUCTS -->
 
-<section class="section" id="products">
+<section
+  class="section"
+  id="products">
 
-<div class="title">
+  <div class="title">
 
-<h2>🔥 Featured Products</h2>
+    <h2>
+      🔥 Featured Products
+    </h2>
 
-<p>
-Popular items from SM Online Shop
-</p>
+    <p>
+      Popular items from SM Online Shop
+    </p>
 
-</div>
+  </div>
 
-<div class="grid" id="grid">
-  <div class="empty">Loading products...</div>
-</div>
+  <div
+    class="grid"
+    id="grid">
+
+    <div class="empty">
+      Loading products...
+    </div>
+
+  </div>
 
 </section>
 
@@ -983,72 +1709,113 @@ Popular items from SM Online Shop
 
 <section class="reviews">
 
-<div class="title">
+  <div class="title">
 
-<h2>💗 Customer Reviews</h2>
+    <h2>
+      💗 Customer Reviews
+    </h2>
 
-<p>What customers say</p>
+    <p>
+      What customers say
+    </p>
 
-</div>
+  </div>
 
-<div class="reviewGrid">
+  <div class="reviewGrid">
 
-<article class="review">
-  <b>Raisa Islam</b>
-  <div>★★★★★</div>
-  <p>
-    “Collection and quality onek bhalo. Delivery fast chilo.”
-  </p>
-</article>
+    <article class="review">
 
-<article class="review">
-  <b>Nusrat Jahan</b>
-  <div>★★★★★</div>
-  <p>
-    “Product exactly picture-er moto. Highly recommended.”
-  </p>
-</article>
+      <b>
+        Raisa Islam
+      </b>
 
-<article class="review">
-  <b>Mim Akter</b>
-  <div>★★★★★</div>
-  <p>
-    “Price reasonable, quality excellent. Abar order korbo.”
-  </p>
-</article>
+      <div>
+        ★★★★★
+      </div>
 
-</div>
+      <p>
+        “Collection and quality onek bhalo. Delivery fast chilo.”
+      </p>
+
+    </article>
+
+    <article class="review">
+
+      <b>
+        Nusrat Jahan
+      </b>
+
+      <div>
+        ★★★★★
+      </div>
+
+      <p>
+        “Product exactly picture-er moto. Highly recommended.”
+      </p>
+
+    </article>
+
+    <article class="review">
+
+      <b>
+        Mim Akter
+      </b>
+
+      <div>
+        ★★★★★
+      </div>
+
+      <p>
+        “Price reasonable, quality excellent. Abar order korbo.”
+      </p>
+
+    </article>
+
+  </div>
 
 </section>
 
 <!-- CONTACT -->
 
-<div class="contact" id="contact">
+<div
+  class="contact"
+  id="contact">
 
-<div>
+  <div>
 
-<h3>Follow SM Online Shop</h3>
+    <h3>
+      Follow SM Online Shop
+    </h3>
 
-<p>
-☎ <span id="contactPhone1">01827872334</span>
-&nbsp; | &nbsp;
-<span id="contactPhone2">01886995687</span>
-</p>
+    <p>
 
-<p>
-New arrivals, offers & updates on Facebook.
-</p>
+      ☎
+      <span id="contactPhone1">
+        01827872334
+      </span>
 
-</div>
+      &nbsp; | &nbsp;
 
-<a
-  id="facebookLink"
-  class="btn fb"
-  target="_blank"
-  rel="noopener"
-  href="https://www.facebook.com/share/1Dr8FEmuoQ/">
-  Facebook Page →
-</a>
+      <span id="contactPhone2">
+        01886995687
+      </span>
+
+    </p>
+
+    <p>
+      New arrivals, offers & updates on Facebook.
+    </p>
+
+  </div>
+
+  <a
+    id="facebookLink"
+    class="btn fb"
+    target="_blank"
+    rel="noopener"
+    href="https://www.facebook.com/share/1Dr8FEmuoQ/">
+    Facebook Page →
+  </a>
 
 </div>
 
@@ -1056,54 +1823,99 @@ New arrivals, offers & updates on Facebook.
 
 <footer>
 
-<div class="foot">
+  <div class="foot">
 
-<div>
+    <div>
 
-<h2 id="footerShopName">
-SM Online Shop
-</h2>
+      <h2 id="footerShopName">
+        SM Online Shop
+      </h2>
 
-<p>
-Women's fashion, bags, shoes, hijab and accessories.
-</p>
+      <p>
+        Women's fashion, bags, shoes, hijab and accessories.
+      </p>
 
-</div>
+    </div>
 
-<div>
+    <div>
 
-<h3>Quick Links</h3>
+      <h3>
+        Quick Links
+      </h3>
 
-<p><a href="/">Home</a></p>
-<p><a href="#products">Shop</a></p>
-<p><a href="#offers">Offers</a></p>
+      <p>
+        <a href="/">
+          Home
+        </a>
+      </p>
 
-</div>
+      <p>
+        <a href="#products">
+          Shop
+        </a>
+      </p>
 
-<div>
+      <p>
+        <a href="#offers">
+          Offers
+        </a>
+      </p>
 
-<h3>Customer Care</h3>
+    </div>
 
-<p><a href="#">Shipping Policy</a></p>
-<p><a href="#">Return Policy</a></p>
+    <div>
 
-</div>
+      <h3>
+        Customer Care
+      </h3>
 
-<div>
+      <p>
+        <a href="#">
+          Shipping Policy
+        </a>
+      </p>
 
-<h3>Contact</h3>
+      <p>
+        <a href="#">
+          Return Policy
+        </a>
+      </p>
 
-<p id="footerPhone1">01827872334</p>
-<p id="footerPhone2">01886995687</p>
-<p>Dhaka, Bangladesh</p>
+    </div>
 
-</div>
+    <div>
 
-</div>
+      <h3>
+        Contact
+      </h3>
 
-<div class="copy">
-© 2026 <span id="copyrightShop">SM Online Shop</span> • Made with ♥ in Bangladesh
-</div>
+      <p id="footerPhone1">
+        01827872334
+      </p>
+
+      <p id="footerPhone2">
+        01886995687
+      </p>
+
+      <p>
+        Dhaka, Bangladesh
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="copy">
+
+    © 2026
+
+    <span id="copyrightShop">
+      SM Online Shop
+    </span>
+
+    • Made with ♥ in Bangladesh
+
+  </div>
 
 </footer>
 
@@ -1117,113 +1929,835 @@ Women's fashion, bags, shoes, hijab and accessories.
 
 <!-- CART -->
 
-<aside class="drawer" id="drawer">
+<aside
+  class="drawer"
+  id="drawer">
 
-<button
-  type="button"
-  onclick="closeCart()"
-  style="
-    float:right;
-    border:0;
-    border-radius:50%;
-    width:35px;
-    height:35px;
-    font-size:20px;">
-  ×
-</button>
+  <button
+    type="button"
+    onclick="closeCart()"
+    style="
+      float:right;
+      border:0;
+      border-radius:50%;
+      width:35px;
+      height:35px;
+      font-size:20px;">
+    ×
+  </button>
 
-<h2>🛍 Your Cart</h2>
+  <h2>
+    🛍 Your Cart
+  </h2>
 
-<div id="cartRows"></div>
+  <div id="cartRows">
+  </div>
 
-<h3>
-Total:
-<span id="total">৳0</span>
-</h3>
+  <h3>
+    Total:
+    <span id="total">
+      ৳0
+    </span>
+  </h3>
 
-<div class="form">
+  <div class="form">
 
-<h3>Checkout</h3>
+    <h3>
+      Checkout
+    </h3>
 
-<label>Name</label>
-<input
-  id="cname"
-  type="text"
-  placeholder="Your name">
+    <label>
+      Name
+    </label>
 
-<label>Phone</label>
-<input
-  id="cphone"
-  type="tel"
-  placeholder="01XXXXXXXXX">
-
-<label>Address</label>
-
-<textarea
-  id="caddress"
-  rows="3"
-  placeholder="Delivery address"></textarea>
-
-<label>Payment</label>
-
-<div class="pay">
-  <label>
     <input
-      type="radio"
-      name="pay"
-      value="cod"
-      checked>
-    Cash on Delivery
-  </label>
-</div>
+      id="cname"
+      type="text"
+      placeholder="Your name">
 
-<div class="pay">
-  <label>
+    <label>
+      Phone
+    </label>
+
     <input
-      type="radio"
-      name="pay"
-      value="bkash">
-    bKash
-  </label>
-</div>
+      id="cphone"
+      type="tel"
+      placeholder="01XXXXXXXXX">
 
-<div class="pay">
-  <label>
-    <input
-      type="radio"
-      name="pay"
-      value="nagad">
-    Nagad
-  </label>
-</div>
+    <label>
+      Address
+    </label>
 
-<div class="pay">
-  <label>
-    <input
-      type="radio"
-      name="pay"
-      value="card">
-    Bank/Card
-  </label>
-</div>
+    <textarea
+      id="caddress"
+      rows="3"
+      placeholder="Delivery address"></textarea>
 
-<button
-  class="btn"
-  style="width:100%;margin-top:10px"
-  type="button"
-  onclick="placeOrder()">
-  🛒 Place Order
-</button>
+    <label>
+      Payment
+    </label>
 
-<p style="font-size:11px;color:#777">
-bKash/Nagad/Card gateway requires merchant credentials to be activated on the server.
-</p>
+    <div class="pay">
 
-</div>
+      <label>
+
+        <input
+          type="radio"
+          name="pay"
+          value="cod"
+          checked>
+
+        Cash on Delivery
+
+      </label>
+
+    </div>
+
+    <div class="pay">
+
+      <label>
+
+        <input
+          type="radio"
+          name="pay"
+          value="bkash">
+
+        bKash
+
+      </label>
+
+    </div>
+
+    <div class="pay">
+
+      <label>
+
+        <input
+          type="radio"
+          name="pay"
+          value="nagad">
+
+        Nagad
+
+      </label>
+
+    </div>
+
+    <div class="pay">
+
+      <label>
+
+        <input
+          type="radio"
+          name="pay"
+          value="card">
+
+        Bank/Card
+
+      </label>
+
+    </div>
+
+    <button
+      class="btn"
+      style="width:100%;margin-top:10px"
+      type="button"
+      onclick="placeOrder()">
+
+      🛒 Place Order
+
+    </button>
+
+    <p style="font-size:11px;color:#777">
+
+      bKash/Nagad/Card gateway requires merchant credentials
+      to be activated on the server.
+
+    </p>
+
+  </div>
 
 </aside>
 
+<!-- =========================
+     MY ORDERS MODAL
+========================= -->
+
+<div
+  class="modal"
+  id="ordersModal"
+  onclick="closeModalOutside(event)">
+
+  <div class="modalBox">
+
+    <button
+      type="button"
+      onclick="closeOrdersModal()"
+      style="
+        float:right;
+        border:0;
+        background:#fff;
+        font-size:24px;">
+      ×
+    </button>
+
+    <h2>
+      📦 My Orders
+    </h2>
+
+    <div id="myOrders">
+      Loading orders...
+    </div>
+
+  </div>
+
+</div>
+
+<!-- =========================
+     PROFILE MODAL
+========================= -->
+
+<div
+  class="modal"
+  id="profileModal"
+  onclick="closeModalOutside(event)">
+
+  <div class="modalBox">
+
+    <button
+      type="button"
+      onclick="closeProfileModal()"
+      style="
+        float:right;
+        border:0;
+        background:#fff;
+        font-size:24px;">
+      ×
+    </button>
+
+    <h2>
+      👤 My Profile
+    </h2>
+
+    <div id="profileContent">
+    </div>
+
+  </div>
+
+</div>
+
 <script>
+
+/* =========================
+   CUSTOMER AUTH DATA
+========================= */
+
+let customer = null;
+let otpRequested = false;
+
+try{
+
+  customer =
+    JSON.parse(
+      localStorage.getItem(
+        "smCustomer"
+      ) || "null"
+    );
+
+}catch{
+
+  customer = null;
+
+}
+
+
+/* =========================
+   LOGIN HELPERS
+========================= */
+
+function showLoginError(message){
+
+  const box =
+    document.getElementById(
+      "loginError"
+    );
+
+  box.textContent =
+    message;
+
+  box.classList.add("show");
+
+}
+
+
+function hideLoginError(){
+
+  document.getElementById(
+    "loginError"
+  ).classList.remove("show");
+
+}
+
+
+function validBangladeshPhone(phone){
+
+  return /^01[0-9]{9}$/.test(
+    phone
+  );
+
+}
+
+
+/* =========================
+   GOOGLE LOGIN
+========================= */
+
+function loginWithGoogle(){
+
+  hideLoginError();
+
+  /*
+    Backend endpoint will be created
+    in server.js.
+  */
+
+  window.location.href =
+    "/api/auth/google";
+
+}
+
+
+/* =========================
+   FACEBOOK LOGIN
+========================= */
+
+function loginWithFacebook(){
+
+  hideLoginError();
+
+  /*
+    Backend endpoint will be created
+    in server.js.
+  */
+
+  window.location.href =
+    "/api/auth/facebook";
+
+}
+
+
+/* =========================
+   SEND OTP
+========================= */
+
+async function sendOTP(){
+
+  hideLoginError();
+
+  const phone =
+    document
+      .getElementById(
+        "loginPhone"
+      )
+      .value
+      .trim();
+
+  if(!validBangladeshPhone(phone)){
+
+    showLoginError(
+      "Please enter a valid Bangladesh phone number. Example: 01827872334"
+    );
+
+    return;
+
+  }
+
+  const button =
+    document.getElementById(
+      "sendOtpBtn"
+    );
+
+  try{
+
+    button.disabled = true;
+
+    button.textContent =
+      "Sending OTP...";
+
+    const response =
+      await fetch(
+        "/api/auth/phone/send-otp",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          body:JSON.stringify({
+            phone
+          })
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if(!response.ok){
+
+      throw new Error(
+        data.error ||
+        "Unable to send OTP."
+      );
+
+    }
+
+    otpRequested =
+      true;
+
+    document
+      .getElementById(
+        "otpBox"
+      )
+      .classList.add("show");
+
+    alert(
+      data.message ||
+      "OTP sent successfully."
+    );
+
+  }catch(error){
+
+    console.error(
+      "OTP error:",
+      error
+    );
+
+    showLoginError(
+      error.message
+    );
+
+  }finally{
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "📱 Send OTP";
+
+  }
+
+}
+
+
+/* =========================
+   VERIFY OTP
+========================= */
+
+async function verifyOTP(){
+
+  hideLoginError();
+
+  const phone =
+    document
+      .getElementById(
+        "loginPhone"
+      )
+      .value
+      .trim();
+
+  const otp =
+    document
+      .getElementById(
+        "loginOtp"
+      )
+      .value
+      .trim();
+
+  if(!validBangladeshPhone(phone)){
+
+    showLoginError(
+      "Please enter a valid phone number."
+    );
+
+    return;
+
+  }
+
+  if(!otp || !/^[0-9]{4,6}$/.test(otp)){
+
+    showLoginError(
+      "Please enter the OTP correctly."
+    );
+
+    return;
+
+  }
+
+  const button =
+    document.getElementById(
+      "verifyOtpBtn"
+    );
+
+  try{
+
+    button.disabled = true;
+
+    button.textContent =
+      "Verifying...";
+
+    const response =
+      await fetch(
+        "/api/auth/phone/verify-otp",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          body:JSON.stringify({
+            phone,
+            otp
+          })
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if(!response.ok){
+
+      throw new Error(
+        data.error ||
+        "OTP verification failed."
+      );
+
+    }
+
+    if(data.customer){
+
+      customer =
+        data.customer;
+
+    }else{
+
+      customer = {
+        name:
+          data.name ||
+          "Customer",
+        phone:
+          phone
+      };
+
+    }
+
+    localStorage.setItem(
+      "smCustomer",
+      JSON.stringify(customer)
+    );
+
+    enterWebsite();
+
+  }catch(error){
+
+    console.error(
+      "OTP verification error:",
+      error
+    );
+
+    showLoginError(
+      error.message
+    );
+
+  }finally{
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "✅ Verify OTP & Login";
+
+  }
+
+}
+
+
+/* =========================
+   CHECK CUSTOMER LOGIN
+========================= */
+
+async function checkCustomerLogin(){
+
+  /*
+    If a backend session exists,
+    server.js can return the current customer.
+  */
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/auth/me",
+        {
+          cache:"no-store"
+        }
+      );
+
+    if(response.ok){
+
+      const data =
+        await response.json();
+
+      if(data.loggedIn &&
+         data.customer){
+
+        customer =
+          data.customer;
+
+        localStorage.setItem(
+          "smCustomer",
+          JSON.stringify(
+            customer
+          )
+        );
+
+        enterWebsite();
+
+        return;
+
+      }
+
+    }
+
+  }catch(error){
+
+    console.log(
+      "Auth check:",
+      error
+    );
+
+  }
+
+  if(customer){
+
+    enterWebsite();
+
+  }else{
+
+    showLoginScreen();
+
+  }
+
+}
+
+
+/* =========================
+   ENTER WEBSITE
+========================= */
+
+function enterWebsite(){
+
+  document
+    .getElementById(
+      "loginScreen"
+    )
+    .style.display =
+      "none";
+
+  document
+    .getElementById(
+      "customerApp"
+    )
+    .classList.add(
+      "loggedIn"
+    );
+
+  updateCustomerUI();
+
+  load();
+
+}
+
+
+/* =========================
+   SHOW LOGIN
+========================= */
+
+function showLoginScreen(){
+
+  document
+    .getElementById(
+      "loginScreen"
+    )
+    .style.display =
+      "flex";
+
+  document
+    .getElementById(
+      "customerApp"
+    )
+    .classList.remove(
+      "loggedIn"
+    );
+
+}
+
+
+/* =========================
+   CUSTOMER UI
+========================= */
+
+function updateCustomerUI(){
+
+  if(!customer){
+    return;
+  }
+
+  const name =
+    customer.name ||
+    customer.fullName ||
+    "Customer";
+
+  const phone =
+    customer.phone ||
+    "";
+
+  document.getElementById(
+    "accountName"
+  ).textContent =
+    name;
+
+  document.getElementById(
+    "accountPhone"
+  ).textContent =
+    phone;
+
+  const cname =
+    document.getElementById(
+      "cname"
+    );
+
+  const cphone =
+    document.getElementById(
+      "cphone"
+    );
+
+  if(cname){
+    cname.value =
+      customer.name ||
+      customer.fullName ||
+      "";
+  }
+
+  if(cphone){
+    cphone.value =
+      customer.phone ||
+      "";
+  }
+
+}
+
+
+/* =========================
+   ACCOUNT MENU
+========================= */
+
+function toggleAccountMenu(){
+
+  document
+    .getElementById(
+      "accountMenu"
+    )
+    .classList.toggle(
+      "open"
+    );
+
+}
+
+
+document.addEventListener(
+  "click",
+  function(event){
+
+    const menu =
+      document.getElementById(
+        "accountMenu"
+      );
+
+    const button =
+      document.querySelector(
+        ".accountBtn"
+      );
+
+    if(
+      menu &&
+      !menu.contains(event.target) &&
+      button &&
+      !button.contains(event.target)
+    ){
+
+      menu.classList.remove(
+        "open"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logoutCustomer(){
+
+  if(
+    !confirm(
+      "Are you sure you want to logout?"
+    )
+  ){
+
+    return;
+
+  }
+
+  try{
+
+    await fetch(
+      "/api/auth/logout",
+      {
+        method:"POST"
+      }
+    );
+
+  }catch(error){
+
+    console.log(
+      "Logout request:",
+      error
+    );
+
+  }
+
+  customer =
+    null;
+
+  localStorage.removeItem(
+    "smCustomer"
+  );
+
+  document
+    .getElementById(
+      "accountMenu"
+    )
+    .classList.remove(
+      "open"
+    );
+
+  showLoginScreen();
+
+}
+
 
 /* =========================
    GLOBAL DATA
@@ -1234,16 +2768,26 @@ let products = [];
 let cart = [];
 
 try{
-  cart = JSON.parse(
-    localStorage.getItem("smCart") || "[]"
-  );
+
+  cart =
+    JSON.parse(
+      localStorage.getItem(
+        "smCart"
+      ) || "[]"
+    );
 
   if(!Array.isArray(cart)){
+
     cart = [];
+
   }
+
 }catch{
+
   cart = [];
+
 }
+
 
 /* =========================
    HELPERS
@@ -1253,21 +2797,26 @@ function taka(number){
 
   return "৳" +
     Number(number || 0)
-      .toLocaleString("en-BD",{
-        maximumFractionDigits:2
-      });
+      .toLocaleString(
+        "en-BD",
+        {
+          maximumFractionDigits:2
+        }
+      );
 
 }
 
 
 function escapeHTML(value){
 
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+  return String(
+    value ?? ""
+  )
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 
 }
 
@@ -1291,28 +2840,41 @@ function saveCart(){
 async function load(){
 
   const grid =
-    document.getElementById("grid");
+    document.getElementById(
+      "grid"
+    );
+
+  if(!grid){
+    return;
+  }
 
   try{
 
     const response =
-      await fetch("/api/store",{
-        cache:"no-store"
-      });
+      await fetch(
+        "/api/store",
+        {
+          cache:"no-store"
+        }
+      );
 
     if(!response.ok){
+
       throw new Error(
         "Store API failed"
       );
+
     }
 
     const data =
       await response.json();
 
     products =
-      Array.isArray(data.products)
-        ? data.products
-        : [];
+      Array.isArray(
+        data.products
+      )
+      ? data.products
+      : [];
 
     if(data.settings){
 
@@ -1335,8 +2897,12 @@ async function load(){
 
     grid.innerHTML = `
       <div class="empty">
-        <h3>Unable to load products</h3>
-        <p>Please refresh the page and try again.</p>
+        <h3>
+          Unable to load products
+        </h3>
+        <p>
+          Please refresh the page and try again.
+        </p>
       </div>
     `;
 
@@ -1369,47 +2935,58 @@ function applySettings(settings){
 
   document.getElementById(
     "shopName"
-  ).textContent = shop;
+  ).textContent =
+    shop;
 
   document.getElementById(
     "topShopName"
-  ).textContent = shop;
+  ).textContent =
+    shop;
 
   document.getElementById(
     "footerShopName"
-  ).textContent = shop;
+  ).textContent =
+    shop;
 
   document.getElementById(
     "copyrightShop"
-  ).textContent = shop;
+  ).textContent =
+    shop;
 
   document.getElementById(
     "tagline"
-  ).textContent = tagline;
+  ).textContent =
+    tagline;
 
   document.getElementById(
     "topPhone1"
-  ).textContent = phone1;
+  ).textContent =
+    phone1;
 
   document.getElementById(
     "topPhone2"
-  ).textContent = phone2;
+  ).textContent =
+    phone2;
 
   document.getElementById(
     "contactPhone1"
-  ).textContent = phone1;
+  ).textContent =
+    phone1;
 
   document.getElementById(
     "contactPhone2"
-  ).textContent = phone2;
+  ).textContent =
+    phone2;
 
   document.getElementById(
     "footerPhone1"
-  ).textContent = phone1;
+  ).textContent =
+    phone1;
 
   document.getElementById(
     "footerPhone2"
-  ).textContent = phone2;
+  ).textContent =
+    phone2;
 
   const facebook =
     settings.facebook;
@@ -1418,7 +2995,8 @@ function applySettings(settings){
 
     document.getElementById(
       "facebookLink"
-    ).href = facebook;
+    ).href =
+      facebook;
 
   }
 
@@ -1429,155 +3007,194 @@ function applySettings(settings){
    RENDER PRODUCTS
 ========================= */
 
-function render(list = products){
+function render(
+  list = products
+){
 
   const grid =
-    document.getElementById("grid");
+    document.getElementById(
+      "grid"
+    );
 
   if(!list.length){
 
     grid.innerHTML = `
       <div class="empty">
-        <h3>No products found</h3>
-        <p>Try another search or category.</p>
+        <h3>
+          No products found
+        </h3>
+        <p>
+          Try another search or category.
+        </p>
       </div>
     `;
 
     return;
+
   }
 
   grid.innerHTML =
-    list.map(product => {
+    list.map(
+      product => {
 
-      const id =
-        Number(product.id);
+        const id =
+          product.id;
 
-      const name =
-        escapeHTML(product.name);
+        const name =
+          escapeHTML(
+            product.name
+          );
 
-      const category =
-        escapeHTML(
-          product.category || "General"
-        );
+        const category =
+          escapeHTML(
+            product.category ||
+            "General"
+          );
 
-      const image =
-        escapeHTML(
-          product.image || ""
-        );
+        const image =
+          escapeHTML(
+            product.image ||
+            ""
+          );
 
-      const price =
-        Number(product.price || 0);
+        const price =
+          Number(
+            product.price ||
+            0
+          );
 
-      const oldPrice =
-        Number(
-          product.oldPrice ||
-          price
-        );
+        const oldPrice =
+          Number(
+            product.oldPrice ||
+            price
+          );
 
-      const discount =
-        Number(
-          product.discount || 0
-        );
+        const discount =
+          Number(
+            product.discount ||
+            0
+          );
 
-      const stock =
-        Number(
-          product.stock || 0
-        );
+        const stock =
+          Number(
+            product.stock ||
+            0
+          );
 
-      return `
+        return `
 
-      <article class="card">
+        <article class="card">
 
-        <div
-          class="pic"
-          style="
-            background-image:url('${image}');
-          "
-        >
-
-          ${
-            discount > 0
-            ? `
-              <span class="badge">
-                -${discount}%
-              </span>
-            `
-            : ""
-          }
-
-        </div>
-
-        <div class="body">
-
-          <h3>
-            ${name}
-          </h3>
-
-          <small style="color:#777">
-            ${category}
-          </small>
-
-          <div class="stars">
-            ★★★★★
-          </div>
-
-          <div class="price">
-
-            <b>
-              ${taka(price)}
-            </b>
+          <div
+            class="pic"
+            style="
+              background-image:url('${image}');
+            "
+          >
 
             ${
-              oldPrice > price
+              discount > 0
               ? `
-                <del>
-                  ${taka(oldPrice)}
-                </del>
+                <span class="badge">
+                  -${discount}%
+                </span>
               `
               : ""
             }
 
           </div>
 
-          <small
-            class="stock"
-            style="
-              color:${
-                stock > 0
-                ? "#168a45"
-                : "#e00000"
-              }
-            "
-          >
-            ${
-              stock > 0
-              ? "✓ In stock (" +
-                stock +
-                ")"
-              : "✕ Out of stock"
-            }
-          </small>
+          <div class="body">
 
-          <button
-            class="add"
-            type="button"
-            ${
-              stock < 1
-                ? "disabled"
+            <h3>
+              ${name}
+            </h3>
+
+            <small style="color:#777">
+              ${category}
+            </small>
+
+            <div class="stars">
+              ★★★★★
+            </div>
+
+            <div class="price">
+
+              <b>
+                ${taka(price)}
+              </b>
+
+              ${
+                oldPrice > price
+                ? `
+                  <del>
+                    ${taka(oldPrice)}
+                  </del>
+                `
                 : ""
-            }
-            onclick="add(${id})"
-          >
-            🛒 Add to Cart
-          </button>
+              }
 
-        </div>
+            </div>
 
-      </article>
+            <small
+              class="stock"
+              style="
+                color:${
+                  stock > 0
+                  ? "#168a45"
+                  : "#e00000"
+                }
+              "
+            >
 
-      `;
+              ${
+                stock > 0
+                ? "✓ In stock (" +
+                  stock +
+                  ")"
+                : "✕ Out of stock"
+              }
 
-    }).join("");
+            </small>
+
+            <button
+              class="add"
+              type="button"
+              ${
+                stock < 1
+                  ? "disabled"
+                  : ""
+              }
+              onclick="add('${encodeURIComponent(
+                String(id)
+              )}')"
+            >
+              🛒 Add to Cart
+            </button>
+
+          </div>
+
+        </article>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+/* =========================
+   FIND PRODUCT
+========================= */
+
+function findProduct(id){
+
+  return products.find(
+    product =>
+      String(product.id) ===
+      String(id)
+  );
 
 }
 
@@ -1592,13 +3209,16 @@ function filter(category){
     products.filter(
       product =>
         String(
-          product.category || ""
-        ).toLowerCase()
-        ===
+          product.category ||
+          ""
+        )
+        .toLowerCase() ===
         category.toLowerCase()
     );
 
-  render(filtered);
+  render(
+    filtered
+  );
 
   document.getElementById(
     "products"
@@ -1628,6 +3248,7 @@ function doSearch(){
     render();
 
     return;
+
   }
 
   const filtered =
@@ -1636,17 +3257,30 @@ function doSearch(){
 
         const value =
           (
-            product.name +
-            " " +
-            product.category
-          ).toLowerCase();
+            product.name ||
+            ""
+          ) +
+          " " +
+          (
+            product.category ||
+            ""
+          ) +
+          " " +
+          (
+            product.description ||
+            ""
+          );
 
-        return value.includes(text);
+        return value
+          .toLowerCase()
+          .includes(text);
 
       }
     );
 
-  render(filtered);
+  render(
+    filtered
+  );
 
   document.getElementById(
     "products"
@@ -1667,35 +3301,52 @@ document.getElementById(
    CART
 ========================= */
 
-function add(id){
+function add(encodedId){
 
-  const product =
-    products.find(
-      p => Number(p.id) === Number(id)
+  const id =
+    decodeURIComponent(
+      encodedId
     );
 
+  const product =
+    findProduct(id);
+
   if(!product){
+
+    alert(
+      "Product not found."
+    );
+
     return;
+
   }
 
   const stock =
-    Number(product.stock || 0);
+    Number(
+      product.stock ||
+      0
+    );
 
   const existing =
     cart.find(
       item =>
-        Number(item.id) === Number(id)
+        String(item.id) ===
+        String(id)
     );
 
   if(existing){
 
-    if(existing.qty >= stock){
+    if(
+      Number(existing.qty) >=
+      stock
+    ){
 
       alert(
         "You cannot add more than available stock."
       );
 
       return;
+
     }
 
     existing.qty++;
@@ -1703,7 +3354,7 @@ function add(id){
   }else{
 
     cart.push({
-      id:Number(id),
+      id:id,
       qty:1
     });
 
@@ -1720,11 +3371,15 @@ function openCart(){
 
   document.getElementById(
     "shade"
-  ).classList.add("on");
+  ).classList.add(
+    "on"
+  );
 
   document.getElementById(
     "drawer"
-  ).classList.add("open");
+  ).classList.add(
+    "open"
+  );
 
   renderCart();
 
@@ -1735,11 +3390,15 @@ function closeCart(){
 
   document.getElementById(
     "shade"
-  ).classList.remove("on");
+  ).classList.remove(
+    "on"
+  );
 
   document.getElementById(
     "drawer"
-  ).classList.remove("open");
+  ).classList.remove(
+    "open"
+  );
 
 }
 
@@ -1765,10 +3424,18 @@ function renderCart(){
       "total"
     );
 
+  if(!count || !rows || !total){
+    return;
+  }
+
   const quantity =
     cart.reduce(
       (sum,item) =>
-        sum + Number(item.qty || 0),
+        sum +
+        Number(
+          item.qty ||
+          0
+        ),
       0
     );
 
@@ -1782,9 +3449,18 @@ function renderCart(){
         text-align:center;
         padding:30px 10px;
         color:#777;">
-        🛍️<br>
-        <b>Your cart is empty.</b>
-        <p>Add some products to continue.</p>
+
+        🛍️
+        <br>
+
+        <b>
+          Your cart is empty.
+        </b>
+
+        <p>
+          Add some products to continue.
+        </p>
+
       </div>
     `;
 
@@ -1792,93 +3468,126 @@ function renderCart(){
       "৳0";
 
     return;
+
   }
 
-  let cartTotal = 0;
+  let cartTotal =
+    0;
 
   rows.innerHTML =
-    cart.map(item => {
+    cart.map(
+      item => {
 
-      const product =
-        products.find(
-          p =>
-            Number(p.id) ===
-            Number(item.id)
-        );
+        const product =
+          findProduct(
+            item.id
+          );
 
-      if(!product){
-        return "";
-      }
+        if(!product){
+          return "";
+        }
 
-      const qty =
-        Number(item.qty || 1);
+        const qty =
+          Number(
+            item.qty ||
+            1
+          );
 
-      const subtotal =
-        Number(product.price || 0) *
-        qty;
+        const subtotal =
+          Number(
+            product.price ||
+            0
+          ) *
+          qty;
 
-      cartTotal += subtotal;
+        cartTotal +=
+          subtotal;
 
-      return `
+        const safeId =
+          encodeURIComponent(
+            String(
+              product.id
+            )
+          );
 
-      <div class="row">
+        return `
 
-        <img
-          src="${escapeHTML(product.image || "")}"
-          alt="${escapeHTML(product.name)}"
-        >
+        <div class="row">
 
-        <div style="flex:1">
+          <img
+            src="${escapeHTML(
+              product.image ||
+              ""
+            )}"
+            alt="${escapeHTML(
+              product.name
+            )}"
+          >
 
-          <b>
-            ${escapeHTML(product.name)}
-          </b>
+          <div style="flex:1">
 
-          <br>
+            <b>
+              ${escapeHTML(
+                product.name
+              )}
+            </b>
 
-          <span style="color:#f41470;font-weight:bold">
-            ${taka(product.price)}
-          </span>
+            <br>
 
-          × ${qty}
+            <span
+              style="
+                color:#f41470;
+                font-weight:bold">
 
-          <div class="qtyBtns">
+              ${taka(
+                product.price
+              )}
 
-            <button
-              type="button"
-              onclick="minus(${Number(product.id)})">
-              −
-            </button>
+            </span>
 
-            <button
-              type="button"
-              onclick="plus(${Number(product.id)})">
-              +
-            </button>
+            × ${qty}
 
-            <button
-              type="button"
-              class="removeBtn"
-              onclick="removeItem(${Number(product.id)})">
-              Remove
-            </button>
+            <div class="qtyBtns">
+
+              <button
+                type="button"
+                onclick="minus('${safeId}')">
+                −
+              </button>
+
+              <button
+                type="button"
+                onclick="plus('${safeId}')">
+                +
+              </button>
+
+              <button
+                type="button"
+                class="removeBtn"
+                onclick="removeItem('${safeId}')">
+                Remove
+              </button>
+
+            </div>
+
+            <small>
+              Subtotal:
+              ${taka(subtotal)}
+            </small>
 
           </div>
 
-          <small>
-            Subtotal: ${taka(subtotal)}
-          </small>
-
         </div>
 
-      </div>
+        `;
 
-      `;
-
-    }).join("");
+      }
+    ).join("");
 
   total.textContent =
-    taka(cartTotal);
+    taka(
+      cartTotal
+    );
 
 }
 
@@ -1887,28 +3596,29 @@ function renderCart(){
    PLUS
 ========================= */
 
-function plus(id){
+function plus(encodedId){
+
+  const id =
+    decodeURIComponent(
+      encodedId
+    );
 
   const item =
     cart.find(
       x =>
-        Number(x.id) ===
-        Number(id)
+        String(x.id) ===
+        String(id)
     );
 
   const product =
-    products.find(
-      p =>
-        Number(p.id) ===
-        Number(id)
-    );
+    findProduct(id);
 
   if(!item || !product){
     return;
   }
 
   if(
-    item.qty >=
+    Number(item.qty) >=
     Number(product.stock || 0)
   ){
 
@@ -1917,6 +3627,7 @@ function plus(id){
     );
 
     return;
+
   }
 
   item.qty++;
@@ -1930,13 +3641,18 @@ function plus(id){
    MINUS
 ========================= */
 
-function minus(id){
+function minus(encodedId){
+
+  const id =
+    decodeURIComponent(
+      encodedId
+    );
 
   const item =
     cart.find(
       x =>
-        Number(x.id) ===
-        Number(id)
+        String(x.id) ===
+        String(id)
     );
 
   if(!item){
@@ -1945,13 +3661,15 @@ function minus(id){
 
   item.qty--;
 
-  if(item.qty < 1){
+  if(
+    item.qty < 1
+  ){
 
     cart =
       cart.filter(
         x =>
-          Number(x.id) !==
-          Number(id)
+          String(x.id) !==
+          String(id)
       );
 
   }
@@ -1965,13 +3683,18 @@ function minus(id){
    REMOVE
 ========================= */
 
-function removeItem(id){
+function removeItem(encodedId){
+
+  const id =
+    decodeURIComponent(
+      encodedId
+    );
 
   cart =
     cart.filter(
       x =>
-        Number(x.id) !==
-        Number(id)
+        String(x.id) !==
+        String(id)
     );
 
   saveCart();
@@ -1985,6 +3708,18 @@ function removeItem(id){
 
 async function placeOrder(){
 
+  if(!customer){
+
+    alert(
+      "Please login first."
+    );
+
+    showLoginScreen();
+
+    return;
+
+  }
+
   if(!cart.length){
 
     alert(
@@ -1992,6 +3727,7 @@ async function placeOrder(){
     );
 
     return;
+
   }
 
   const name =
@@ -2009,37 +3745,43 @@ async function placeOrder(){
       "caddress"
     ).value.trim();
 
-  if(!name || !phone || !address){
+  if(!name ||
+     !phone ||
+     !address){
 
     alert(
       "Name, phone and address are required."
     );
 
     return;
+
   }
 
-  const phonePattern =
-    /^01[0-9]{9}$/;
-
-  if(!phonePattern.test(phone)){
+  if(!validBangladeshPhone(phone)){
 
     alert(
       "Please enter a valid Bangladesh phone number.\nExample: 01827872334"
     );
 
     return;
+
   }
 
   const payment =
     document.querySelector(
       'input[name="pay"]:checked'
-    )?.value || "cod";
+    )?.value ||
+    "cod";
 
   const items =
     cart.map(
       item => ({
-        id:Number(item.id),
-        qty:Number(item.qty)
+        id:
+          item.id,
+        qty:
+          Number(
+            item.qty
+          )
       })
     );
 
@@ -2050,7 +3792,8 @@ async function placeOrder(){
 
   try{
 
-    orderButton.disabled = true;
+    orderButton.disabled =
+      true;
 
     orderButton.textContent =
       "Placing Order...";
@@ -2066,20 +3809,21 @@ async function placeOrder(){
               "application/json"
           },
 
-          body:JSON.stringify({
+          body:
+            JSON.stringify({
 
-            customer:{
-              name,
-              phone,
-              address
-            },
+              customer:{
+                name,
+                phone,
+                address
+              },
 
-            items,
+              items,
 
-            paymentMethod:
-              payment
+              paymentMethod:
+                payment
 
-          })
+            })
 
         }
       );
@@ -2102,7 +3846,9 @@ async function placeOrder(){
       data.orderId +
       "\n" +
       "Total: " +
-      taka(data.total)
+      taka(
+        data.total
+      )
     );
 
     cart = [];
@@ -2110,14 +3856,6 @@ async function placeOrder(){
     localStorage.removeItem(
       "smCart"
     );
-
-    document.getElementById(
-      "cname"
-    ).value = "";
-
-    document.getElementById(
-      "cphone"
-    ).value = "";
 
     document.getElementById(
       "caddress"
@@ -2146,6 +3884,371 @@ async function placeOrder(){
 
     orderButton.textContent =
       "🛒 Place Order";
+
+  }
+
+}
+
+
+/* =========================
+   MY ORDERS
+========================= */
+
+async function showMyOrders(){
+
+  document
+    .getElementById(
+      "accountMenu"
+    )
+    .classList.remove(
+      "open"
+    );
+
+  const modal =
+    document.getElementById(
+      "ordersModal"
+    );
+
+  const box =
+    document.getElementById(
+      "myOrders"
+    );
+
+  modal.classList.add(
+    "open"
+  );
+
+  box.innerHTML =
+    "Loading orders...";
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/customer/orders",
+        {
+          cache:"no-store"
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if(!response.ok){
+
+      throw new Error(
+        data.error ||
+        "Unable to load orders."
+      );
+
+    }
+
+    const orders =
+      Array.isArray(
+        data.orders
+      )
+      ? data.orders
+      : [];
+
+    if(!orders.length){
+
+      box.innerHTML = `
+        <div class="empty">
+          <h3>
+            No orders yet
+          </h3>
+          <p>
+            Your orders will appear here.
+          </p>
+        </div>
+      `;
+
+      return;
+
+    }
+
+    box.innerHTML =
+      orders.map(
+        order => {
+
+          return `
+
+          <div class="orderItem">
+
+            <b>
+              Order:
+              ${escapeHTML(
+                order.id ||
+                order.orderId ||
+                ""
+              )}
+            </b>
+
+            <br>
+
+            <small>
+              ${escapeHTML(
+                order.createdAt ||
+                ""
+              )}
+            </small>
+
+            <p>
+              Status:
+              <span class="status">
+                ${escapeHTML(
+                  order.status ||
+                  "Pending"
+                )}
+              </span>
+            </p>
+
+            <b>
+              Total:
+              ${taka(
+                order.total
+              )}
+            </b>
+
+          </div>
+
+          `;
+
+        }
+      ).join("");
+
+  }catch(error){
+
+    console.error(
+      "My orders:",
+      error
+    );
+
+    box.innerHTML = `
+      <div class="empty">
+        <p>
+          ${escapeHTML(
+            error.message
+          )}
+        </p>
+      </div>
+    `;
+
+  }
+
+}
+
+
+function closeOrdersModal(){
+
+  document
+    .getElementById(
+      "ordersModal"
+    )
+    .classList.remove(
+      "open"
+    );
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+function showProfile(){
+
+  document
+    .getElementById(
+      "accountMenu"
+    )
+    .classList.remove(
+      "open"
+    );
+
+  if(!customer){
+    return;
+  }
+
+  const box =
+    document.getElementById(
+      "profileContent"
+    );
+
+  box.innerHTML = `
+
+    <div
+      style="
+        border:1px solid #eee;
+        border-radius:12px;
+        padding:15px;">
+
+      <p>
+        <b>Name:</b>
+        ${escapeHTML(
+          customer.name ||
+          customer.fullName ||
+          "Customer"
+        )}
+      </p>
+
+      <p>
+        <b>Phone:</b>
+        ${escapeHTML(
+          customer.phone ||
+          "-"
+        )}
+      </p>
+
+      <p>
+        <b>Email:</b>
+        ${escapeHTML(
+          customer.email ||
+          customer.gmail ||
+          "-"
+        )}
+      </p>
+
+      <p>
+        <b>Login:</b>
+        ${escapeHTML(
+          customer.provider ||
+          "Phone"
+        )}
+      </p>
+
+    </div>
+
+  `;
+
+  document
+    .getElementById(
+      "profileModal"
+    )
+    .classList.add(
+      "open"
+    );
+
+}
+
+
+function closeProfileModal(){
+
+  document
+    .getElementById(
+      "profileModal"
+    )
+    .classList.remove(
+      "open"
+    );
+
+}
+
+
+/* =========================
+   TRACK ORDER
+========================= */
+
+function trackOrderPrompt(){
+
+  document
+    .getElementById(
+      "accountMenu"
+    )
+    .classList.remove(
+      "open"
+    );
+
+  const orderId =
+    prompt(
+      "Enter your Order ID:"
+    );
+
+  if(!orderId){
+    return;
+  }
+
+  trackOrder(
+    orderId.trim()
+  );
+
+}
+
+
+async function trackOrder(orderId){
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/customer/orders/" +
+        encodeURIComponent(
+          orderId
+        ),
+        {
+          cache:"no-store"
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if(!response.ok){
+
+      throw new Error(
+        data.error ||
+        "Order not found."
+      );
+
+    }
+
+    const order =
+      data.order ||
+      data;
+
+    alert(
+      "📦 Order ID: " +
+      (order.id ||
+       order.orderId ||
+       orderId) +
+      "\n\n" +
+      "Status: " +
+      (order.status ||
+       "Pending") +
+      "\n" +
+      "Total: " +
+      taka(
+        order.total
+      )
+    );
+
+  }catch(error){
+
+    alert(
+      "❌ " +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   CLOSE MODAL OUTSIDE
+========================= */
+
+function closeModalOutside(event){
+
+  if(
+    event.target.classList.contains(
+      "modal"
+    )
+  ){
+
+    event.target.classList.remove(
+      "open"
+    );
 
   }
 
@@ -2192,7 +4295,8 @@ if(
    PWA INSTALL
 ========================= */
 
-let deferredPrompt = null;
+let deferredPrompt =
+  null;
 
 const installBtn =
   document.getElementById(
@@ -2205,7 +4309,8 @@ window.addEventListener(
 
     event.preventDefault();
 
-    deferredPrompt = event;
+    deferredPrompt =
+      event;
 
     installBtn.style.display =
       "block";
@@ -2231,7 +4336,8 @@ installBtn.addEventListener(
       choice.outcome
     );
 
-    deferredPrompt = null;
+    deferredPrompt =
+      null;
 
     installBtn.style.display =
       "none";
@@ -2251,12 +4357,14 @@ window.addEventListener(
 
 
 /* =========================
-   START
+   START APPLICATION
 ========================= */
 
-load();
+checkCustomerLogin();
 
 </script>
+
+</div>
 
 </body>
 </html>
