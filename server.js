@@ -6,7 +6,6 @@ const { Pool } = require("pg");
 const cloudinary = require("cloudinary").v2;
 
 const app = express();
-
 app.set("trust proxy", 1);
 
 const PORT = process.env.PORT || 10000;
@@ -84,19 +83,13 @@ cloudinary.config({
 ========================================================= */
 
 function cleanText(value, fallback = "") {
-  if (value === undefined || value === null) {
-    return fallback;
-  }
-
+  if (value === undefined || value === null) return fallback;
   return String(value).trim();
 }
 
 function positiveNumber(value, fallback = 0) {
   const n = Number(value);
-
-  return Number.isFinite(n) && n >= 0
-    ? n
-    : fallback;
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
 function nonNegativeInt(value, fallback = 0) {
@@ -111,10 +104,7 @@ function nonNegativeInt(value, fallback = 0) {
 
 function safeJsonParse(value, fallback) {
   try {
-    if (typeof value === "object") {
-      return value;
-    }
-
+    if (typeof value === "object") return value;
     return JSON.parse(value);
   } catch {
     return fallback;
@@ -154,9 +144,7 @@ function parseCookies(req) {
   header.split(";").forEach((part) => {
     const index = part.indexOf("=");
 
-    if (index === -1) {
-      return;
-    }
+    if (index === -1) return;
 
     const key = part.slice(0, index).trim();
     const value = part.slice(index + 1).trim();
@@ -237,7 +225,8 @@ function getOAuthRedirectUri(req, provider) {
 
 function redirectLoginError(res, message) {
   const params = new URLSearchParams({
-    loginError: message || "Login failed",
+    loginError:
+      message || "Login failed",
   });
 
   res.redirect(
@@ -365,9 +354,7 @@ async function initDatabase() {
       )
     `);
 
-    /* =====================================================
-       REPAIR OLD TABLES
-    ===================================================== */
+    /* ---------- Repair old tables ---------- */
 
     await client.query(`
       ALTER TABLE products
@@ -594,7 +581,9 @@ async function initDatabase() {
    CUSTOMER AUTHENTICATION
 ========================================================= */
 
-async function getCustomerFromSession(req) {
+async function getCustomerFromSession(
+  req
+) {
   const cookies =
     parseCookies(req);
 
@@ -639,10 +628,16 @@ async function getCustomerFromSession(req) {
   return result.rows[0];
 }
 
-async function requireCustomer(req, res, next) {
+async function requireCustomer(
+  req,
+  res,
+  next
+) {
   try {
     const customer =
-      await getCustomerFromSession(req);
+      await getCustomerFromSession(
+        req
+      );
 
     if (!customer) {
       return res.status(401).json({
@@ -670,7 +665,9 @@ async function requireCustomer(req, res, next) {
   }
 }
 
-async function createCustomerSession(customerId) {
+async function createCustomerSession(
+  customerId
+) {
   const rawToken =
     createRandomToken(32);
 
@@ -701,12 +698,16 @@ async function createCustomerSession(customerId) {
   return rawToken;
 }
 
-async function findOrCreateOAuthCustomer(profile) {
+async function findOrCreateOAuthCustomer(
+  profile
+) {
   const client =
     await pool.connect();
 
   try {
-    await client.query("BEGIN");
+    await client.query(
+      "BEGIN"
+    );
 
     await client.query(`
       DELETE FROM oauth_states
@@ -761,6 +762,8 @@ async function findOrCreateOAuthCustomer(profile) {
       customer =
         result.rows[0];
     } else {
+      /* Try matching existing account by email */
+
       if (profile.email) {
         result =
           await client.query(
@@ -864,7 +867,9 @@ async function findOrCreateOAuthCustomer(profile) {
       }
     }
 
-    await client.query("COMMIT");
+    await client.query(
+      "COMMIT"
+    );
 
     return customer;
   } catch (error) {
@@ -882,7 +887,9 @@ async function findOrCreateOAuthCustomer(profile) {
    OAUTH STATE
 ========================================================= */
 
-async function createOAuthState(provider) {
+async function createOAuthState(
+  provider
+) {
   const state =
     createRandomToken(24);
 
@@ -910,7 +917,10 @@ async function createOAuthState(provider) {
   return state;
 }
 
-async function consumeOAuthState(state, provider) {
+async function consumeOAuthState(
+  state,
+  provider
+) {
   const result =
     await pool.query(
       `
@@ -926,124 +936,10 @@ async function consumeOAuthState(state, provider) {
       ]
     );
 
-  return result.rows.length > 0;
+  return (
+    result.rows.length > 0
+  );
 }
-
-/* =========================================================
-   AUTH API ALIASES
-   FOR FRONTEND COMPATIBILITY
-========================================================= */
-
-app.get(
-  "/api/auth/google",
-  (req, res) => {
-    res.redirect(
-      "/auth/google"
-    );
-  }
-);
-
-app.get(
-  "/api/auth/facebook",
-  (req, res) => {
-    res.redirect(
-      "/auth/facebook"
-    );
-  }
-);
-
-app.get(
-  "/api/auth/me",
-  async (req, res) => {
-    try {
-      const customer =
-        await getCustomerFromSession(
-          req
-        );
-
-      res.set(
-        "Cache-Control",
-        "no-store"
-      );
-
-      if (!customer) {
-        return res.json({
-          ok: true,
-          loggedIn: false,
-          customer: null,
-        });
-      }
-
-      res.json({
-        ok: true,
-        loggedIn: true,
-        customer,
-      });
-    } catch (error) {
-      console.error(
-        "Auth me error:",
-        error
-      );
-
-      res.status(500).json({
-        ok: false,
-        message:
-          "Unable to load customer.",
-      });
-    }
-  }
-);
-
-app.post(
-  "/api/auth/logout",
-  async (req, res) => {
-    try {
-      const cookies =
-        parseCookies(req);
-
-      const rawToken =
-        cookies[CUSTOMER_COOKIE];
-
-      if (rawToken) {
-        await pool.query(
-          `
-          DELETE FROM customer_sessions
-          WHERE token_hash = $1
-          `,
-          [
-            hashToken(
-              rawToken
-            ),
-          ]
-        );
-      }
-
-      clearCustomerCookie(res);
-
-      res.set(
-        "Cache-Control",
-        "no-store"
-      );
-
-      res.json({
-        ok: true,
-      });
-    } catch (error) {
-      console.error(
-        "Auth logout error:",
-        error
-      );
-
-      clearCustomerCookie(res);
-
-      res.status(500).json({
-        ok: false,
-        message:
-          "Logout failed.",
-      });
-    }
-  }
-);
 
 /* =========================================================
    GOOGLE LOGIN
@@ -1077,22 +973,15 @@ app.get(
       const params =
         new URLSearchParams({
           client_id:
-            process.env.GOOGLE_CLIENT_ID,
-
+            process.env
+              .GOOGLE_CLIENT_ID,
           redirect_uri:
             redirectUri,
-
-          response_type:
-            "code",
-
+          response_type: "code",
           scope:
             "openid email profile",
-
           state,
-
-          access_type:
-            "online",
-
+          access_type: "online",
           prompt:
             "select_account",
         });
@@ -1154,33 +1043,30 @@ app.get(
           "https://oauth2.googleapis.com/token",
           {
             method: "POST",
-
             headers: {
               "Content-Type":
                 "application/x-www-form-urlencoded",
             },
-
             body:
               new URLSearchParams({
                 client_id:
-                  process.env.GOOGLE_CLIENT_ID,
-
+                  process.env
+                    .GOOGLE_CLIENT_ID,
                 client_secret:
-                  process.env.GOOGLE_CLIENT_SECRET,
-
-                code:
-                  String(code),
-
+                  process.env
+                    .GOOGLE_CLIENT_SECRET,
+                code: String(code),
                 grant_type:
                   "authorization_code",
-
                 redirect_uri:
                   redirectUri,
               }).toString(),
           }
         );
 
-      if (!tokenData.access_token) {
+      if (
+        !tokenData.access_token
+      ) {
         throw new Error(
           "Google access token missing."
         );
@@ -1204,29 +1090,23 @@ app.get(
       }
 
       const customer =
-        await findOrCreateOAuthCustomer({
-          provider:
-            "google",
-
-          providerId:
-            String(userInfo.sub),
-
-          name:
-            cleanText(
+        await findOrCreateOAuthCustomer(
+          {
+            provider: "google",
+            providerId:
+              String(userInfo.sub),
+            name: cleanText(
               userInfo.name,
               "Google Customer"
             ),
-
-          email:
-            cleanText(
+            email: cleanText(
               userInfo.email
             ),
-
-          avatarUrl:
-            cleanText(
+            avatarUrl: cleanText(
               userInfo.picture
             ),
-        });
+          }
+        );
 
       const sessionToken =
         await createCustomerSession(
@@ -1289,13 +1169,11 @@ app.get(
       const params =
         new URLSearchParams({
           client_id:
-            process.env.FACEBOOK_APP_ID,
-
+            process.env
+              .FACEBOOK_APP_ID,
           redirect_uri:
             redirectUri,
-
           state,
-
           scope:
             "email,public_profile",
         });
@@ -1355,16 +1233,14 @@ app.get(
       const tokenParams =
         new URLSearchParams({
           client_id:
-            process.env.FACEBOOK_APP_ID,
-
+            process.env
+              .FACEBOOK_APP_ID,
           client_secret:
-            process.env.FACEBOOK_APP_SECRET,
-
+            process.env
+              .FACEBOOK_APP_SECRET,
           redirect_uri:
             redirectUri,
-
-          code:
-            String(code),
+          code: String(code),
         });
 
       const tokenData =
@@ -1372,7 +1248,9 @@ app.get(
           `https://graph.facebook.com/${FACEBOOK_GRAPH_VERSION}/oauth/access_token?${tokenParams.toString()}`
         );
 
-      if (!tokenData.access_token) {
+      if (
+        !tokenData.access_token
+      ) {
         throw new Error(
           "Facebook access token missing."
         );
@@ -1409,29 +1287,22 @@ app.get(
         "";
 
       const customer =
-        await findOrCreateOAuthCustomer({
-          provider:
-            "facebook",
-
-          providerId:
-            String(profile.id),
-
-          name:
-            cleanText(
+        await findOrCreateOAuthCustomer(
+          {
+            provider: "facebook",
+            providerId:
+              String(profile.id),
+            name: cleanText(
               profile.name,
               "Facebook Customer"
             ),
-
-          email:
-            cleanText(
+            email: cleanText(
               profile.email
             ),
-
-          avatarUrl:
-            cleanText(
-              avatar
-            ),
-        });
+            avatarUrl:
+              cleanText(avatar),
+          }
+        );
 
       const sessionToken =
         await createCustomerSession(
@@ -1515,16 +1386,15 @@ app.post(
         cookies[CUSTOMER_COOKIE];
 
       if (rawToken) {
+        const tokenHash =
+          hashToken(rawToken);
+
         await pool.query(
           `
           DELETE FROM customer_sessions
           WHERE token_hash = $1
           `,
-          [
-            hashToken(
-              rawToken
-            ),
-          ]
+          [tokenHash]
         );
       }
 
@@ -1666,9 +1536,7 @@ app.get(
           WHERE customer_id = $1
           ORDER BY created_at DESC
           `,
-          [
-            req.customer.id,
-          ]
+          [req.customer.id]
         );
 
       res.json({
@@ -1743,6 +1611,7 @@ app.get(
 
 /* =========================================================
    STORE API
+   LOGIN REQUIRED
 ========================================================= */
 
 app.get(
@@ -1778,7 +1647,8 @@ app.get(
         `);
 
       const settings =
-        settingsResult.rows[0]?.data ||
+        settingsResult.rows[0]
+          ?.data ||
         defaultSettings;
 
       res.json({
@@ -1875,10 +1745,10 @@ function createAdminToken() {
   );
 }
 
-function verifyAdminToken(token) {
-  if (!token) {
-    return false;
-  }
+function verifyAdminToken(
+  token
+) {
+  if (!token) return false;
 
   try {
     const decoded =
@@ -1927,15 +1797,23 @@ function verifyAdminToken(token) {
         .digest("hex");
 
     return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expected)
+      Buffer.from(
+        signature
+      ),
+      Buffer.from(
+        expected
+      )
     );
   } catch {
     return false;
   }
 }
 
-function adminAuth(req, res, next) {
+function adminAuth(
+  req,
+  res,
+  next
+) {
   const auth =
     req.headers.authorization ||
     "";
@@ -2118,9 +1996,12 @@ app.post(
       }
 
       if (
-        !process.env.CLOUDINARY_CLOUD_NAME ||
-        !process.env.CLOUDINARY_API_KEY ||
-        !process.env.CLOUDINARY_API_SECRET
+        !process.env
+          .CLOUDINARY_CLOUD_NAME ||
+        !process.env
+          .CLOUDINARY_API_KEY ||
+        !process.env
+          .CLOUDINARY_API_SECRET
       ) {
         return res.status(500).json({
           ok: false,
@@ -2206,7 +2087,7 @@ app.post(
       const oldPrice =
         positiveNumber(
           body.oldPrice ??
-          body.old_price
+            body.old_price
         );
 
       const discount =
@@ -2382,7 +2263,7 @@ app.put(
       const oldPrice =
         positiveNumber(
           body.oldPrice ??
-          body.old_price
+            body.old_price
         );
 
       const discount =
@@ -2612,13 +2493,13 @@ async function restoreOrderStock(
     const productId =
       cleanText(
         item.productId ??
-        item.id
+          item.id
       );
 
     const quantity =
       nonNegativeInt(
         item.quantity ??
-        item.qty,
+          item.qty,
         0
       );
 
@@ -2662,6 +2543,7 @@ async function restoreOrderStock(
 
 /* =========================================================
    CUSTOMER CREATE ORDER
+   LOGIN REQUIRED
 ========================================================= */
 
 app.post(
@@ -2752,13 +2634,13 @@ app.post(
         const productId =
           cleanText(
             rawItem.productId ??
-            rawItem.id
+              rawItem.id
           );
 
         const quantity =
           nonNegativeInt(
             rawItem.quantity ??
-            rawItem.qty,
+              rawItem.qty,
             0
           );
 
@@ -2783,7 +2665,8 @@ app.post(
           );
 
         if (
-          !productResult.rows.length
+          !productResult.rows
+            .length
         ) {
           throw new Error(
             "A product in your cart no longer exists."
@@ -2811,30 +2694,20 @@ app.post(
         const lineTotal =
           price * quantity;
 
-        total +=
-          lineTotal;
+        total += lineTotal;
 
         normalizedItems.push({
           productId:
             product.id,
-
-          id:
-            product.id,
-
+          id: product.id,
           name:
             product.name,
-
           price,
-
           quantity,
-
-          qty:
-            quantity,
-
+          qty: quantity,
           image:
             product.image ||
             "",
-
           lineTotal,
         });
 
@@ -2856,24 +2729,20 @@ app.post(
       const orderId =
         makeId("SM");
 
-      const customerSnapshot = {
-        id:
-          req.customer.id,
-
-        name,
-
-        email:
-          req.customer.email ||
-          "",
-
-        provider:
-          req.customer.provider ||
-          "",
-
-        phone,
-
-        address,
-      };
+      const customerSnapshot =
+        {
+          id:
+            req.customer.id,
+          name,
+          email:
+            req.customer.email ||
+            "",
+          provider:
+            req.customer.provider ||
+            "",
+          phone,
+          address,
+        };
 
       const result =
         await client.query(
@@ -2906,19 +2775,14 @@ app.post(
           `,
           [
             orderId,
-
             JSON.stringify(
               customerSnapshot
             ),
-
             JSON.stringify(
               normalizedItems
             ),
-
             total,
-
             paymentMethod,
-
             req.customer.id,
           ]
         );
@@ -2953,9 +2817,7 @@ app.post(
       });
     } catch (error) {
       await client
-        .query(
-          "ROLLBACK"
-        )
+        .query("ROLLBACK")
         .catch(() => {});
 
       console.error(
@@ -3071,7 +2933,8 @@ app.put(
         );
 
       if (
-        !orderResult.rows.length
+        !orderResult.rows
+          .length
       ) {
         await client.query(
           "ROLLBACK"
@@ -3088,8 +2951,7 @@ app.put(
         orderResult.rows[0];
 
       if (
-        status ===
-          "Cancelled" &&
+        status === "Cancelled" &&
         !order.stock_restored
       ) {
         order =
@@ -3126,9 +2988,7 @@ app.put(
       });
     } catch (error) {
       await client
-        .query(
-          "ROLLBACK"
-        )
+        .query("ROLLBACK")
         .catch(() => {});
 
       console.error(
@@ -3185,7 +3045,8 @@ app.put(
         );
 
       if (
-        !orderResult.rows.length
+        !orderResult.rows
+          .length
       ) {
         await client.query(
           "ROLLBACK"
@@ -3264,9 +3125,7 @@ app.put(
       });
     } catch (error) {
       await client
-        .query(
-          "ROLLBACK"
-        )
+        .query("ROLLBACK")
         .catch(() => {});
 
       console.error(
@@ -3366,6 +3225,7 @@ app.put(
 
 /* =========================================================
    CUSTOMER ORDER TRACKING
+   OWN ORDERS ONLY
 ========================================================= */
 
 app.get(
@@ -3576,7 +3436,7 @@ app.put(
 );
 
 /* =========================================================
-   CLEAN OLD SESSIONS
+   CLEAN OLD SESSIONS PERIODICALLY
 ========================================================= */
 
 setInterval(
@@ -3614,8 +3474,7 @@ if (
     express.static(
       PUBLIC_DIR,
       {
-        index:
-          "index.html",
+        index: "index.html",
       }
     )
   );
@@ -3677,7 +3536,7 @@ app.get(
 
 /* =========================================================
    WEBSITE FALLBACK
-   EXPRESS 5 SAFE
+   FIXED FOR NEW EXPRESS VERSION
 ========================================================= */
 
 app.use(
@@ -3723,8 +3582,7 @@ app.use(
   (req, res) => {
     res.status(404).json({
       ok: false,
-      message:
-        "Not found.",
+      message: "Not found.",
     });
   }
 );
@@ -3776,15 +3634,7 @@ async function startServer() {
         );
 
         console.log(
-          "Admin: /admin.html"
-        );
-
-        console.log(
-          "Google Login: /auth/google"
-        );
-
-        console.log(
-          "Facebook Login: /auth/facebook"
+          `Admin: /admin.html`
         );
       }
     );
@@ -3802,7 +3652,9 @@ async function startServer() {
    GRACEFUL SHUTDOWN
 ========================================================= */
 
-async function shutdown(signal) {
+async function shutdown(
+  signal
+) {
   console.log(
     `${signal} received. Shutting down...`
   );
