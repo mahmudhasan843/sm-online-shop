@@ -6,13 +6,19 @@ const { Pool } = require("pg");
 const cloudinary = require("cloudinary").v2;
 
 const app = express();
+
 app.set("trust proxy", 1);
 
 const PORT = process.env.PORT || 10000;
 const PUBLIC_DIR = path.join(__dirname, "public");
 
 app.use(express.json({ limit: "20mb" }));
-app.use(express.urlencoded({ extended: true, limit: "20mb" }));
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: "20mb",
+  })
+);
 
 /* =========================================================
    BASIC SETTINGS
@@ -83,13 +89,19 @@ cloudinary.config({
 ========================================================= */
 
 function cleanText(value, fallback = "") {
-  if (value === undefined || value === null) return fallback;
+  if (value === undefined || value === null) {
+    return fallback;
+  }
+
   return String(value).trim();
 }
 
 function positiveNumber(value, fallback = 0) {
   const n = Number(value);
-  return Number.isFinite(n) && n >= 0 ? n : fallback;
+
+  return Number.isFinite(n) && n >= 0
+    ? n
+    : fallback;
 }
 
 function nonNegativeInt(value, fallback = 0) {
@@ -104,7 +116,10 @@ function nonNegativeInt(value, fallback = 0) {
 
 function safeJsonParse(value, fallback) {
   try {
-    if (typeof value === "object") return value;
+    if (typeof value === "object") {
+      return value;
+    }
+
     return JSON.parse(value);
   } catch {
     return fallback;
@@ -144,7 +159,9 @@ function parseCookies(req) {
   header.split(";").forEach((part) => {
     const index = part.indexOf("=");
 
-    if (index === -1) return;
+    if (index === -1) {
+      return;
+    }
 
     const key = part.slice(0, index).trim();
     const value = part.slice(index + 1).trim();
@@ -762,8 +779,6 @@ async function findOrCreateOAuthCustomer(
       customer =
         result.rows[0];
     } else {
-      /* Try matching existing account by email */
-
       if (profile.email) {
         result =
           await client.query(
@@ -975,13 +990,19 @@ app.get(
           client_id:
             process.env
               .GOOGLE_CLIENT_ID,
+
           redirect_uri:
             redirectUri,
+
           response_type: "code",
+
           scope:
             "openid email profile",
+
           state,
+
           access_type: "online",
+
           prompt:
             "select_account",
         });
@@ -1002,6 +1023,9 @@ app.get(
     }
   }
 );
+/* =========================================================
+   GOOGLE CALLBACK
+========================================================= */
 
 app.get(
   "/auth/google/callback",
@@ -1043,21 +1067,27 @@ app.get(
           "https://oauth2.googleapis.com/token",
           {
             method: "POST",
+
             headers: {
               "Content-Type":
                 "application/x-www-form-urlencoded",
             },
+
             body:
               new URLSearchParams({
                 client_id:
                   process.env
                     .GOOGLE_CLIENT_ID,
+
                 client_secret:
                   process.env
                     .GOOGLE_CLIENT_SECRET,
+
                 code: String(code),
+
                 grant_type:
                   "authorization_code",
+
                 redirect_uri:
                   redirectUri,
               }).toString(),
@@ -1093,15 +1123,19 @@ app.get(
         await findOrCreateOAuthCustomer(
           {
             provider: "google",
+
             providerId:
               String(userInfo.sub),
+
             name: cleanText(
               userInfo.name,
               "Google Customer"
             ),
+
             email: cleanText(
               userInfo.email
             ),
+
             avatarUrl: cleanText(
               userInfo.picture
             ),
@@ -1171,9 +1205,12 @@ app.get(
           client_id:
             process.env
               .FACEBOOK_APP_ID,
+
           redirect_uri:
             redirectUri,
+
           state,
+
           scope:
             "email,public_profile",
         });
@@ -1235,11 +1272,14 @@ app.get(
           client_id:
             process.env
               .FACEBOOK_APP_ID,
+
           client_secret:
             process.env
               .FACEBOOK_APP_SECRET,
+
           redirect_uri:
             redirectUri,
+
           code: String(code),
         });
 
@@ -1290,15 +1330,19 @@ app.get(
         await findOrCreateOAuthCustomer(
           {
             provider: "facebook",
+
             providerId:
               String(profile.id),
+
             name: cleanText(
               profile.name,
               "Facebook Customer"
             ),
+
             email: cleanText(
               profile.email
             ),
+
             avatarUrl:
               cleanText(avatar),
           }
@@ -1611,12 +1655,11 @@ app.get(
 
 /* =========================================================
    STORE API
-   LOGIN REQUIRED
+   PUBLIC — CUSTOMER LOGIN NOT REQUIRED
 ========================================================= */
 
 app.get(
   "/api/store",
-  requireCustomer,
   async (req, res) => {
     try {
       const settingsResult =
@@ -1674,7 +1717,6 @@ app.get(
 
 app.get(
   "/api/products",
-  requireCustomer,
   async (req, res) => {
     try {
       const result =
@@ -1748,7 +1790,9 @@ function createAdminToken() {
 function verifyAdminToken(
   token
 ) {
-  if (!token) return false;
+  if (!token) {
+    return false;
+  }
 
   try {
     const decoded =
@@ -2010,25 +2054,23 @@ app.post(
         });
       }
 
-      const result =
-        await cloudinary
-          .uploader
-          .upload(
-            image,
-            {
-              folder:
-                "sm-online-shop",
-              resource_type:
-                "image",
-            }
-          );
+      const uploadResult =
+        await cloudinary.uploader.upload(
+          image,
+          {
+            folder:
+              "sm-online-shop/products",
+            resource_type:
+              "image",
+          }
+        );
 
       res.json({
         ok: true,
         url:
-          result.secure_url,
+          uploadResult.secure_url,
         publicId:
-          result.public_id,
+          uploadResult.public_id,
       });
     } catch (error) {
       console.error(
@@ -2039,952 +2081,90 @@ app.post(
       res.status(500).json({
         ok: false,
         message:
-          error?.message ||
           "Image upload failed.",
       });
     }
   }
 );
-
 /* =========================================================
-   ADMIN CREATE PRODUCT
-========================================================= */
-
-app.post(
-  "/api/admin/products",
-  adminAuth,
-  async (req, res) => {
-    try {
-      const body =
-        req.body || {};
-
-      const name =
-        cleanText(body.name);
-
-      if (!name) {
-        return res.status(400).json({
-          ok: false,
-          message:
-            "Product name is required.",
-        });
-      }
-
-      const category =
-        cleanText(
-          body.category
-        );
-
-      const description =
-        cleanText(
-          body.description
-        );
-
-      const price =
-        positiveNumber(
-          body.price
-        );
-
-      const oldPrice =
-        positiveNumber(
-          body.oldPrice ??
-            body.old_price
-        );
-
-      const discount =
-        positiveNumber(
-          body.discount
-        );
-
-      const stock =
-        nonNegativeInt(
-          body.stock
-        );
-
-      const image =
-        cleanText(
-          body.image
-        );
-
-      let gallery =
-        body.gallery;
-
-      if (
-        !Array.isArray(
-          gallery
-        )
-      ) {
-        gallery = [];
-      }
-
-      gallery =
-        gallery
-          .map((item) =>
-            cleanText(item)
-          )
-          .filter(Boolean);
-
-      if (
-        image &&
-        !gallery.includes(
-          image
-        )
-      ) {
-        gallery.unshift(
-          image
-        );
-      }
-
-      const id =
-        makeId("P");
-
-      const result =
-        await pool.query(
-          `
-          INSERT INTO products
-            (
-              id,
-              name,
-              category,
-              description,
-              price,
-              old_price,
-              discount,
-              stock,
-              image,
-              gallery
-            )
-          VALUES
-            (
-              $1,
-              $2,
-              $3,
-              $4,
-              $5,
-              $6,
-              $7,
-              $8,
-              $9,
-              $10::jsonb
-            )
-          RETURNING
-            id,
-            name,
-            category,
-            description,
-            price,
-            old_price AS "oldPrice",
-            discount,
-            stock,
-            image,
-            gallery,
-            created_at,
-            updated_at
-          `,
-          [
-            id,
-            name,
-            category,
-            description,
-            price,
-            oldPrice,
-            discount,
-            stock,
-            image,
-            JSON.stringify(
-              gallery
-            ),
-          ]
-        );
-
-      res.json({
-        ok: true,
-        product:
-          result.rows[0],
-      });
-    } catch (error) {
-      console.error(
-        "Admin create product error:",
-        error
-      );
-
-      res.status(500).json({
-        ok: false,
-        message:
-          error?.message ||
-          "Unable to create product.",
-      });
-    }
-  }
-);
-
-/* =========================================================
-   ADMIN UPDATE PRODUCT
-========================================================= */
-
-app.put(
-  "/api/admin/products/:id",
-  adminAuth,
-  async (req, res) => {
-    try {
-      const id =
-        cleanText(
-          req.params.id
-        );
-
-      const body =
-        req.body || {};
-
-      const name =
-        cleanText(body.name);
-
-      if (!name) {
-        return res.status(400).json({
-          ok: false,
-          message:
-            "Product name is required.",
-        });
-      }
-
-      const category =
-        cleanText(
-          body.category
-        );
-
-      const description =
-        cleanText(
-          body.description
-        );
-
-      const price =
-        positiveNumber(
-          body.price
-        );
-
-      const oldPrice =
-        positiveNumber(
-          body.oldPrice ??
-            body.old_price
-        );
-
-      const discount =
-        positiveNumber(
-          body.discount
-        );
-
-      const stock =
-        nonNegativeInt(
-          body.stock
-        );
-
-      const image =
-        cleanText(
-          body.image
-        );
-
-      let gallery =
-        body.gallery;
-
-      if (
-        !Array.isArray(
-          gallery
-        )
-      ) {
-        gallery = [];
-      }
-
-      gallery =
-        gallery
-          .map((item) =>
-            cleanText(item)
-          )
-          .filter(Boolean);
-
-      if (
-        image &&
-        !gallery.includes(
-          image
-        )
-      ) {
-        gallery.unshift(
-          image
-        );
-      }
-
-      const result =
-        await pool.query(
-          `
-          UPDATE products
-          SET
-            name = $1,
-            category = $2,
-            description = $3,
-            price = $4,
-            old_price = $5,
-            discount = $6,
-            stock = $7,
-            image = $8,
-            gallery = $9::jsonb,
-            updated_at = NOW()
-          WHERE id = $10
-          RETURNING
-            id,
-            name,
-            category,
-            description,
-            price,
-            old_price AS "oldPrice",
-            discount,
-            stock,
-            image,
-            gallery,
-            created_at,
-            updated_at
-          `,
-          [
-            name,
-            category,
-            description,
-            price,
-            oldPrice,
-            discount,
-            stock,
-            image,
-            JSON.stringify(
-              gallery
-            ),
-            id,
-          ]
-        );
-
-      if (
-        !result.rows.length
-      ) {
-        return res.status(404).json({
-          ok: false,
-          message:
-            "Product not found.",
-        });
-      }
-
-      res.json({
-        ok: true,
-        product:
-          result.rows[0],
-      });
-    } catch (error) {
-      console.error(
-        "Admin update product error:",
-        error
-      );
-
-      res.status(500).json({
-        ok: false,
-        message:
-          error?.message ||
-          "Unable to update product.",
-      });
-    }
-  }
-);
-
-/* =========================================================
-   ADMIN DELETE PRODUCT
-========================================================= */
-
-app.delete(
-  "/api/admin/products/:id",
-  adminAuth,
-  async (req, res) => {
-    try {
-      const id =
-        cleanText(
-          req.params.id
-        );
-
-      const result =
-        await pool.query(
-          `
-          DELETE FROM products
-          WHERE id = $1
-          RETURNING id
-          `,
-          [id]
-        );
-
-      if (
-        !result.rows.length
-      ) {
-        return res.status(404).json({
-          ok: false,
-          message:
-            "Product not found.",
-        });
-      }
-
-      res.json({
-        ok: true,
-        id,
-      });
-    } catch (error) {
-      console.error(
-        "Admin delete product error:",
-        error
-      );
-
-      res.status(500).json({
-        ok: false,
-        message:
-          error?.message ||
-          "Unable to delete product.",
-      });
-    }
-  }
-);
-
-/* =========================================================
-   ORDER HELPERS
-========================================================= */
-
-async function restoreOrderStock(
-  client,
-  orderId
-) {
-  const orderResult =
-    await client.query(
-      `
-      SELECT *
-      FROM orders
-      WHERE id = $1
-      FOR UPDATE
-      `,
-      [orderId]
-    );
-
-  if (
-    !orderResult.rows.length
-  ) {
-    throw new Error(
-      "Order not found."
-    );
-  }
-
-  const order =
-    orderResult.rows[0];
-
-  if (
-    order.stock_restored
-  ) {
-    return order;
-  }
-
-  const items =
-    Array.isArray(
-      order.items
-    )
-      ? order.items
-      : safeJsonParse(
-          order.items,
-          []
-        );
-
-  for (
-    const item of items
-  ) {
-    const productId =
-      cleanText(
-        item.productId ??
-          item.id
-      );
-
-    const quantity =
-      nonNegativeInt(
-        item.quantity ??
-          item.qty,
-        0
-      );
-
-    if (
-      !productId ||
-      quantity <= 0
-    ) {
-      continue;
-    }
-
-    await client.query(
-      `
-      UPDATE products
-      SET
-        stock = stock + $1,
-        updated_at = NOW()
-      WHERE id = $2
-      `,
-      [
-        quantity,
-        productId,
-      ]
-    );
-  }
-
-  const updated =
-    await client.query(
-      `
-      UPDATE orders
-      SET
-        stock_restored = TRUE,
-        updated_at = NOW()
-      WHERE id = $1
-      RETURNING *
-      `,
-      [orderId]
-    );
-
-  return updated.rows[0];
-}
-
-/* =========================================================
-   CUSTOMER CREATE ORDER
-   LOGIN REQUIRED
-========================================================= */
-
-app.post(
-  "/api/orders",
-  requireCustomer,
-  async (req, res) => {
-    const client =
-      await pool.connect();
-
-    try {
-      const body =
-        req.body || {};
-
-      const rawItems =
-        Array.isArray(
-          body.items
-        )
-          ? body.items
-          : [];
-
-      if (
-        !rawItems.length
-      ) {
-        return res.status(400).json({
-          ok: false,
-          message:
-            "Your cart is empty.",
-        });
-      }
-
-      const checkoutCustomer =
-        body.customer || {};
-
-      const name =
-        cleanText(
-          checkoutCustomer.name,
-          req.customer.name
-        ) ||
-        req.customer.name ||
-        "Customer";
-
-      const phone =
-        cleanText(
-          checkoutCustomer.phone,
-          req.customer.phone
-        );
-
-      const address =
-        cleanText(
-          checkoutCustomer.address,
-          req.customer.address
-        );
-
-      if (!phone) {
-        return res.status(400).json({
-          ok: false,
-          message:
-            "Phone number is required.",
-        });
-      }
-
-      if (!address) {
-        return res.status(400).json({
-          ok: false,
-          message:
-            "Delivery address is required.",
-        });
-      }
-
-      const paymentMethod =
-        cleanText(
-          body.paymentMethod,
-          "COD"
-        );
-
-      await client.query(
-        "BEGIN"
-      );
-
-      const normalizedItems =
-        [];
-
-      let total = 0;
-
-      for (
-        const rawItem of rawItems
-      ) {
-        const productId =
-          cleanText(
-            rawItem.productId ??
-              rawItem.id
-          );
-
-        const quantity =
-          nonNegativeInt(
-            rawItem.quantity ??
-              rawItem.qty,
-            0
-          );
-
-        if (
-          !productId ||
-          quantity <= 0
-        ) {
-          throw new Error(
-            "Invalid cart item."
-          );
-        }
-
-        const productResult =
-          await client.query(
-            `
-            SELECT *
-            FROM products
-            WHERE id = $1
-            FOR UPDATE
-            `,
-            [productId]
-          );
-
-        if (
-          !productResult.rows
-            .length
-        ) {
-          throw new Error(
-            "A product in your cart no longer exists."
-          );
-        }
-
-        const product =
-          productResult.rows[0];
-
-        if (
-          Number(
-            product.stock
-          ) < quantity
-        ) {
-          throw new Error(
-            `${product.name} does not have enough stock.`
-          );
-        }
-
-        const price =
-          Number(
-            product.price
-          );
-
-        const lineTotal =
-          price * quantity;
-
-        total += lineTotal;
-
-        normalizedItems.push({
-          productId:
-            product.id,
-          id: product.id,
-          name:
-            product.name,
-          price,
-          quantity,
-          qty: quantity,
-          image:
-            product.image ||
-            "",
-          lineTotal,
-        });
-
-        await client.query(
-          `
-          UPDATE products
-          SET
-            stock = stock - $1,
-            updated_at = NOW()
-          WHERE id = $2
-          `,
-          [
-            quantity,
-            productId,
-          ]
-        );
-      }
-
-      const orderId =
-        makeId("SM");
-
-      const customerSnapshot =
-        {
-          id:
-            req.customer.id,
-          name,
-          email:
-            req.customer.email ||
-            "",
-          provider:
-            req.customer.provider ||
-            "",
-          phone,
-          address,
-        };
-
-      const result =
-        await client.query(
-          `
-          INSERT INTO orders
-            (
-              id,
-              customer,
-              items,
-              total,
-              payment_method,
-              status,
-              payment_status,
-              stock_restored,
-              customer_id
-            )
-          VALUES
-            (
-              $1,
-              $2::jsonb,
-              $3::jsonb,
-              $4,
-              $5,
-              'Pending',
-              'Pending',
-              FALSE,
-              $6
-            )
-          RETURNING *
-          `,
-          [
-            orderId,
-            JSON.stringify(
-              customerSnapshot
-            ),
-            JSON.stringify(
-              normalizedItems
-            ),
-            total,
-            paymentMethod,
-            req.customer.id,
-          ]
-        );
-
-      await client.query(
-        `
-        UPDATE customers
-        SET
-          name = $1,
-          phone = $2,
-          address = $3,
-          updated_at = NOW()
-        WHERE id = $4
-        `,
-        [
-          name,
-          phone,
-          address,
-          req.customer.id,
-        ]
-      );
-
-      await client.query(
-        "COMMIT"
-      );
-
-      res.json({
-        ok: true,
-        orderId,
-        order:
-          result.rows[0],
-      });
-    } catch (error) {
-      await client
-        .query("ROLLBACK")
-        .catch(() => {});
-
-      console.error(
-        "Create order error:",
-        error
-      );
-
-      res.status(400).json({
-        ok: false,
-        message:
-          error?.message ||
-          "Unable to create order.",
-      });
-    } finally {
-      client.release();
-    }
-  }
-);
-
-/* =========================================================
-   ADMIN ORDERS
-========================================================= */
-
-app.get(
-  "/api/admin/orders",
-  adminAuth,
-  async (req, res) => {
-    try {
-      const result =
-        await pool.query(`
-          SELECT
-            id,
-            customer,
-            items,
-            total,
-            payment_method,
-            status,
-            payment_status,
-            stock_restored,
-            customer_id,
-            created_at,
-            updated_at
-          FROM orders
-          WHERE status <> 'Cancelled'
-          ORDER BY created_at DESC
-        `);
-
-      res.json(
-        result.rows
-      );
-    } catch (error) {
-      console.error(
-        "Admin orders error:",
-        error
-      );
-
-      res.status(500).json({
-        ok: false,
-        message:
-          "Unable to load orders.",
-      });
-    }
-  }
-);
-
-/* =========================================================
-   ADMIN CHANGE ORDER STATUS
+   ADMIN UPDATE ORDER STATUS
 ========================================================= */
 
 app.put(
   "/api/admin/orders/:id/status",
   adminAuth,
   async (req, res) => {
-    const client =
-      await pool.connect();
+    const client = await pool.connect();
 
     try {
-      const id =
-        cleanText(
-          req.params.id
-        );
+      const id = cleanText(req.params.id);
+      const status = cleanText(req.body?.status);
 
-      const status =
-        cleanText(
-          req.body?.status
-        );
-
-      if (
-        !ORDER_STATUSES.includes(
-          status
-        )
-      ) {
+      if (!ORDER_STATUSES.includes(status)) {
         return res.status(400).json({
           ok: false,
-          message:
-            "Invalid order status.",
+          message: "Invalid order status.",
         });
       }
 
-      await client.query(
-        "BEGIN"
+      await client.query("BEGIN");
+
+      const orderResult = await client.query(
+        `
+        SELECT *
+        FROM orders
+        WHERE id = $1
+        FOR UPDATE
+        `,
+        [id]
       );
 
-      const orderResult =
-        await client.query(
-          `
-          SELECT *
-          FROM orders
-          WHERE id = $1
-          FOR UPDATE
-          `,
-          [id]
-        );
-
-      if (
-        !orderResult.rows
-          .length
-      ) {
-        await client.query(
-          "ROLLBACK"
-        );
+      if (!orderResult.rows.length) {
+        await client.query("ROLLBACK");
 
         return res.status(404).json({
           ok: false,
-          message:
-            "Order not found.",
+          message: "Order not found.",
         });
       }
 
-      let order =
-        orderResult.rows[0];
+      let order = orderResult.rows[0];
 
+      /*
+        Cancel করলে stock আবার ফেরত যাবে।
+        একই order দ্বিতীয়বার cancel হলেও
+        stock duplicate restore হবে না।
+      */
       if (
         status === "Cancelled" &&
         !order.stock_restored
       ) {
-        order =
-          await restoreOrderStock(
-            client,
-            id
-          );
+        order = await restoreOrderStock(
+          client,
+          id
+        );
       }
 
-      const result =
-        await client.query(
-          `
-          UPDATE orders
-          SET
-            status = $1,
-            updated_at = NOW()
-          WHERE id = $2
-          RETURNING *
-          `,
-          [
-            status,
-            id,
-          ]
-        );
-
-      await client.query(
-        "COMMIT"
+      const result = await client.query(
+        `
+        UPDATE orders
+        SET
+          status = $1,
+          updated_at = NOW()
+        WHERE id = $2
+        RETURNING *
+        `,
+        [
+          status,
+          id,
+        ]
       );
+
+      await client.query("COMMIT");
 
       res.json({
         ok: true,
-        order:
-          result.rows[0],
+        order: result.rows[0],
       });
     } catch (error) {
       await client
@@ -3008,67 +2188,57 @@ app.put(
   }
 );
 
+
 /* =========================================================
    CUSTOMER CANCEL ORDER
+
+   IMPORTANT:
+   Customer login লাগবে না।
+   Order ID দিয়ে cancel করা যাবে।
 ========================================================= */
 
 app.put(
   "/api/orders/:id/cancel",
-  requireCustomer,
   async (req, res) => {
-    const client =
-      await pool.connect();
+    const client = await pool.connect();
 
     try {
-      const id =
-        cleanText(
-          req.params.id
-        );
-
-      await client.query(
-        "BEGIN"
+      const id = cleanText(
+        req.params.id
       );
 
-      const orderResult =
-        await client.query(
-          `
-          SELECT *
-          FROM orders
-          WHERE id = $1
-            AND customer_id = $2
-          FOR UPDATE
-          `,
-          [
-            id,
-            req.customer.id,
-          ]
-        );
+      await client.query("BEGIN");
 
-      if (
-        !orderResult.rows
-          .length
-      ) {
-        await client.query(
-          "ROLLBACK"
-        );
+      const orderResult = await client.query(
+        `
+        SELECT *
+        FROM orders
+        WHERE id = $1
+        FOR UPDATE
+        `,
+        [id]
+      );
+
+      if (!orderResult.rows.length) {
+        await client.query("ROLLBACK");
 
         return res.status(404).json({
           ok: false,
-          message:
-            "Order not found.",
+          message: "Order not found.",
         });
       }
 
       let order =
         orderResult.rows[0];
 
+      /*
+        Already cancelled হলে
+        কিছুই আবার restore করা হবে না।
+      */
       if (
-        order.status ===
-        "Cancelled"
+        order.status === "Cancelled"
       ) {
-        await client.query(
-          "COMMIT"
-        );
+        await client.query("COMMIT");
 
         return res.json({
           ok: true,
@@ -3076,13 +2246,13 @@ app.put(
         });
       }
 
+      /*
+        Delivered order cancel করা যাবে না।
+      */
       if (
-        order.status ===
-        "Delivered"
+        order.status === "Delivered"
       ) {
-        await client.query(
-          "ROLLBACK"
-        );
+        await client.query("ROLLBACK");
 
         return res.status(400).json({
           ok: false,
@@ -3091,9 +2261,10 @@ app.put(
         });
       }
 
-      if (
-        !order.stock_restored
-      ) {
+      /*
+        Stock ফেরত দেওয়া।
+      */
+      if (!order.stock_restored) {
         order =
           await restoreOrderStock(
             client,
@@ -3101,22 +2272,19 @@ app.put(
           );
       }
 
-      const result =
-        await client.query(
-          `
-          UPDATE orders
-          SET
-            status = 'Cancelled',
-            updated_at = NOW()
-          WHERE id = $1
-          RETURNING *
-          `,
-          [id]
-        );
-
-      await client.query(
-        "COMMIT"
+      const result = await client.query(
+        `
+        UPDATE orders
+        SET
+          status = 'Cancelled',
+          updated_at = NOW()
+        WHERE id = $1
+        RETURNING *
+        `,
+        [id]
       );
+
+      await client.query("COMMIT");
 
       res.json({
         ok: true,
@@ -3145,6 +2313,7 @@ app.put(
   }
 );
 
+
 /* =========================================================
    ADMIN PAYMENT STATUS
 ========================================================= */
@@ -3154,10 +2323,9 @@ app.put(
   adminAuth,
   async (req, res) => {
     try {
-      const id =
-        cleanText(
-          req.params.id
-        );
+      const id = cleanText(
+        req.params.id
+      );
 
       const paymentStatus =
         cleanText(
@@ -3192,9 +2360,7 @@ app.put(
           ]
         );
 
-      if (
-        !result.rows.length
-      ) {
+      if (!result.rows.length) {
         return res.status(404).json({
           ok: false,
           message:
@@ -3223,39 +2389,43 @@ app.put(
   }
 );
 
+
 /* =========================================================
    CUSTOMER ORDER TRACKING
-   OWN ORDERS ONLY
+
+   NO CUSTOMER LOGIN REQUIRED
 ========================================================= */
 
 app.get(
   "/api/orders/:id",
-  requireCustomer,
   async (req, res) => {
     try {
-      const id =
-        cleanText(
-          req.params.id
-        );
+      const id = cleanText(
+        req.params.id
+      );
 
       const result =
         await pool.query(
           `
-          SELECT *
+          SELECT
+            id,
+            customer,
+            items,
+            total,
+            payment_method,
+            status,
+            payment_status,
+            stock_restored,
+            created_at,
+            updated_at
           FROM orders
           WHERE id = $1
-            AND customer_id = $2
           LIMIT 1
           `,
-          [
-            id,
-            req.customer.id,
-          ]
+          [id]
         );
 
-      if (
-        !result.rows.length
-      ) {
+      if (!result.rows.length) {
         return res.status(404).json({
           ok: false,
           message:
@@ -3283,13 +2453,15 @@ app.get(
   }
 );
 
+
 /* =========================================================
    PAYMENT PLACEHOLDER
+
+   এখন Cash on Delivery ব্যবহার করা যাবে।
 ========================================================= */
 
 app.post(
   "/api/payment/create",
-  requireCustomer,
   async (req, res) => {
     return res.status(501).json({
       ok: false,
@@ -3298,6 +2470,7 @@ app.post(
     });
   }
 );
+
 
 /* =========================================================
    ADMIN SETTINGS
@@ -3309,12 +2482,14 @@ app.get(
   async (req, res) => {
     try {
       const result =
-        await pool.query(`
+        await pool.query(
+          `
           SELECT data
           FROM store_settings
           WHERE id = 1
           LIMIT 1
-        `);
+          `
+        );
 
       res.json({
         ok: true,
@@ -3337,18 +2512,21 @@ app.get(
   }
 );
 
+
 app.put(
   "/api/admin/settings",
   adminAuth,
   async (req, res) => {
     try {
       const currentResult =
-        await pool.query(`
+        await pool.query(
+          `
           SELECT data
           FROM store_settings
           WHERE id = 1
           LIMIT 1
-        `);
+          `
+        );
 
       const current =
         currentResult.rows[0]?.data ||
@@ -3435,6 +2613,7 @@ app.put(
   }
 );
 
+
 /* =========================================================
    CLEAN OLD SESSIONS PERIODICALLY
 ========================================================= */
@@ -3461,6 +2640,7 @@ setInterval(
   60 * 60 * 1000
 );
 
+
 /* =========================================================
    STATIC FILES
 ========================================================= */
@@ -3479,6 +2659,7 @@ if (
     )
   );
 }
+
 
 /* =========================================================
    ADMIN PAGE
@@ -3509,6 +2690,7 @@ app.get(
   }
 );
 
+
 app.get(
   "/admin.html",
   (req, res) => {
@@ -3534,9 +2716,12 @@ app.get(
   }
 );
 
+
 /* =========================================================
    WEBSITE FALLBACK
-   FIXED FOR NEW EXPRESS VERSION
+   EXPRESS 5 SAFE VERSION
+
+   এখানে app.get("*") ব্যবহার করা যাবে না।
 ========================================================= */
 
 app.use(
@@ -3574,6 +2759,7 @@ app.use(
   }
 );
 
+
 /* =========================================================
    404
 ========================================================= */
@@ -3582,10 +2768,12 @@ app.use(
   (req, res) => {
     res.status(404).json({
       ok: false,
-      message: "Not found.",
+      message:
+        "Not found.",
     });
   }
 );
+
 
 /* =========================================================
    ERROR HANDLER
@@ -3617,15 +2805,20 @@ app.use(
     });
   }
 );
-
 /* =========================================================
    START SERVER
 ========================================================= */
 
 async function startServer() {
   try {
+    /*
+      প্রথমে PostgreSQL database initialize হবে।
+    */
     await initDatabase();
 
+    /*
+      Database ready হওয়ার পর Express server চালু হবে।
+    */
     app.listen(
       PORT,
       () => {
@@ -3648,6 +2841,7 @@ async function startServer() {
   }
 }
 
+
 /* =========================================================
    GRACEFUL SHUTDOWN
 ========================================================= */
@@ -3660,6 +2854,9 @@ async function shutdown(
   );
 
   try {
+    /*
+      PostgreSQL connection pool বন্ধ করা।
+    */
     await pool.end();
   } catch (error) {
     console.error(
@@ -3670,6 +2867,11 @@ async function shutdown(
 
   process.exit(0);
 }
+
+
+/* =========================================================
+   PROCESS SIGNALS
+========================================================= */
 
 process.on(
   "SIGTERM",
@@ -3682,5 +2884,10 @@ process.on(
   () =>
     shutdown("SIGINT")
 );
+
+
+/* =========================================================
+   RUN SERVER
+========================================================= */
 
 startServer();
