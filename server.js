@@ -2714,3 +2714,1266 @@ app.put(
    PART 2 END
    PART 3 WILL CONTINUE DIRECTLY FROM HERE
 ========================================================= */
+/* =========================================================
+   PART 3 — CUSTOMER ORDER ACTIONS + STORE + PRODUCTS
+========================================================= */
+
+
+/* =========================================================
+   CUSTOMER — CANCEL ORDER
+   NO CUSTOMER LOGIN REQUIRED
+========================================================= */
+
+app.put(
+  "/api/orders/:id/cancel",
+  async (req, res) => {
+    const client =
+      await pool.connect();
+
+    try {
+      const orderId =
+        cleanText(
+          req.params.id
+        );
+
+      if (!orderId) {
+        return res.status(400).json({
+          ok: false,
+          message:
+            "Order ID is required."
+        });
+      }
+
+      await client.query(
+        "BEGIN"
+      );
+
+      const result =
+        await client.query(
+          `
+          SELECT
+            id,
+            status,
+            stock_restored
+          FROM orders
+          WHERE id = $1
+          FOR UPDATE
+          `,
+          [
+            orderId
+          ]
+        );
+
+      if (
+        !result.rows.length
+      ) {
+        throw new Error(
+          "Order not found."
+        );
+      }
+
+      const order =
+        result.rows[0];
+
+      if (
+        order.status ===
+          "Cancelled"
+      ) {
+        await client.query(
+          "COMMIT"
+        );
+
+        return res.json({
+          ok: true,
+          message:
+            "Order is already cancelled.",
+          status:
+            "Cancelled"
+        });
+      }
+
+      if (
+        order.status ===
+          "Delivered"
+      ) {
+        throw new Error(
+          "Delivered order cannot be cancelled."
+        );
+      }
+
+      if (
+        order.status ===
+          "Shipped"
+      ) {
+        throw new Error(
+          "Shipped order cannot be cancelled."
+        );
+      }
+
+      await restoreOrderStock(
+        client,
+        orderId
+      );
+
+      await client.query(
+        `
+        UPDATE orders
+        SET
+          status = 'Cancelled',
+          updated_at = NOW()
+        WHERE id = $1
+        `,
+        [
+          orderId
+        ]
+      );
+
+      await client.query(
+        "COMMIT"
+      );
+
+      res.json({
+        ok: true,
+        message:
+          "Order cancelled successfully.",
+        status:
+          "Cancelled"
+      });
+    } catch (error) {
+      try {
+        await client.query(
+          "ROLLBACK"
+        );
+      } catch {}
+
+      console.error(
+        "Cancel order error:",
+        error
+      );
+
+      res.status(400).json({
+        ok: false,
+        message:
+          error.message ||
+          "Unable to cancel order."
+      });
+    } finally {
+      client.release();
+    }
+  }
+);
+
+
+/* =========================================================
+   CUSTOMER — TRACK ORDER
+   NO LOGIN REQUIRED
+========================================================= */
+
+app.get(
+  "/api/orders/:id",
+  async (req, res) => {
+    try {
+      const orderId =
+        cleanText(
+          req.params.id
+        );
+
+      if (!orderId) {
+        return res.status(400).json({
+          ok: false,
+          message:
+            "Order ID is required."
+        });
+      }
+
+      const result =
+        await pool.query(
+          `
+          SELECT
+            id,
+            customer,
+            items,
+            total,
+            payment_method,
+            status,
+            payment_status,
+            created_at,
+            updated_at
+          FROM orders
+          WHERE id = $1
+          LIMIT 1
+          `,
+          [
+            orderId
+          ]
+        );
+
+      if (
+        !result.rows.length
+      ) {
+        return res.status(404).json({
+          ok: false,
+          message:
+            "Order not found."
+        });
+      }
+
+      const order =
+        result.rows[0];
+
+      res.json({
+        ok: true,
+
+        order: {
+          ...order,
+
+          customer:
+            safeJsonParse(
+              order.customer,
+              {}
+            ),
+
+          items:
+            safeJsonParse(
+              order.items,
+              []
+            ),
+
+          total:
+            Number(
+              order.total
+            )
+        }
+      });
+    } catch (error) {
+      console.error(
+        "Track order error:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        message:
+          "Unable to load order."
+      });
+    }
+  }
+);
+
+
+/* =========================================================
+   CUSTOMER — ORDER TRACKING ALIAS
+========================================================= */
+
+app.get(
+  "/api/orders/track/:id",
+  async (req, res) => {
+    try {
+      const orderId =
+        cleanText(
+          req.params.id
+        );
+
+      if (!orderId) {
+        return res.status(400).json({
+          ok: false,
+          message:
+            "Order ID is required."
+        });
+      }
+
+      const result =
+        await pool.query(
+          `
+          SELECT
+            id,
+            customer,
+            items,
+            total,
+            payment_method,
+            status,
+            payment_status,
+            created_at,
+            updated_at
+          FROM orders
+          WHERE id = $1
+          LIMIT 1
+          `,
+          [
+            orderId
+          ]
+        );
+
+      if (
+        !result.rows.length
+      ) {
+        return res.status(404).json({
+          ok: false,
+          message:
+            "Order not found."
+        });
+      }
+
+      const order =
+        result.rows[0];
+
+      res.json({
+        ok: true,
+
+        order: {
+          ...order,
+
+          customer:
+            safeJsonParse(
+              order.customer,
+              {}
+            ),
+
+          items:
+            safeJsonParse(
+              order.items,
+              []
+            ),
+
+          total:
+            Number(
+              order.total
+            )
+        }
+      });
+    } catch (error) {
+      console.error(
+        "Order tracking error:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        message:
+          "Unable to track order."
+      });
+    }
+  }
+);
+
+
+/* =========================================================
+   PAYMENT — CREATE
+   PLACEHOLDER FOR NOW
+========================================================= */
+
+app.post(
+  "/api/payment/create",
+  async (req, res) => {
+    try {
+      const body =
+        req.body || {};
+
+      const orderId =
+        cleanText(
+          body.orderId ??
+          body.order_id
+        );
+
+      const method =
+        cleanText(
+          body.method ??
+          body.paymentMethod ??
+          body.payment_method
+        ) || "COD";
+
+      if (!orderId) {
+        return res.status(400).json({
+          ok: false,
+          message:
+            "Order ID is required."
+        });
+      }
+
+      const orderResult =
+        await pool.query(
+          `
+          SELECT
+            id,
+            total,
+            payment_method,
+            payment_status,
+            status
+          FROM orders
+          WHERE id = $1
+          LIMIT 1
+          `,
+          [
+            orderId
+          ]
+        );
+
+      if (
+        !orderResult.rows.length
+      ) {
+        return res.status(404).json({
+          ok: false,
+          message:
+            "Order not found."
+        });
+      }
+
+      res.json({
+        ok: true,
+
+        payment: {
+          orderId,
+          method,
+          amount:
+            Number(
+              orderResult.rows[0]
+                .total
+            ),
+
+          status:
+            orderResult.rows[0]
+              .payment_status,
+
+          message:
+            "Payment gateway is ready for integration."
+        }
+      });
+    } catch (error) {
+      console.error(
+        "Payment create error:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        message:
+          "Unable to create payment."
+      });
+    }
+  }
+);
+
+
+/* =========================================================
+   ADMIN — UPDATE PAYMENT STATUS
+========================================================= */
+
+app.put(
+  "/api/admin/orders/:id/payment",
+  adminAuth,
+  async (req, res) => {
+    try {
+      const orderId =
+        cleanText(
+          req.params.id
+        );
+
+      const paymentStatus =
+        cleanText(
+          req.body?.paymentStatus ??
+          req.body?.payment_status
+        );
+
+      if (
+        !PAYMENT_STATUSES.includes(
+          paymentStatus
+        )
+      ) {
+        return res.status(400).json({
+          ok: false,
+          message:
+            "Invalid payment status."
+        });
+      }
+
+      const result =
+        await pool.query(
+          `
+          UPDATE orders
+          SET
+            payment_status = $1,
+            updated_at = NOW()
+          WHERE id = $2
+          RETURNING
+            id,
+            payment_status,
+            updated_at
+          `,
+          [
+            paymentStatus,
+            orderId
+          ]
+        );
+
+      if (
+        !result.rows.length
+      ) {
+        return res.status(404).json({
+          ok: false,
+          message:
+            "Order not found."
+        });
+      }
+
+      res.json({
+        ok: true,
+        message:
+          "Payment status updated successfully.",
+        order:
+          result.rows[0]
+      });
+    } catch (error) {
+      console.error(
+        "Payment status error:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        message:
+          "Unable to update payment status."
+      });
+    }
+  }
+);
+
+
+/* =========================================================
+   STORE SETTINGS
+========================================================= */
+
+async function getSettings() {
+  const result =
+    await pool.query(`
+      SELECT
+        id,
+        shop_name,
+        tagline,
+        phone1,
+        phone2,
+        facebook,
+        currency,
+        data
+      FROM store_settings
+      WHERE id = 1
+      LIMIT 1
+    `);
+
+  if (
+    !result.rows.length
+  ) {
+    return {
+      ...defaultSettings
+    };
+  }
+
+  const row =
+    result.rows[0];
+
+  const storedData =
+    safeJsonParse(
+      row.data,
+      {}
+    );
+
+  return {
+    shopName:
+      cleanText(
+        row.shop_name,
+        storedData.shopName ||
+          defaultSettings.shopName
+      ),
+
+    tagline:
+      cleanText(
+        row.tagline,
+        storedData.tagline ||
+          defaultSettings.tagline
+      ),
+
+    phone1:
+      cleanText(
+        row.phone1,
+        storedData.phone1 ||
+          defaultSettings.phone1
+      ),
+
+    phone2:
+      cleanText(
+        row.phone2,
+        storedData.phone2 ||
+          defaultSettings.phone2
+      ),
+
+    facebook:
+      cleanText(
+        row.facebook,
+        storedData.facebook ||
+          defaultSettings.facebook
+      ),
+
+    currency:
+      cleanText(
+        row.currency,
+        storedData.currency ||
+          defaultSettings.currency
+      )
+  };
+}
+
+
+/* =========================================================
+   PUBLIC — STORE API
+   NO CUSTOMER LOGIN REQUIRED
+========================================================= */
+
+app.get(
+  "/api/store",
+  async (req, res) => {
+    try {
+      const settings =
+        await getSettings();
+
+      const productsResult =
+        await pool.query(`
+          SELECT
+            id,
+            name,
+            category,
+            description,
+            price,
+            old_price,
+            discount,
+            stock,
+            image,
+            gallery,
+            created_at,
+            updated_at
+          FROM products
+          ORDER BY created_at DESC
+        `);
+
+      const products =
+        productsResult.rows.map(
+          (product) => ({
+            ...product,
+
+            price:
+              Number(
+                product.price
+              ),
+
+            oldPrice:
+              Number(
+                product.old_price
+              ),
+
+            discount:
+              Number(
+                product.discount
+              ),
+
+            stock:
+              Number(
+                product.stock
+              ),
+
+            gallery:
+              Array.isArray(
+                product.gallery
+              )
+                ? product.gallery
+                : safeJsonParse(
+                    product.gallery,
+                    []
+                  )
+          })
+        );
+
+      res.set(
+        "Cache-Control",
+        "no-store"
+      );
+
+      res.json({
+        ok: true,
+        settings,
+        products
+      });
+    } catch (error) {
+      console.error(
+        "Store API error:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        message:
+          "Unable to load store."
+      });
+    }
+  }
+);
+
+
+/* =========================================================
+   PUBLIC — PRODUCTS API
+   NO CUSTOMER LOGIN REQUIRED
+========================================================= */
+
+app.get(
+  "/api/products",
+  async (req, res) => {
+    try {
+      const category =
+        cleanText(
+          req.query.category
+        );
+
+      const search =
+        cleanText(
+          req.query.search
+        );
+
+      let query = `
+        SELECT
+          id,
+          name,
+          category,
+          description,
+          price,
+          old_price,
+          discount,
+          stock,
+          image,
+          gallery,
+          created_at,
+          updated_at
+        FROM products
+      `;
+
+      const values = [];
+
+      const conditions = [];
+
+      if (category) {
+        values.push(
+          category
+        );
+
+        conditions.push(
+          `category = $${values.length}`
+        );
+      }
+
+      if (search) {
+        values.push(
+          `%${search}%`
+        );
+
+        conditions.push(
+          `(
+            name ILIKE $${values.length}
+            OR category ILIKE $${values.length}
+            OR description ILIKE $${values.length}
+          )`
+        );
+      }
+
+      if (
+        conditions.length
+      ) {
+        query +=
+          " WHERE " +
+          conditions.join(
+            " AND "
+          );
+      }
+
+      query +=
+        " ORDER BY created_at DESC";
+
+      const result =
+        await pool.query(
+          query,
+          values
+        );
+
+      const products =
+        result.rows.map(
+          (product) => ({
+            ...product,
+
+            price:
+              Number(
+                product.price
+              ),
+
+            oldPrice:
+              Number(
+                product.old_price
+              ),
+
+            discount:
+              Number(
+                product.discount
+              ),
+
+            stock:
+              Number(
+                product.stock
+              ),
+
+            gallery:
+              Array.isArray(
+                product.gallery
+              )
+                ? product.gallery
+                : safeJsonParse(
+                    product.gallery,
+                    []
+                  )
+          })
+        );
+
+      res.json({
+        ok: true,
+        products
+      });
+    } catch (error) {
+      console.error(
+        "Products API error:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        message:
+          "Unable to load products."
+      });
+    }
+  }
+);
+
+
+/* =========================================================
+   ADMIN — GET STORE SETTINGS
+========================================================= */
+
+app.get(
+  "/api/admin/settings",
+  adminAuth,
+  async (req, res) => {
+    try {
+      const settings =
+        await getSettings();
+
+      res.json({
+        ok: true,
+        settings
+      });
+    } catch (error) {
+      console.error(
+        "Admin settings GET error:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        message:
+          "Unable to load settings."
+      });
+    }
+  }
+);
+
+
+/* =========================================================
+   ADMIN — UPDATE STORE SETTINGS
+========================================================= */
+
+app.put(
+  "/api/admin/settings",
+  adminAuth,
+  async (req, res) => {
+    try {
+      const body =
+        req.body || {};
+
+      const settings = {
+        shopName:
+          cleanText(
+            body.shopName ??
+            body.shop_name,
+            defaultSettings.shopName
+          ),
+
+        tagline:
+          cleanText(
+            body.tagline,
+            defaultSettings.tagline
+          ),
+
+        phone1:
+          cleanText(
+            body.phone1 ??
+            body.phone_1,
+            defaultSettings.phone1
+          ),
+
+        phone2:
+          cleanText(
+            body.phone2 ??
+            body.phone_2,
+            defaultSettings.phone2
+          ),
+
+        facebook:
+          cleanText(
+            body.facebook,
+            defaultSettings.facebook
+          ),
+
+        currency:
+          cleanText(
+            body.currency,
+            defaultSettings.currency
+          )
+      };
+
+      await pool.query(
+        `
+        INSERT INTO store_settings
+        (
+          id,
+          shop_name,
+          tagline,
+          phone1,
+          phone2,
+          facebook,
+          currency,
+          data,
+          updated_at
+        )
+        VALUES
+        (
+          1,
+          $1,
+          $2,
+          $3,
+          $4,
+          $5,
+          $6,
+          $7::jsonb,
+          NOW()
+        )
+        ON CONFLICT (id)
+        DO UPDATE SET
+          shop_name =
+            EXCLUDED.shop_name,
+
+          tagline =
+            EXCLUDED.tagline,
+
+          phone1 =
+            EXCLUDED.phone1,
+
+          phone2 =
+            EXCLUDED.phone2,
+
+          facebook =
+            EXCLUDED.facebook,
+
+          currency =
+            EXCLUDED.currency,
+
+          data =
+            EXCLUDED.data,
+
+          updated_at =
+            NOW()
+        `,
+        [
+          settings.shopName,
+          settings.tagline,
+          settings.phone1,
+          settings.phone2,
+          settings.facebook,
+          settings.currency,
+          JSON.stringify(
+            settings
+          )
+        ]
+      );
+
+      res.json({
+        ok: true,
+        message:
+          "Store settings updated successfully.",
+        settings
+      });
+    } catch (error) {
+      console.error(
+        "Admin settings PUT error:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        message:
+          "Unable to update settings."
+      });
+    }
+  }
+);
+
+
+/* =========================================================
+   PART 3 END
+   PART 4 WILL CONTINUE DIRECTLY FROM HERE
+========================================================= */
+/* =========================================================
+   PART 4 — CLEANUP + STATIC FILES + ADMIN + START SERVER
+   ========================================================= */
+
+// ---------------------------------------------------------
+// CLEANUP EXPIRED SESSIONS / OLD OAUTH STATES
+// ---------------------------------------------------------
+
+async function cleanupExpiredData() {
+  try {
+    // Remove expired admin sessions
+    const now = Date.now();
+
+    for (const [token, session] of adminSessions.entries()) {
+      if (!session || !session.expiresAt || session.expiresAt <= now) {
+        adminSessions.delete(token);
+      }
+    }
+
+    // Remove expired customer sessions
+    await pool.query(`
+      DELETE FROM customer_sessions
+      WHERE expires_at IS NOT NULL
+        AND expires_at < NOW()
+    `);
+
+    // Remove expired OAuth states
+    await pool.query(`
+      DELETE FROM oauth_states
+      WHERE expires_at IS NOT NULL
+        AND expires_at < NOW()
+    `);
+
+    console.log("🧹 Cleanup completed");
+  } catch (error) {
+    console.error("Cleanup error:", error.message);
+  }
+}
+
+
+// Run cleanup once when server starts
+cleanupExpiredData();
+
+
+// Run cleanup every 30 minutes
+const cleanupTimer = setInterval(() => {
+  cleanupExpiredData();
+}, 30 * 60 * 1000);
+
+
+// ---------------------------------------------------------
+// STATIC FILES
+// ---------------------------------------------------------
+
+const publicDir = path.join(__dirname, "public");
+
+app.use(express.static(publicDir, {
+  extensions: ["html"],
+  index: "index.html"
+}));
+
+
+// ---------------------------------------------------------
+// ADMIN PAGE
+// ---------------------------------------------------------
+
+app.get("/admin", (req, res) => {
+  res.sendFile(path.join(publicDir, "admin.html"));
+});
+
+app.get("/admin.html", (req, res) => {
+  res.sendFile(path.join(publicDir, "admin.html"));
+});
+
+
+// ---------------------------------------------------------
+// ROOT WEBSITE
+// ---------------------------------------------------------
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(publicDir, "index.html"));
+});
+
+
+// ---------------------------------------------------------
+// EXPRESS 5 SAFE FRONTEND FALLBACK
+// IMPORTANT:
+// DO NOT USE app.get("*", ...)
+// ---------------------------------------------------------
+
+app.use((req, res, next) => {
+  // API routes should reach the API 404 handler
+  if (req.path.startsWith("/api/")) {
+    return next();
+  }
+
+  // OAuth routes should reach OAuth handlers
+  if (req.path.startsWith("/auth/")) {
+    return next();
+  }
+
+  // If request accepts HTML, return the main website
+  if (req.accepts("html")) {
+    return res.sendFile(path.join(publicDir, "index.html"));
+  }
+
+  next();
+});
+
+
+// ---------------------------------------------------------
+// 404 HANDLER
+// ---------------------------------------------------------
+
+app.use((req, res) => {
+  res.status(404).json({
+    ok: false,
+    message: "Not found."
+  });
+});
+
+
+// ---------------------------------------------------------
+// GLOBAL ERROR HANDLER
+// ---------------------------------------------------------
+
+app.use((err, req, res, next) => {
+  console.error("❌ GLOBAL ERROR:");
+  console.error(err);
+
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  const statusCode =
+    Number.isInteger(err.statusCode) ? err.statusCode :
+    Number.isInteger(err.status) ? err.status :
+    500;
+
+  res.status(statusCode).json({
+    ok: false,
+    message:
+      err.message ||
+      "Internal server error."
+  });
+});
+
+
+// ---------------------------------------------------------
+// START SERVER
+// ---------------------------------------------------------
+
+async function startServer() {
+  try {
+    console.log("========================================");
+    console.log("🚀 SM Online Shop starting...");
+    console.log("========================================");
+
+    // Initialize database
+    await initDatabase();
+
+    // Make sure cleanup is running
+    await cleanupExpiredData();
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log("========================================");
+      console.log("✅ SM Online Shop is running");
+      console.log(`🌐 Port: ${PORT}`);
+      console.log(`📁 Public: ${publicDir}`);
+      console.log("========================================");
+    });
+
+  } catch (error) {
+    console.error("❌ SERVER STARTUP FAILED");
+    console.error(error);
+
+    process.exit(1);
+  }
+}
+
+
+// ---------------------------------------------------------
+// GRACEFUL SHUTDOWN
+// ---------------------------------------------------------
+
+async function shutdown(signal) {
+  console.log(`\n🛑 ${signal} received. Shutting down...`);
+
+  try {
+    // Stop cleanup timer
+    if (cleanupTimer) {
+      clearInterval(cleanupTimer);
+    }
+
+    // Clear admin sessions
+    adminSessions.clear();
+
+    // Close PostgreSQL connection pool
+    await pool.end();
+
+    console.log("✅ Database connection closed");
+    console.log("✅ Server shutdown completed");
+
+    process.exit(0);
+
+  } catch (error) {
+    console.error("❌ Shutdown error:", error);
+    process.exit(1);
+  }
+}
+
+
+// ---------------------------------------------------------
+// PROCESS SIGNALS
+// ---------------------------------------------------------
+
+process.on("SIGINT", () => {
+  shutdown("SIGINT");
+});
+
+process.on("SIGTERM", () => {
+  shutdown("SIGTERM");
+});
+
+
+// ---------------------------------------------------------
+// UNHANDLED ERRORS
+// ---------------------------------------------------------
+
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ UNHANDLED REJECTION:");
+  console.error(reason);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("❌ UNCAUGHT EXCEPTION:");
+  console.error(error);
+});
+
+
+// ---------------------------------------------------------
+// START APPLICATION
+// ---------------------------------------------------------
+
+startServer();
