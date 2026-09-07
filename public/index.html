@@ -3,13 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<meta name="theme-color" content="#ff0f72">
+<meta name="theme-color" content="#f70870">
 
 <title>SM Online Shop</title>
 
 <style>
-
 *{
   box-sizing:border-box;
   margin:0;
@@ -39,9 +37,21 @@ button{
 
 a{
   text-decoration:none;
-  color:inherit;
 }
 
+/* =========================================================
+   COLORS
+========================================================= */
+
+:root{
+  --pink:#f70870;
+  --pink-dark:#d9005d;
+  --pink-light:#fff0f7;
+  --text:#222;
+  --muted:#777;
+  --border:#eee;
+  --green:#198754;
+}
 
 /* =========================================================
    HEADER
@@ -53,137 +63,150 @@ header{
   top:0;
   z-index:1000;
   border-bottom:1px solid #eee;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
 }
 
-.header-top{
-  max-width:1400px;
+.header-main{
+  max-width:1250px;
   margin:auto;
   min-height:70px;
+  padding:8px 14px;
   display:flex;
   align-items:center;
   gap:18px;
-  padding:8px 15px;
 }
 
-.logo-area{
+/* LOGO */
+
+.brand{
   display:flex;
   align-items:center;
   gap:9px;
-  min-width:215px;
+  min-width:190px;
 }
 
-.logo-circle{
-  width:46px;
-  height:46px;
+.logo{
+  width:43px;
+  height:43px;
   border-radius:50%;
-  background:#171717;
+  background:#181818;
   color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:16px;
+  font-size:14px;
   font-weight:bold;
-  border:3px solid #ff0f72;
+  border:3px solid #ff4b9b;
   flex-shrink:0;
 }
 
-.logo-text{
-  font-family:Georgia,serif;
-  font-size:21px;
+.brand-text{
+  min-width:0;
+}
+
+.shop-name{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:20px;
   font-weight:bold;
   white-space:nowrap;
 }
 
-.logo-tagline{
-  color:#ff0f72;
-  font-size:11px;
+.tagline{
+  color:var(--pink);
+  font-size:10px;
   font-weight:bold;
   margin-top:2px;
+  white-space:nowrap;
 }
 
-.header-search{
+/* SEARCH */
+
+.search-area{
   flex:1;
-  max-width:650px;
-  height:42px;
   display:flex;
+  max-width:650px;
+  height:40px;
   border:1px solid #ddd;
-  border-radius:25px;
+  border-radius:22px;
   overflow:hidden;
   background:#fff;
 }
 
-.header-search input{
+.search-area input{
   flex:1;
   border:0;
-  outline:0;
-  padding:0 18px;
-  font-size:14px;
+  outline:none;
+  padding:0 17px;
+  font-size:13px;
 }
 
-.search-btn{
-  width:55px;
+.search-button{
+  width:50px;
   border:0;
-  background:#ff0f72;
+  background:var(--pink);
   color:#fff;
   font-size:17px;
 }
 
 .header-actions{
-  margin-left:auto;
   display:flex;
   align-items:center;
-  gap:17px;
+  gap:5px;
+  margin-left:auto;
 }
 
 .header-action{
   border:0;
   background:#fff;
-  text-align:center;
   color:#333;
+  padding:7px 8px;
+  border-radius:8px;
   font-size:11px;
+  text-align:center;
+  white-space:nowrap;
 }
 
-.header-action-icon{
+.header-action:hover{
+  background:var(--pink-light);
+  color:var(--pink);
+}
+
+.header-icon{
   display:block;
-  font-size:20px;
+  font-size:17px;
   margin-bottom:2px;
 }
 
-.cart-badge{
-  display:inline-flex;
-  min-width:17px;
-  height:17px;
-  padding:0 4px;
-  align-items:center;
-  justify-content:center;
-  border-radius:20px;
-  background:#ff0f72;
+.badge{
+  display:inline-block;
+  min-width:16px;
+  height:16px;
+  line-height:16px;
+  border-radius:50%;
+  background:var(--pink);
   color:#fff;
-  font-size:10px;
+  font-size:9px;
+  font-weight:bold;
   position:relative;
-  top:-7px;
-  left:-4px;
+  top:-4px;
 }
-
 
 /* =========================================================
    CATEGORY BAR
 ========================================================= */
 
 .category-wrapper{
-  background:#fff;
   border-top:1px solid #f2f2f2;
-  border-bottom:1px solid #eee;
+  background:#fff;
 }
 
 .category-bar{
-  max-width:1400px;
+  max-width:1250px;
   margin:auto;
+  padding:6px 8px;
   display:flex;
-  gap:9px;
+  gap:7px;
   overflow-x:auto;
-  padding:7px 10px;
   scrollbar-width:none;
 }
 
@@ -192,61 +215,69 @@ header{
 }
 
 .category-btn{
-  min-width:92px;
-  padding:10px 17px;
+  flex:0 0 auto;
+  min-width:78px;
+  height:34px;
+  padding:0 15px;
   border:1px solid #eee;
-  border-radius:10px;
+  border-radius:9px;
   background:#fff;
+  font-size:11px;
   font-weight:bold;
-  font-size:13px;
-  white-space:nowrap;
-  transition:.2s;
+  color:#222;
 }
 
-.category-btn:hover,
+.category-btn:hover{
+  border-color:var(--pink);
+  color:var(--pink);
+}
+
 .category-btn.active{
-  background:#ff0f72;
+  background:var(--pink);
+  border-color:var(--pink);
   color:#fff;
-  border-color:#ff0f72;
 }
-
 
 /* =========================================================
    MAIN
 ========================================================= */
 
 main{
-  max-width:1400px;
+  max-width:1250px;
   margin:auto;
-  padding-bottom:50px;
+  padding:35px 10px 50px;
 }
-
 
 /* =========================================================
    OFFER BANNER
 ========================================================= */
 
 .offer-banner{
-  margin:38px 0 34px;
-  min-height:76px;
+  width:100%;
+  min-height:64px;
   border-radius:14px;
-  background:linear-gradient(90deg,#ff0870,#ff3e91);
+  background:linear-gradient(90deg,#f70870,#ff4b9b);
   color:#fff;
-  display:flex;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr auto;
   align-items:center;
-  justify-content:space-around;
   gap:15px;
-  padding:15px 25px;
+  padding:10px 65px;
+  margin-bottom:28px;
+  font-size:14px;
 }
 
 .offer-item{
-  font-size:15px;
-  font-weight:bold;
   text-align:center;
 }
 
-.offer-item.small{
-  font-weight:normal;
+.offer-item:first-child{
+  text-align:left;
+  font-weight:bold;
+}
+
+.offer-item strong{
+  font-size:14px;
 }
 
 .shop-deals{
@@ -254,47 +285,45 @@ main{
   background:#d9005d;
   color:#fff;
   border-radius:8px;
-  padding:11px 22px;
+  padding:11px 20px;
   font-weight:bold;
 }
-
 
 /* =========================================================
    FEATURED TITLE
 ========================================================= */
 
-.section-heading{
+.featured-title{
   text-align:center;
-  margin:20px 0 23px;
+  margin:8px 0 22px;
 }
 
-.section-heading h1{
-  font-family:Georgia,serif;
-  font-size:30px;
-  margin-bottom:7px;
+.featured-title h1{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:29px;
+  color:#222;
 }
 
-.section-heading p{
-  color:#888;
-  font-size:14px;
+.featured-title p{
+  margin-top:5px;
+  color:#999;
+  font-size:13px;
 }
-
 
 /* =========================================================
-   PRODUCTS
+   PRODUCTS GRID
 ========================================================= */
 
 #productsGrid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:15px;
-  padding:0 10px;
+  gap:10px;
 }
 
 .product-card{
   background:#fff;
-  border:1px solid #e9e9e9;
-  border-radius:13px;
+  border:1px solid #eee;
+  border-radius:12px;
   overflow:hidden;
   position:relative;
   box-shadow:0 2px 8px rgba(0,0,0,.06);
@@ -303,12 +332,13 @@ main{
 
 .product-card:hover{
   transform:translateY(-2px);
-  box-shadow:0 6px 18px rgba(0,0,0,.1);
+  box-shadow:0 5px 16px rgba(0,0,0,.10);
 }
 
 .product-image-wrap{
-  height:270px;
-  background:#f5f5f5;
+  width:100%;
+  height:245px;
+  background:#f6f6f6;
   position:relative;
   overflow:hidden;
 }
@@ -319,7 +349,7 @@ main{
   object-fit:cover;
   display:block;
   cursor:zoom-in;
-  transition:.3s;
+  transition:transform .3s;
 }
 
 .product-image:hover{
@@ -328,37 +358,39 @@ main{
 
 .discount-badge{
   position:absolute;
-  top:10px;
-  left:9px;
+  top:9px;
+  left:8px;
   z-index:2;
-  background:#ff0f72;
+  background:var(--pink);
   color:#fff;
-  border-radius:5px;
   padding:5px 7px;
+  border-radius:5px;
   font-size:10px;
   font-weight:bold;
 }
 
 .product-info{
-  padding:10px 11px 11px;
+  padding:9px 10px 10px;
 }
 
 .product-name{
-  font-size:14px;
+  font-size:13px;
   font-weight:bold;
-  margin-bottom:6px;
-  min-height:17px;
+  margin-bottom:5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .product-category{
   color:#888;
-  font-size:12px;
+  font-size:11px;
   margin-bottom:5px;
 }
 
-.rating{
-  color:#f4b400;
-  font-size:13px;
+.product-rating{
+  color:#f2b600;
+  font-size:12px;
   letter-spacing:1px;
   margin-bottom:5px;
 }
@@ -367,72 +399,69 @@ main{
   display:flex;
   align-items:center;
   gap:7px;
-  flex-wrap:wrap;
-  margin-bottom:6px;
+  margin-bottom:5px;
 }
 
 .price{
-  color:#e91e73;
-  font-size:17px;
+  color:var(--pink);
+  font-size:16px;
   font-weight:bold;
 }
 
 .old-price{
   color:#aaa;
-  font-size:11px;
+  font-size:10px;
   text-decoration:line-through;
 }
 
-.stock{
-  color:#438b68;
-  font-size:11px;
-  margin-bottom:9px;
+.stock-text{
+  color:var(--green);
+  font-size:10px;
+  margin-bottom:8px;
 }
 
-.stock.out{
-  color:#d32f2f;
+.out-stock{
+  color:#dc3545;
 }
 
-.add-cart{
+.add-cart-btn{
   width:100%;
+  height:34px;
   border:0;
   border-radius:7px;
-  padding:9px 5px;
-  background:#f50870;
+  background:var(--pink);
   color:#fff;
-  font-size:13px;
+  font-size:11px;
   font-weight:bold;
 }
 
-.add-cart:hover{
-  background:#d9005d;
+.add-cart-btn:hover{
+  background:var(--pink-dark);
 }
 
-.add-cart:disabled{
+.add-cart-btn:disabled{
   background:#aaa;
+  cursor:not-allowed;
 }
-
 
 /* =========================================================
-   EMPTY / LOADING
+   EMPTY
 ========================================================= */
 
 .empty{
-  text-align:center;
-  padding:60px 20px;
-  color:#888;
   grid-column:1/-1;
-}
-
-.loading{
   text-align:center;
-  padding:60px;
+  padding:60px 15px;
   color:#888;
 }
 
+.empty-icon{
+  font-size:45px;
+  margin-bottom:10px;
+}
 
 /* =========================================================
-   MODAL
+   MODALS
 ========================================================= */
 
 .modal{
@@ -442,115 +471,34 @@ main{
   z-index:4000;
   background:rgba(0,0,0,.65);
   padding:15px;
-  overflow:auto;
+  overflow-y:auto;
 }
 
 .modal-box{
   width:100%;
   max-width:600px;
+  margin:25px auto;
   background:#fff;
-  margin:35px auto;
-  border-radius:15px;
+  border-radius:14px;
   padding:20px;
   position:relative;
 }
 
-.close-btn{
-  position:absolute;
-  right:13px;
-  top:10px;
-  width:35px;
-  height:35px;
-  border:0;
-  background:#f5f5f5;
-  border-radius:50%;
-  font-size:25px;
-  color:#555;
-}
-
 .modal-title{
-  font-size:21px;
-  font-weight:bold;
-  margin-bottom:18px;
-  padding-right:35px;
-}
-
-
-/* =========================================================
-   CART
-========================================================= */
-
-.cart-item{
-  display:flex;
-  gap:10px;
-  padding:11px 0;
-  border-bottom:1px solid #eee;
-}
-
-.cart-item img{
-  width:70px;
-  height:75px;
-  object-fit:cover;
-  border-radius:8px;
-}
-
-.cart-info{
-  flex:1;
-}
-
-.cart-name{
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:5px;
-}
-
-.cart-price{
-  color:#e91e73;
-  font-weight:bold;
-  font-size:14px;
-}
-
-.qty{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  margin-top:8px;
-}
-
-.qty button{
-  width:27px;
-  height:27px;
-  border:1px solid #ddd;
-  background:#fff;
-  border-radius:5px;
-}
-
-.qty span{
-  min-width:20px;
-  text-align:center;
-}
-
-.remove{
-  border:0;
-  background:#fee2e2;
-  color:#b91c1c;
-  border-radius:5px;
-  padding:6px 8px;
-  font-size:11px;
-}
-
-.cart-total{
-  text-align:right;
   font-size:20px;
   font-weight:bold;
-  margin:18px 0;
-  color:#222;
+  margin-bottom:17px;
 }
 
-
-/* =========================================================
-   FORM
-========================================================= */
+.close-btn{
+  position:absolute;
+  right:12px;
+  top:9px;
+  border:0;
+  background:transparent;
+  font-size:28px;
+  color:#555;
+}
 
 .form-group{
   margin-bottom:13px;
@@ -558,7 +506,7 @@ main{
 
 .form-group label{
   display:block;
-  font-size:13px;
+  font-size:12px;
   font-weight:bold;
   margin-bottom:5px;
 }
@@ -567,17 +515,11 @@ main{
 .form-group textarea,
 .form-group select{
   width:100%;
+  padding:11px;
   border:1px solid #ddd;
   border-radius:8px;
-  padding:11px;
   outline:none;
   background:#fff;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus{
-  border-color:#ff0f72;
 }
 
 .form-group textarea{
@@ -588,107 +530,122 @@ main{
 .primary-btn{
   width:100%;
   border:0;
-  background:#ff0f72;
+  background:var(--pink);
   color:#fff;
-  border-radius:8px;
   padding:12px;
+  border-radius:8px;
   font-weight:bold;
 }
 
 .primary-btn:hover{
-  background:#d9005d;
+  background:var(--pink-dark);
 }
 
 .secondary-btn{
   width:100%;
   border:1px solid #ddd;
   background:#fff;
-  border-radius:8px;
   padding:11px;
-  margin-top:8px;
+  border-radius:8px;
   font-weight:bold;
+  margin-top:8px;
 }
 
-
 /* =========================================================
-   PRODUCT DETAILS
+   CART
 ========================================================= */
 
-.product-details{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:20px;
+.cart-item{
+  display:flex;
+  gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid #eee;
 }
 
-.details-image{
-  width:100%;
-  height:350px;
+.cart-item img{
+  width:65px;
+  height:65px;
   object-fit:cover;
-  border-radius:10px;
+  border-radius:8px;
 }
 
-.details-title{
-  font-family:Georgia,serif;
-  font-size:25px;
-  margin-bottom:8px;
+.cart-item-info{
+  flex:1;
 }
 
-.details-category{
-  color:#888;
-  margin-bottom:10px;
-}
-
-.details-description{
-  color:#666;
-  line-height:1.6;
-  margin:15px 0;
-}
-
-.details-price{
-  color:#e91e73;
-  font-size:25px;
+.cart-item-name{
+  font-size:13px;
   font-weight:bold;
+  margin-bottom:4px;
 }
 
-.details-old{
-  color:#999;
-  text-decoration:line-through;
-  margin-left:8px;
+.cart-item-price{
+  color:var(--pink);
+  font-weight:bold;
+  font-size:13px;
 }
 
+.qty-controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:6px;
+}
+
+.qty-controls button{
+  width:27px;
+  height:27px;
+  border:1px solid #ddd;
+  background:#fff;
+  border-radius:5px;
+}
+
+.remove-btn{
+  border:0;
+  background:#fee2e2;
+  color:#b91c1c;
+  padding:5px 7px;
+  border-radius:5px;
+  font-size:10px;
+}
+
+.cart-total{
+  text-align:right;
+  font-size:19px;
+  font-weight:bold;
+  margin:17px 0;
+  color:var(--pink);
+}
 
 /* =========================================================
-   TRACK ORDER
+   ORDER
 ========================================================= */
 
 .order-card{
   border:1px solid #eee;
-  border-radius:10px;
-  padding:14px;
+  border-radius:9px;
+  padding:12px;
+  margin-top:10px;
 }
 
 .order-row{
   display:flex;
   justify-content:space-between;
   gap:10px;
-  border-bottom:1px solid #f1f1f1;
-  padding:8px 0;
-  font-size:13px;
+  margin:6px 0;
+  font-size:12px;
 }
 
 .status{
   display:inline-block;
-  padding:5px 9px;
-  border-radius:15px;
+  padding:4px 8px;
+  border-radius:20px;
   background:#eee;
-  font-size:11px;
+  font-size:10px;
   font-weight:bold;
 }
 
-.status-confirmed,
-.status-processing,
-.status-shipped,
-.status-delivered{
+.status-confirmed{
   background:#dcfce7;
   color:#166534;
 }
@@ -698,20 +655,24 @@ main{
   color:#991b1b;
 }
 
+.status-processing{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
 
 /* =========================================================
    IMAGE ZOOM
 ========================================================= */
 
-#zoomModal{
+#imageZoomModal{
   display:none;
   position:fixed;
   inset:0;
   z-index:6000;
-  background:rgba(0,0,0,.93);
+  background:rgba(0,0,0,.94);
   align-items:center;
   justify-content:center;
-  padding:15px;
+  padding:20px;
 }
 
 #zoomImage{
@@ -721,349 +682,267 @@ main{
   border-radius:8px;
 }
 
-.zoom-close{
+#closeZoom{
   position:absolute;
-  top:12px;
+  top:10px;
   right:18px;
-  color:#fff;
   border:0;
   background:transparent;
-  font-size:40px;
+  color:#fff;
+  font-size:38px;
 }
-
 
 /* =========================================================
    FOOTER
 ========================================================= */
 
 footer{
-  background:#171717;
+  background:#181818;
   color:#fff;
-  padding:30px 15px;
   text-align:center;
+  padding:28px 15px;
+  margin-top:20px;
 }
 
-.footer-name{
-  font-family:Georgia,serif;
-  font-size:20px;
+.footer-shop{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:19px;
   font-weight:bold;
 }
 
-.footer-tagline{
-  color:#ff4c99;
-  margin-top:5px;
+.footer-phone{
+  margin-top:8px;
   font-size:12px;
 }
 
-.footer-phone{
-  margin-top:12px;
-  font-size:13px;
-}
-
-.footer-facebook{
+.facebook-link{
   display:inline-block;
   margin-top:12px;
-  color:#ff4c99;
+  background:#1877f2;
+  color:#fff;
+  padding:9px 18px;
+  border-radius:7px;
+  font-size:12px;
+  font-weight:bold;
 }
 
+.footer-copy{
+  margin-top:14px;
+  color:#999;
+  font-size:10px;
+}
 
 /* =========================================================
    RESPONSIVE
 ========================================================= */
 
-@media(max-width:1000px){
+@media(max-width:900px){
 
   #productsGrid{
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
-  }
-
-  .product-image-wrap{
-    height:230px;
-  }
-
-  .logo-area{
-    min-width:auto;
-  }
-
-  .header-search{
-    max-width:none;
-  }
-
-}
-
-@media(max-width:700px){
-
-  .header-top{
-    gap:8px;
-    padding:8px 9px;
-  }
-
-  .logo-area{
-    min-width:auto;
-  }
-
-  .logo-circle{
-    width:42px;
-    height:42px;
-    font-size:14px;
-  }
-
-  .logo-text{
-    font-size:18px;
-  }
-
-  .logo-tagline{
-    font-size:9px;
-  }
-
-  .header-actions{
-    gap:5px;
-  }
-
-  .header-action{
-    font-size:9px;
-  }
-
-  .header-action-icon{
-    font-size:17px;
-  }
-
-  .header-search{
-    position:absolute;
-    left:10px;
-    right:10px;
-    top:58px;
-    width:auto;
-    max-width:none;
-  }
-
-  header{
-    padding-bottom:58px;
-  }
-
-  .category-bar{
-    padding-top:8px;
-    padding-bottom:8px;
-  }
-
-  .category-btn{
-    min-width:88px;
-    padding:9px 13px;
-    font-size:12px;
+    grid-template-columns:repeat(3,1fr);
   }
 
   .offer-banner{
-    margin:30px 0 25px;
-    min-height:72px;
-    border-radius:10px;
-    padding:10px 8px;
-    gap:5px;
+    padding:10px 25px;
   }
 
-  .offer-item{
-    font-size:11px;
-  }
+}
 
-  .offer-item.small{
-    font-size:10px;
-  }
+@media(max-width:650px){
 
-  .shop-deals{
-    padding:9px 12px;
-    font-size:10px;
-  }
-
-  .section-heading{
-    margin:20px 0 18px;
-  }
-
-  .section-heading h1{
-    font-size:24px;
-  }
-
-  .section-heading p{
-    font-size:12px;
-  }
-
-  #productsGrid{
-    grid-template-columns:repeat(4,1fr);
+  .header-main{
+    min-height:58px;
     gap:7px;
-    padding:0 5px;
+    padding:6px 9px;
   }
 
-  .product-card{
-    border-radius:8px;
+  .brand{
+    min-width:auto;
+    gap:6px;
   }
 
-  .product-image-wrap{
-    height:170px;
-  }
-
-  .product-info{
-    padding:7px;
-  }
-
-  .product-name{
-    font-size:11px;
-    margin-bottom:4px;
-  }
-
-  .product-category{
-    font-size:9px;
-    margin-bottom:3px;
-  }
-
-  .rating{
-    font-size:9px;
-    letter-spacing:0;
-  }
-
-  .price{
+  .logo{
+    width:39px;
+    height:39px;
     font-size:12px;
   }
 
-  .old-price{
-    font-size:8px;
-  }
-
-  .stock{
-    font-size:8px;
-    margin-bottom:6px;
-  }
-
-  .discount-badge{
-    top:5px;
-    left:5px;
-    padding:3px 4px;
-    font-size:7px;
-  }
-
-  .add-cart{
-    padding:7px 2px;
-    font-size:9px;
-    border-radius:5px;
-  }
-
-}
-
-@media(max-width:500px){
-
-  #productsGrid{
-    grid-template-columns:repeat(2,1fr);
-    gap:9px;
-    padding:0 8px;
-  }
-
-  .product-image-wrap{
-    height:215px;
-  }
-
-  .product-name{
-    font-size:13px;
-  }
-
-  .product-category{
-    font-size:10px;
-  }
-
-  .rating{
-    font-size:11px;
-  }
-
-  .price{
+  .shop-name{
     font-size:16px;
   }
 
-  .old-price{
-    font-size:10px;
+  .tagline{
+    font-size:8px;
   }
 
-  .stock{
-    font-size:10px;
+  .search-area{
+    height:36px;
   }
 
-  .add-cart{
-    font-size:12px;
-    padding:9px;
+  .search-area input{
+    padding:0 10px;
+    font-size:11px;
   }
 
-  .logo-text{
-    font-size:16px;
+  .search-button{
+    width:42px;
   }
 
-  .logo-tagline{
-    display:none;
+  .header-actions{
+    gap:0;
   }
 
-}
-
-@media(max-width:360px){
-
-  .product-image-wrap{
-    height:185px;
+  .header-action{
+    padding:5px 4px;
+    font-size:8px;
   }
 
-  .product-name{
-    font-size:12px;
-  }
-
-  .price{
+  .header-icon{
     font-size:14px;
   }
 
-}
+  .category-bar{
+    padding:5px 8px;
+  }
 
+  .category-btn{
+    min-width:70px;
+    height:32px;
+    padding:0 11px;
+    font-size:10px;
+  }
 
-/* =========================================================
-   MOBILE 4-COLUMN MODE
-   Matches the provided screenshot more closely
-========================================================= */
+  main{
+    padding:28px 7px 35px;
+  }
 
-@media(min-width:501px) and (max-width:700px){
+  .offer-banner{
+    min-height:62px;
+    padding:9px 8px;
+    grid-template-columns:1fr 1fr 1fr auto;
+    gap:4px;
+    border-radius:11px;
+    font-size:9px;
+  }
+
+  .offer-item strong{
+    font-size:9px;
+  }
+
+  .shop-deals{
+    padding:9px 10px;
+    font-size:9px;
+  }
+
+  .featured-title{
+    margin-bottom:18px;
+  }
+
+  .featured-title h1{
+    font-size:25px;
+  }
+
+  .featured-title p{
+    font-size:11px;
+  }
 
   #productsGrid{
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+  }
+
+  .product-image-wrap{
+    height:190px;
+  }
+
+  .product-info{
+    padding:8px;
+  }
+
+  .product-name{
+    font-size:12px;
+  }
+
+  .product-category{
+    font-size:10px;
+  }
+
+  .product-rating{
+    font-size:10px;
+  }
+
+  .price{
+    font-size:15px;
+  }
+
+  .old-price{
+    font-size:9px;
+  }
+
+  .stock-text{
+    font-size:9px;
+  }
+
+  .add-cart-btn{
+    height:32px;
+    font-size:10px;
   }
 
 }
 
+@media(max-width:390px){
+
+  .shop-name{
+    font-size:14px;
+  }
+
+  .tagline{
+    font-size:7px;
+  }
+
+  .logo{
+    width:35px;
+    height:35px;
+  }
+
+  .header-action{
+    font-size:7px;
+  }
+
+  .product-image-wrap{
+    height:165px;
+  }
+
+}
 </style>
 </head>
 
-
 <body>
 
-
 <!-- =========================================================
-     SHOP
+     HEADER
 ========================================================= -->
-
-<section id="shopApp">
-
-
-<!-- HEADER -->
 
 <header>
 
-  <div class="header-top">
+  <div class="header-main">
 
-    <div class="logo-area">
+    <div class="brand">
 
-      <div class="logo-circle">
+      <div class="logo">
         SM
       </div>
 
-      <div>
+      <div class="brand-text">
 
         <div
-          class="logo-text"
+          class="shop-name"
           id="shopName">
           SM Online Shop
         </div>
 
         <div
-          class="logo-tagline"
+          class="tagline"
           id="shopTagline">
           Style • Comfort • Confidence ♥
         </div>
@@ -1073,7 +952,7 @@ footer{
     </div>
 
 
-    <div class="header-search">
+    <div class="search-area">
 
       <input
         id="searchInput"
@@ -1082,7 +961,7 @@ footer{
         autocomplete="off">
 
       <button
-        class="search-btn"
+        class="search-button"
         onclick="renderProducts()">
         🔍
       </button>
@@ -1092,30 +971,67 @@ footer{
 
     <div class="header-actions">
 
+      <!-- ADMIN -->
+
       <button
         class="header-action"
-        onclick="openWishlist()">
+        onclick="openAdminPanel()">
 
-        <span class="header-action-icon">
-          ♡
+        <span class="header-icon">
+          ⚙️
         </span>
 
-        Wishlist
+        Admin
 
       </button>
 
+
+      <!-- FACEBOOK -->
+
+      <button
+        class="header-action"
+        onclick="openFacebook()">
+
+        <span class="header-icon">
+          📘
+        </span>
+
+        Facebook
+
+      </button>
+
+
+      <!-- TRACK -->
+
+      <button
+        class="header-action"
+        onclick="openTrackOrder()">
+
+        <span class="header-icon">
+          🔎
+        </span>
+
+        Track
+
+      </button>
+
+
+      <!-- CART -->
 
       <button
         class="header-action"
         onclick="openCart()">
 
-        <span class="header-action-icon">
+        <span class="header-icon">
+
           🛍️
+
           <span
             id="cartCount"
-            class="cart-badge">
+            class="badge">
             0
           </span>
+
         </span>
 
         Cart
@@ -1127,13 +1043,14 @@ footer{
   </div>
 
 
-  <!-- CATEGORY BAR -->
+  <!-- CATEGORY -->
 
   <div class="category-wrapper">
 
     <div
       id="categoryBar"
       class="category-bar">
+
     </div>
 
   </div>
@@ -1141,12 +1058,14 @@ footer{
 </header>
 
 
-<!-- MAIN -->
+<!-- =========================================================
+     MAIN
+========================================================= -->
 
 <main>
 
 
-  <!-- SPECIAL OFFER -->
+  <!-- OFFER -->
 
   <section class="offer-banner">
 
@@ -1154,18 +1073,20 @@ footer{
       🎁 Special Offer
     </div>
 
-    <div class="offer-item small">
+    <div class="offer-item">
       Buy More, Save More
     </div>
 
     <div class="offer-item">
-      Up to 50% OFF
+      <strong>Up to 50% OFF</strong>
     </div>
 
     <button
       class="shop-deals"
       onclick="scrollToProducts()">
+
       Shop Deals
+
     </button>
 
   </section>
@@ -1173,7 +1094,9 @@ footer{
 
   <!-- FEATURED -->
 
-  <section class="section-heading">
+  <section
+    id="productsSection"
+    class="featured-title">
 
     <h1>
       🔥 Featured Products
@@ -1190,30 +1113,26 @@ footer{
 
   <div id="productsGrid">
 
-    <div class="loading">
+    <div class="empty">
+      <div class="empty-icon">🛍️</div>
       Loading products...
     </div>
 
   </div>
 
-
 </main>
 
 
-<!-- FOOTER -->
+<!-- =========================================================
+     FOOTER
+========================================================= -->
 
 <footer>
 
   <div
-    class="footer-name"
-    id="footerShopName">
+    id="footerShopName"
+    class="footer-shop">
     SM Online Shop
-  </div>
-
-  <div
-    class="footer-tagline"
-    id="footerTagline">
-    Style • Comfort • Confidence ♥
   </div>
 
   <div class="footer-phone">
@@ -1223,7 +1142,7 @@ footer{
       01827872334
     </span>
 
-    |
+    &nbsp; | &nbsp;
 
     <span id="footerPhone2">
       01886995687
@@ -1231,19 +1150,25 @@ footer{
 
   </div>
 
+
   <a
-    id="facebookLink"
-    class="footer-facebook"
+    class="facebook-link"
     href="https://www.facebook.com/share/1Dr8FEmuoQ/"
-    target="_blank">
-    Facebook Page
+    target="_blank"
+    rel="noopener noreferrer">
+
+    📘 Facebook Page
+
   </a>
 
+
+  <div class="footer-copy">
+
+    © 2026 SM Online Shop. All rights reserved.
+
+  </div>
+
 </footer>
-
-
-</section>
-
 
 
 <!-- =========================================================
@@ -1275,15 +1200,17 @@ footer{
     </div>
 
     <button
+      id="checkoutBtn"
       class="primary-btn"
       onclick="openCheckout()">
+
       Checkout
+
     </button>
 
   </div>
 
 </div>
-
 
 
 <!-- =========================================================
@@ -1309,9 +1236,9 @@ footer{
     <p
       style="
         color:#777;
-        font-size:12px;
+        font-size:11px;
         margin-bottom:15px;">
-      No account or login required.
+      No account/login required.
     </p>
 
 
@@ -1351,7 +1278,8 @@ footer{
 
       <textarea
         id="checkoutAddress"
-        placeholder="Full delivery address"></textarea>
+        placeholder="Full delivery address">
+      </textarea>
 
     </div>
 
@@ -1388,13 +1316,14 @@ footer{
     <button
       class="primary-btn"
       onclick="placeOrder()">
+
       Place Order
+
     </button>
 
   </div>
 
 </div>
-
 
 
 <!-- =========================================================
@@ -1435,7 +1364,9 @@ footer{
     <button
       class="primary-btn"
       onclick="trackOrder()">
+
       Track Order
+
     </button>
 
 
@@ -1449,68 +1380,14 @@ footer{
 </div>
 
 
-
-<!-- =========================================================
-     PRODUCT DETAILS MODAL
-========================================================= -->
-
-<div
-  id="productModal"
-  class="modal">
-
-  <div class="modal-box">
-
-    <button
-      class="close-btn"
-      onclick="closeModal('productModal')">
-      ×
-    </button>
-
-    <div id="productDetails"></div>
-
-  </div>
-
-</div>
-
-
-
-<!-- =========================================================
-     WISHLIST MODAL
-========================================================= -->
-
-<div
-  id="wishlistModal"
-  class="modal">
-
-  <div class="modal-box">
-
-    <button
-      class="close-btn"
-      onclick="closeModal('wishlistModal')">
-      ×
-    </button>
-
-    <div class="modal-title">
-      ♡ Wishlist
-    </div>
-
-    <div id="wishlistItems"></div>
-
-  </div>
-
-</div>
-
-
-
 <!-- =========================================================
      IMAGE ZOOM
 ========================================================= -->
 
-<div
-  id="zoomModal">
+<div id="imageZoomModal">
 
   <button
-    class="zoom-close"
+    id="closeZoom"
     onclick="closeZoom()">
     ×
   </button>
@@ -1523,11 +1400,10 @@ footer{
 </div>
 
 
-
 <script>
 
 /* =========================================================
-   GLOBAL DATA
+   GLOBAL
 ========================================================= */
 
 let products = [];
@@ -1538,41 +1414,25 @@ let selectedCategory = "All";
 
 let cart = [];
 
-let wishlist = [];
 
+/* =========================================================
+   LOAD CART
+========================================================= */
 
 try{
 
-  cart =
+  const savedCart =
     JSON.parse(
       localStorage.getItem("smCart") || "[]"
     );
 
-  if(!Array.isArray(cart)){
-    cart = [];
+  if(Array.isArray(savedCart)){
+    cart = savedCart;
   }
 
-}catch{
+}catch(error){
 
   cart = [];
-
-}
-
-
-try{
-
-  wishlist =
-    JSON.parse(
-      localStorage.getItem("smWishlist") || "[]"
-    );
-
-  if(!Array.isArray(wishlist)){
-    wishlist = [];
-  }
-
-}catch{
-
-  wishlist = [];
 
 }
 
@@ -1595,36 +1455,16 @@ function escapeHtml(value){
 
 function money(value){
 
-  const n = Number(value || 0);
+  const number =
+    Number(value || 0);
 
   return "৳" +
-    n.toLocaleString("en-BD",{
-      maximumFractionDigits:2
-    });
-
-}
-
-
-function closeModal(id){
-
-  const el =
-    document.getElementById(id);
-
-  if(el){
-    el.style.display = "none";
-  }
-
-}
-
-
-function openModal(id){
-
-  const el =
-    document.getElementById(id);
-
-  if(el){
-    el.style.display = "block";
-  }
+    number.toLocaleString(
+      "en-BD",
+      {
+        maximumFractionDigits:2
+      }
+    );
 
 }
 
@@ -1641,63 +1481,71 @@ function saveCart(){
 }
 
 
-function saveWishlist(){
+function updateCartCount(){
 
-  localStorage.setItem(
-    "smWishlist",
-    JSON.stringify(wishlist)
-  );
+  const count =
+    cart.reduce(
+      (total,item) =>
+        total + Number(item.quantity || 0),
+      0
+    );
+
+  const element =
+    document.getElementById("cartCount");
+
+  if(element){
+    element.textContent = count;
+  }
+
+}
+
+
+function openModal(id){
+
+  const element =
+    document.getElementById(id);
+
+  if(element){
+    element.style.display = "block";
+  }
+
+}
+
+
+function closeModal(id){
+
+  const element =
+    document.getElementById(id);
+
+  if(element){
+    element.style.display = "none";
+  }
 
 }
 
 
 /* =========================================================
-   IMAGE URL
+   ADMIN
 ========================================================= */
 
-function getProductImage(product){
+function openAdminPanel(){
 
-  if(!product){
-    return "";
-  }
-
-  if(product.image){
-    return product.image;
-  }
-
-  if(product.image_url){
-    return product.image_url;
-  }
-
-  if(product.imageUrl){
-    return product.imageUrl;
-  }
-
-  if(
-    Array.isArray(product.images) &&
-    product.images.length
-  ){
-
-    return product.images[0];
-
-  }
-
-  return "https://via.placeholder.com/600x600?text=SM+Online+Shop";
+  window.location.href =
+    "/admin.html";
 
 }
 
 
 /* =========================================================
-   PRODUCT ID
+   FACEBOOK
 ========================================================= */
 
-function getProductId(product){
+function openFacebook(){
 
-  return String(
-    product.id ??
-    product._id ??
-    product.product_id ??
-    ""
+  window.open(
+    "https://www.facebook.com/share/1Dr8FEmuoQ/",
+    "_blank",
+    "noopener,noreferrer"
   );
 
 }
@@ -1756,93 +1604,7 @@ async function loadStore(){
 
 
 /* =========================================================
-   LOAD PRODUCTS
-========================================================= */
-
-async function loadProducts(){
-
-  const grid =
-    document.getElementById(
-      "productsGrid"
-    );
-
-
-  grid.innerHTML = `
-    <div class="loading">
-      Loading products...
-    </div>
-  `;
-
-
-  try{
-
-    const response =
-      await fetch(
-        "/api/products",
-        {
-          cache:"no-store"
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if(!response.ok){
-
-      throw new Error(
-        data.message ||
-        data.error ||
-        "Failed to load products."
-      );
-
-    }
-
-
-    if(Array.isArray(data)){
-
-      products = data;
-
-    }else{
-
-      products =
-        data.products ||
-        data.items ||
-        [];
-
-    }
-
-
-    buildCategories();
-
-    renderProducts();
-
-
-  }catch(error){
-
-    console.error(
-      "Product loading error:",
-      error
-    );
-
-
-    grid.innerHTML = `
-      <div class="empty">
-        <h3>Unable to load products</h3>
-        <p style="margin-top:8px;">
-          Please refresh the page.
-        </p>
-      </div>
-    `;
-
-  }
-
-}
-
-
-/* =========================================================
-   SETTINGS
+   APPLY SETTINGS
 ========================================================= */
 
 function applySettings(){
@@ -1852,25 +1614,17 @@ function applySettings(){
     settings.shopName ||
     "SM Online Shop";
 
-
   const tagline =
     settings.tagline ||
     "Style • Comfort • Confidence ♥";
-
 
   const phone1 =
     settings.phone1 ||
     "01827872334";
 
-
   const phone2 =
     settings.phone2 ||
     "01886995687";
-
-
-  const facebook =
-    settings.facebook ||
-    "https://www.facebook.com/share/1Dr8FEmuoQ/";
 
 
   document.getElementById(
@@ -1889,11 +1643,6 @@ function applySettings(){
 
 
   document.getElementById(
-    "footerTagline"
-  ).textContent = tagline;
-
-
-  document.getElementById(
     "footerPhone1"
   ).textContent = phone1;
 
@@ -1902,10 +1651,213 @@ function applySettings(){
     "footerPhone2"
   ).textContent = phone2;
 
+}
 
-  document.getElementById(
-    "facebookLink"
-  ).href = facebook;
+
+/* =========================================================
+   LOAD PRODUCTS
+========================================================= */
+
+async function loadProducts(){
+
+  const grid =
+    document.getElementById(
+      "productsGrid"
+    );
+
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/products",
+        {
+          cache:"no-store"
+        }
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Products could not be loaded."
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if(Array.isArray(data)){
+
+      products = data;
+
+    }else{
+
+      products =
+        data.products ||
+        data.items ||
+        [];
+
+    }
+
+
+    renderCategories();
+
+    renderProducts();
+
+
+  }catch(error){
+
+    console.error(
+      "Product loading error:",
+      error
+    );
+
+
+    grid.innerHTML = `
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          ⚠️
+        </div>
+
+        <p>
+          Products could not be loaded.
+        </p>
+
+        <button
+          class="secondary-btn"
+          onclick="loadProducts()"
+          style="max-width:220px;margin:15px auto 0;">
+
+          Try Again
+
+        </button>
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   GET PRODUCT IMAGE
+========================================================= */
+
+function getProductImage(product){
+
+  return (
+    product.image ||
+    product.image_url ||
+    product.imageUrl ||
+    product.thumbnail ||
+    "https://via.placeholder.com/600x600?text=SM+Online+Shop"
+  );
+
+}
+
+
+/* =========================================================
+   GET PRODUCT CATEGORY
+========================================================= */
+
+function getProductCategory(product){
+
+  return (
+    product.category ||
+    "General"
+  );
+
+}
+
+
+/* =========================================================
+   GET PRODUCT PRICE
+========================================================= */
+
+function getProductPrice(product){
+
+  return Number(
+    product.price ||
+    product.sale_price ||
+    0
+  );
+
+}
+
+
+/* =========================================================
+   GET OLD PRICE
+========================================================= */
+
+function getOldPrice(product){
+
+  return Number(
+    product.oldPrice ||
+    product.old_price ||
+    0
+  );
+
+}
+
+
+/* =========================================================
+   GET STOCK
+========================================================= */
+
+function getStock(product){
+
+  return Number(
+    product.stock || 0
+  );
+
+}
+
+
+/* =========================================================
+   DISCOUNT
+========================================================= */
+
+function getDiscount(product){
+
+  const direct =
+    Number(
+      product.discount || 0
+    );
+
+  if(direct > 0){
+    return direct;
+  }
+
+
+  const price =
+    getProductPrice(product);
+
+  const oldPrice =
+    getOldPrice(product);
+
+
+  if(
+    oldPrice > price &&
+    price > 0
+  ){
+
+    return Math.round(
+      ((oldPrice - price) /
+      oldPrice) * 100
+    );
+
+  }
+
+
+  return 0;
 
 }
 
@@ -1914,7 +1866,7 @@ function applySettings(){
    CATEGORIES
 ========================================================= */
 
-function buildCategories(){
+function renderCategories(){
 
   const bar =
     document.getElementById(
@@ -1922,42 +1874,23 @@ function buildCategories(){
     );
 
 
-  const categories = [
-    "All",
-    "Dresses",
-    "Tops",
-    "Saree",
-    "Hijab",
-    "Bags",
-    "Shoes",
-    "Jewellery",
-    "Accessories"
-  ];
-
-
-  const existing =
-    products
-      .map(p =>
-        String(
-          p.category ||
-          ""
-        ).trim()
+  const categories =
+    [
+      "All",
+      ...new Set(
+        products
+          .map(
+            product =>
+              getProductCategory(product)
+          )
+          .filter(Boolean)
       )
-      .filter(Boolean);
-
-
-  const unique =
-    [...new Set(
-      [
-        ...categories,
-        ...existing
-      ]
-    )];
+    ];
 
 
   bar.innerHTML =
-    unique
-      .map(category => `
+    categories.map(
+      category => `
 
         <button
           class="category-btn ${
@@ -1965,14 +1898,14 @@ function buildCategories(){
               ? "active"
               : ""
           }"
-          onclick="selectCategory(${JSON.stringify(category)})">
+          onclick='selectCategory(${JSON.stringify(category)})'>
 
           ${escapeHtml(category)}
 
         </button>
 
-      `)
-      .join("");
+      `
+    ).join("");
 
 }
 
@@ -1986,7 +1919,7 @@ function selectCategory(category){
   selectedCategory =
     category;
 
-  buildCategories();
+  renderCategories();
 
   renderProducts();
 
@@ -2001,7 +1934,11 @@ document
   .getElementById("searchInput")
   .addEventListener(
     "input",
-    renderProducts
+    function(){
+
+      renderProducts();
+
+    }
   );
 
 
@@ -2018,71 +1955,74 @@ function renderProducts(){
 
 
   const search =
-    (
-      document.getElementById(
-        "searchInput"
-      ).value || ""
-    )
+    document
+      .getElementById("searchInput")
+      .value
       .trim()
       .toLowerCase();
 
 
   let filtered =
-    products.filter(product => {
+    products.filter(
+      product => {
 
-      const category =
-        String(
-          product.category || ""
+        const category =
+          getProductCategory(
+            product
+          );
+
+
+        const name =
+          String(
+            product.name || ""
+          ).toLowerCase();
+
+
+        const description =
+          String(
+            product.description || ""
+          ).toLowerCase();
+
+
+        const categoryMatch =
+          selectedCategory === "All" ||
+          category === selectedCategory;
+
+
+        const searchMatch =
+          !search ||
+          name.includes(search) ||
+          description.includes(search) ||
+          category
+            .toLowerCase()
+            .includes(search);
+
+
+        return (
+          categoryMatch &&
+          searchMatch
         );
 
-
-      const name =
-        String(
-          product.name || ""
-        );
-
-
-      const description =
-        String(
-          product.description || ""
-        );
-
-
-      const categoryMatch =
-        selectedCategory === "All" ||
-        category.toLowerCase() ===
-        selectedCategory.toLowerCase();
-
-
-      const searchMatch =
-        !search ||
-        name.toLowerCase().includes(search) ||
-        category.toLowerCase().includes(search) ||
-        description.toLowerCase().includes(search);
-
-
-      return (
-        categoryMatch &&
-        searchMatch
-      );
-
-    });
+      }
+    );
 
 
   if(!filtered.length){
 
     grid.innerHTML = `
+
       <div class="empty">
 
-        <h3>
-          No products found
-        </h3>
+        <div class="empty-icon">
+          🛍️
+        </div>
 
-        <p style="margin-top:8px;">
-          Try another search or category.
+        <p>
+          No products found.
         </p>
 
       </div>
+
     `;
 
     return;
@@ -2092,7 +2032,10 @@ function renderProducts(){
 
   grid.innerHTML =
     filtered
-      .map(renderProductCard)
+      .map(
+        product =>
+          productCard(product)
+      )
       .join("");
 
 }
@@ -2102,10 +2045,10 @@ function renderProducts(){
    PRODUCT CARD
 ========================================================= */
 
-function renderProductCard(product){
+function productCard(product){
 
   const id =
-    getProductId(product);
+    product.id;
 
 
   const name =
@@ -2114,53 +2057,44 @@ function renderProductCard(product){
 
 
   const category =
-    product.category ||
-    "";
-
-
-  const price =
-    Number(
-      product.price || 0
-    );
-
-
-  const oldPrice =
-    Number(
-      product.oldPrice ||
-      product.old_price ||
-      0
-    );
-
-
-  let discount =
-    Number(
-      product.discount || 0
-    );
-
-
-  if(
-    !discount &&
-    oldPrice > price &&
-    price > 0
-  ){
-
-    discount =
-      Math.round(
-        ((oldPrice - price) /
-        oldPrice) * 100
-      );
-
-  }
-
-
-  const stock =
-    Number(
-      product.stock ?? 0
+    getProductCategory(
+      product
     );
 
 
   const image =
-    getProductImage(product);
+    getProductImage(
+      product
+    );
+
+
+  const price =
+    getProductPrice(
+      product
+    );
+
+
+  const oldPrice =
+    getOldPrice(
+      product
+    );
+
+
+  const stock =
+    getStock(
+      product
+    );
+
+
+  const discount =
+    getDiscount(
+      product
+    );
+
+
+  const description =
+    product.description ||
+    "";
 
 
   const rating =
@@ -2181,30 +2115,22 @@ function renderProductCard(product){
     );
 
 
-  const inStock =
-    stock > 0;
-
-
-  const isWishlisted =
-    wishlist.includes(id);
-
-
   return `
 
     <article
-      class="product-card"
-      onclick="openProductDetails('${escapeHtml(id)}')">
+      class="product-card">
 
-      <div class="product-image-wrap">
+      <div
+        class="product-image-wrap">
 
         ${
           discount > 0
-          ? `
-            <div class="discount-badge">
-              -${discount}%
-            </div>
-          `
-          : ""
+            ? `
+              <div class="discount-badge">
+                -${discount}%
+              </div>
+            `
+            : ""
         }
 
 
@@ -2213,8 +2139,8 @@ function renderProductCard(product){
           src="${escapeHtml(image)}"
           alt="${escapeHtml(name)}"
           loading="lazy"
-          onclick="event.stopPropagation();zoomImage('${escapeHtml(image)}')"
-          onerror="this.src='https://via.placeholder.com/600x600?text=SM+Online+Shop';">
+          onclick="zoomImage('${escapeHtml(image)}')"
+          onerror="this.src='https://via.placeholder.com/600x600?text=SM+Online+Shop'">
 
       </div>
 
@@ -2231,9 +2157,27 @@ function renderProductCard(product){
         </div>
 
 
-        <div class="rating">
+        <div class="product-rating">
           ${stars}
         </div>
+
+
+        ${
+          description
+            ? `
+              <div
+                style="
+                  color:#999;
+                  font-size:9px;
+                  line-height:1.3;
+                  height:12px;
+                  overflow:hidden;
+                  margin-bottom:4px;">
+                ${escapeHtml(description)}
+              </div>
+            `
+            : ""
+        }
 
 
         <div class="price-row">
@@ -2244,46 +2188,45 @@ function renderProductCard(product){
 
           ${
             oldPrice > price
-            ? `
-              <span class="old-price">
-                ${money(oldPrice)}
-              </span>
-            `
-            : ""
+              ? `
+                <span class="old-price">
+                  ${money(oldPrice)}
+                </span>
+              `
+              : ""
           }
 
         </div>
 
 
         <div
-          class="stock ${
-            inStock
-              ? ""
-              : "out"
+          class="stock-text ${
+            stock <= 0
+              ? "out-stock"
+              : ""
           }">
 
           ${
-            inStock
-            ? "✓ In stock (" + stock + ")"
-            : "✕ Out of stock"
+            stock > 0
+              ? `✓ In stock (${stock})`
+              : "✕ Out of stock"
           }
 
         </div>
 
 
         <button
-          class="add-cart"
+          class="add-cart-btn"
           ${
-            !inStock
+            stock <= 0
               ? "disabled"
               : ""
           }
-          onclick="event.stopPropagation();addToCart('${escapeHtml(id)}')">
+          onclick="addToCart('${escapeHtml(String(id))}')">
 
           🛒 Add to Cart
 
         </button>
-
 
       </div>
 
@@ -2302,7 +2245,7 @@ function findProduct(id){
 
   return products.find(
     product =>
-      getProductId(product) ===
+      String(product.id) ===
       String(id)
   );
 
@@ -2310,7 +2253,7 @@ function findProduct(id){
 
 
 /* =========================================================
-   ADD TO CART
+   ADD CART
 ========================================================= */
 
 function addToCart(id){
@@ -2331,9 +2274,7 @@ function addToCart(id){
 
 
   const stock =
-    Number(
-      product.stock || 0
-    );
+    getStock(product);
 
 
   if(stock <= 0){
@@ -2358,27 +2299,40 @@ function addToCart(id){
   if(existing){
 
     if(
-      existing.quantity >=
+      Number(existing.quantity) >=
       stock
     ){
 
       alert(
-        "Maximum available stock reached."
+        "You cannot add more than available stock."
       );
 
       return;
 
     }
 
-    existing.quantity++;
+
+    existing.quantity =
+      Number(existing.quantity) + 1;
 
   }else{
 
     cart.push({
 
-      id:String(id),
+      id:product.id,
 
-      quantity:1
+      name:
+        product.name || "Product",
+
+      price:
+        getProductPrice(product),
+
+      image:
+        getProductImage(product),
+
+      quantity:1,
+
+      stock:stock
 
     });
 
@@ -2387,33 +2341,7 @@ function addToCart(id){
 
   saveCart();
 
-  alert(
-    "Product added to cart."
-  );
-
-}
-
-
-/* =========================================================
-   CART COUNT
-========================================================= */
-
-function updateCartCount(){
-
-  const count =
-    cart.reduce(
-      (total,item) =>
-        total +
-        Number(
-          item.quantity || 0
-        ),
-      0
-    );
-
-
-  document.getElementById(
-    "cartCount"
-  ).textContent = count;
+  renderCart();
 
 }
 
@@ -2444,27 +2372,36 @@ function renderCart(){
       "cartItems"
     );
 
+  const totalElement =
+    document.getElementById(
+      "cartTotal"
+    );
+
 
   if(!cart.length){
 
     container.innerHTML = `
-      <div class="empty">
-        <h3>
-          Your cart is empty
-        </h3>
 
-        <p style="margin-top:8px;">
-          Add some products first.
+      <div class="empty">
+
+        <div class="empty-icon">
+          🛒
+        </div>
+
+        <p>
+          Your cart is empty.
         </p>
+
       </div>
+
     `;
 
 
-    document.getElementById(
-      "cartTotal"
-    ).textContent =
+    totalElement.textContent =
       "Total: ৳0";
 
+
+    updateCartCount();
 
     return;
 
@@ -2475,90 +2412,84 @@ function renderCart(){
 
 
   container.innerHTML =
-    cart.map(item => {
+    cart.map(
+      item => {
 
-      const product =
-        findProduct(item.id);
+        const price =
+          Number(item.price || 0);
 
+        const quantity =
+          Number(item.quantity || 1);
 
-      if(!product){
-        return "";
-      }
+        const subtotal =
+          price * quantity;
 
-
-      const quantity =
-        Number(
-          item.quantity || 1
-        );
+        total += subtotal;
 
 
-      const price =
-        Number(
-          product.price || 0
-        );
+        return `
+
+          <div class="cart-item">
+
+            <img
+              src="${escapeHtml(item.image)}"
+              alt="${escapeHtml(item.name)}">
+
+            <div class="cart-item-info">
+
+              <div class="cart-item-name">
+                ${escapeHtml(item.name)}
+              </div>
+
+              <div class="cart-item-price">
+                ${money(price)}
+              </div>
 
 
-      total +=
-        price * quantity;
+              <div class="qty-controls">
+
+                <button
+                  onclick="changeQuantity('${escapeHtml(String(item.id))}',-1)">
+                  −
+                </button>
+
+                <strong>
+                  ${quantity}
+                </strong>
+
+                <button
+                  onclick="changeQuantity('${escapeHtml(String(item.id))}',1)">
+                  +
+                </button>
 
 
-      return `
+                <button
+                  class="remove-btn"
+                  onclick="removeFromCart('${escapeHtml(String(item.id))}')">
 
-        <div class="cart-item">
+                  Remove
 
-          <img
-            src="${escapeHtml(getProductImage(product))}"
-            alt="${escapeHtml(product.name || "")}">
+                </button>
 
-          <div class="cart-info">
-
-            <div class="cart-name">
-              ${escapeHtml(product.name || "Product")}
-            </div>
-
-            <div class="cart-price">
-              ${money(price)}
-            </div>
-
-
-            <div class="qty">
-
-              <button
-                onclick="changeQuantity('${escapeHtml(item.id)}',-1)">
-                −
-              </button>
-
-              <span>
-                ${quantity}
-              </span>
-
-              <button
-                onclick="changeQuantity('${escapeHtml(item.id)}',1)">
-                +
-              </button>
-
-              <button
-                class="remove"
-                onclick="removeFromCart('${escapeHtml(item.id)}')">
-                Remove
-              </button>
+              </div>
 
             </div>
 
           </div>
 
-        </div>
+        `;
 
-      `;
+      }
+    )
+    .join("");
 
-    }).join("");
 
-
-  document.getElementById(
-    "cartTotal"
-  ).textContent =
+  totalElement.textContent =
     "Total: " +
     money(total);
+
+
+  updateCartCount();
 
 }
 
@@ -2571,56 +2502,53 @@ function changeQuantity(id,change){
 
   const item =
     cart.find(
-      x =>
-        String(x.id) ===
+      cartItem =>
+        String(cartItem.id) ===
         String(id)
     );
 
 
-  if(!item){
-    return;
-  }
+  if(!item) return;
 
 
   const product =
     findProduct(id);
 
 
-  if(!product){
+  const stock =
+    product
+      ? getStock(product)
+      : Number(item.stock || 999999);
+
+
+  const newQuantity =
+    Number(item.quantity) +
+    Number(change);
+
+
+  if(newQuantity <= 0){
+
+    removeFromCart(id);
+
     return;
+
   }
 
 
-  const stock =
-    Number(
-      product.stock || 0
+  if(newQuantity > stock){
+
+    alert(
+      "Available stock: " +
+      stock
     );
 
-
-  item.quantity += change;
-
-
-  if(item.quantity <= 0){
-
-    cart =
-      cart.filter(
-        x =>
-          String(x.id) !==
-          String(id)
-      );
+    return;
 
   }
 
 
-  if(
-    item.quantity >
-    stock
-  ){
-
-    item.quantity =
-      stock;
-
-  }
+  item.quantity =
+    newQuantity;
 
 
   saveCart();
@@ -2697,27 +2625,38 @@ async function placeOrder(){
 
 
   const name =
-    document.getElementById(
-      "checkoutName"
-    ).value.trim();
+    document
+      .getElementById(
+        "checkoutName"
+      )
+      .value
+      .trim();
 
 
   const phone =
-    document.getElementById(
-      "checkoutPhone"
-    ).value.trim();
+    document
+      .getElementById(
+        "checkoutPhone"
+      )
+      .value
+      .trim();
 
 
   const address =
-    document.getElementById(
-      "checkoutAddress"
-    ).value.trim();
+    document
+      .getElementById(
+        "checkoutAddress"
+      )
+      .value
+      .trim();
 
 
   const paymentMethod =
-    document.getElementById(
-      "paymentMethod"
-    ).value;
+    document
+      .getElementById(
+        "paymentMethod"
+      )
+      .value;
 
 
   if(!name){
@@ -2754,35 +2693,45 @@ async function placeOrder(){
 
 
   const items =
-    cart.map(item => {
-
-      const product =
-        findProduct(item.id);
-
-
-      return {
+    cart.map(
+      item => ({
 
         productId:
-          getProductId(product),
+          item.id,
 
         id:
-          getProductId(product),
+          item.id,
 
         name:
-          product?.name || "",
-
-        quantity:
-          Number(item.quantity || 1),
+          item.name,
 
         price:
-          Number(product?.price || 0),
+          Number(item.price || 0),
 
-        image:
-          getProductImage(product)
+        quantity:
+          Number(item.quantity || 1)
 
-      };
+      })
+    );
 
-    });
+
+  const payload = {
+
+    name:name,
+
+    phone:phone,
+
+    address:address,
+
+    paymentMethod:
+      paymentMethod,
+
+    payment_method:
+      paymentMethod,
+
+    items:items
+
+  };
 
 
   try{
@@ -2791,6 +2740,7 @@ async function placeOrder(){
       await fetch(
         "/api/orders",
         {
+
           method:"POST",
 
           headers:{
@@ -2798,28 +2748,8 @@ async function placeOrder(){
               "application/json"
           },
 
-          body:JSON.stringify({
-
-            customerName:name,
-
-            name:name,
-
-            customerPhone:phone,
-
-            phone:phone,
-
-            customerAddress:address,
-
-            address:address,
-
-            paymentMethod,
-
-            payment_method:
-              paymentMethod,
-
-            items
-
-          })
+          body:
+            JSON.stringify(payload)
 
         }
       );
@@ -2832,12 +2762,22 @@ async function placeOrder(){
     if(!response.ok){
 
       throw new Error(
-        data.message ||
         data.error ||
+        data.message ||
         "Failed to place order."
       );
 
     }
+
+
+    const orderId =
+      data.orderId ||
+      data.order_id ||
+      data.id ||
+      (
+        data.order &&
+        data.order.id
+      );
 
 
     cart = [];
@@ -2850,43 +2790,51 @@ async function placeOrder(){
     );
 
 
+    document.getElementById(
+      "checkoutName"
+    ).value = "";
+
+
+    document.getElementById(
+      "checkoutPhone"
+    ).value = "";
+
+
+    document.getElementById(
+      "checkoutAddress"
+    ).value = "";
+
+
     alert(
-      "Order placed successfully!\n\nOrder ID: " +
-      (
-        data.orderId ||
-        data.id ||
-        ""
-      )
+      "Order placed successfully!\n\n" +
+      "Order ID: " +
+      orderId
     );
 
 
-    const orderId =
-      data.orderId ||
-      data.id;
+    await loadProducts();
+
+
+    document.getElementById(
+      "trackOrderId"
+    ).value =
+      String(orderId || "");
+
+
+    openTrackOrder();
 
 
     if(orderId){
-
-      document.getElementById(
-        "trackOrderId"
-      ).value =
-        String(orderId);
-
-      openModal(
-        "trackModal"
-      );
 
       trackOrder();
 
     }
 
 
-    await loadProducts();
-
-
   }catch(error){
 
     console.error(
+      "Order error:",
       error
     );
 
@@ -2902,262 +2850,7 @@ async function placeOrder(){
 
 
 /* =========================================================
-   PRODUCT DETAILS
-========================================================= */
-
-function openProductDetails(id){
-
-  const product =
-    findProduct(id);
-
-
-  if(!product){
-    return;
-  }
-
-
-  const image =
-    getProductImage(product);
-
-
-  const price =
-    Number(
-      product.price || 0
-    );
-
-
-  const oldPrice =
-    Number(
-      product.oldPrice ||
-      product.old_price ||
-      0
-    );
-
-
-  const stock =
-    Number(
-      product.stock || 0
-    );
-
-
-  const description =
-    product.description ||
-    "No description available.";
-
-
-  document.getElementById(
-    "productDetails"
-  ).innerHTML = `
-
-    <div class="product-details">
-
-      <div>
-
-        <img
-          class="details-image"
-          src="${escapeHtml(image)}"
-          alt="${escapeHtml(product.name || "")}"
-          onclick="zoomImage('${escapeHtml(image)}')">
-
-      </div>
-
-
-      <div>
-
-        <div class="details-title">
-          ${escapeHtml(product.name || "Product")}
-        </div>
-
-        <div class="details-category">
-          ${escapeHtml(product.category || "")}
-        </div>
-
-
-        <div class="rating">
-          ★★★★★
-        </div>
-
-
-        <div>
-
-          <span class="details-price">
-            ${money(price)}
-          </span>
-
-          ${
-            oldPrice > price
-            ? `
-              <span class="details-old">
-                ${money(oldPrice)}
-              </span>
-            `
-            : ""
-          }
-
-        </div>
-
-
-        <div
-          class="stock ${
-            stock > 0
-              ? ""
-              : "out"
-          }"
-          style="margin-top:10px;">
-
-          ${
-            stock > 0
-            ? "✓ In stock (" + stock + ")"
-            : "✕ Out of stock"
-          }
-
-        </div>
-
-
-        <div class="details-description">
-          ${escapeHtml(description)}
-        </div>
-
-
-        <button
-          class="primary-btn"
-          ${
-            stock <= 0
-              ? "disabled"
-              : ""
-          }
-          onclick="addToCart('${escapeHtml(id)}');closeModal('productModal')">
-
-          🛒 Add to Cart
-
-        </button>
-
-      </div>
-
-    </div>
-
-  `;
-
-
-  openModal(
-    "productModal"
-  );
-
-}
-
-
-/* =========================================================
-   WISHLIST
-========================================================= */
-
-function openWishlist(){
-
-  renderWishlist();
-
-  openModal(
-    "wishlistModal"
-  );
-
-}
-
-
-function toggleWishlist(id){
-
-  id =
-    String(id);
-
-
-  if(wishlist.includes(id)){
-
-    wishlist =
-      wishlist.filter(
-        x => x !== id
-      );
-
-  }else{
-
-    wishlist.push(id);
-
-  }
-
-
-  saveWishlist();
-
-  renderProducts();
-
-}
-
-
-function renderWishlist(){
-
-  const container =
-    document.getElementById(
-      "wishlistItems"
-    );
-
-
-  const items =
-    wishlist
-      .map(id =>
-        findProduct(id)
-      )
-      .filter(Boolean);
-
-
-  if(!items.length){
-
-    container.innerHTML = `
-      <div class="empty">
-        <h3>
-          Wishlist is empty
-        </h3>
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  container.innerHTML =
-    items.map(product => `
-
-      <div class="cart-item">
-
-        <img
-          src="${escapeHtml(getProductImage(product))}"
-          alt="${escapeHtml(product.name || "")}">
-
-        <div class="cart-info">
-
-          <div class="cart-name">
-            ${escapeHtml(product.name || "")}
-          </div>
-
-          <div class="cart-price">
-            ${money(product.price)}
-          </div>
-
-          <button
-            class="primary-btn"
-            style="margin-top:8px;"
-            onclick="addToCart('${escapeHtml(getProductId(product))}')">
-
-            Add to Cart
-
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-/* =========================================================
-   TRACK ORDER
+   TRACK ORDER OPEN
 ========================================================= */
 
 function openTrackOrder(){
@@ -3166,9 +2859,11 @@ function openTrackOrder(){
     "trackOrderId"
   ).value = "";
 
+
   document.getElementById(
     "trackResult"
   ).innerHTML = "";
+
 
   openModal(
     "trackModal"
@@ -3177,18 +2872,25 @@ function openTrackOrder(){
 }
 
 
+/* =========================================================
+   TRACK ORDER
+========================================================= */
+
 async function trackOrder(){
 
   const id =
-    document.getElementById(
-      "trackOrderId"
-    ).value.trim();
+    document
+      .getElementById(
+        "trackOrderId"
+      )
+      .value
+      .trim();
 
 
   if(!id){
 
     alert(
-      "Please enter order ID."
+      "Enter your Order ID."
     );
 
     return;
@@ -3203,9 +2905,11 @@ async function trackOrder(){
 
 
   result.innerHTML = `
-    <div class="loading">
+
+    <div class="empty">
       Loading...
     </div>
+
   `;
 
 
@@ -3228,8 +2932,8 @@ async function trackOrder(){
     if(!response.ok){
 
       throw new Error(
-        data.message ||
         data.error ||
+        data.message ||
         "Order not found."
       );
 
@@ -3242,15 +2946,20 @@ async function trackOrder(){
 
 
     const status =
-      String(
-        order.status ||
-        "Pending"
-      );
+      order.status ||
+      "Pending";
 
 
-    const statusClass =
-      "status-" +
-      status.toLowerCase();
+    const payment =
+      order.payment_method ||
+      order.paymentMethod ||
+      "";
+
+
+    const paymentStatus =
+      order.payment_status ||
+      order.paymentStatus ||
+      "Pending";
 
 
     result.innerHTML = `
@@ -3264,7 +2973,7 @@ async function trackOrder(){
           </strong>
 
           <span>
-            ${escapeHtml(order.id || id)}
+            ${escapeHtml(order.id)}
           </span>
 
         </div>
@@ -3276,7 +2985,7 @@ async function trackOrder(){
             Status
           </strong>
 
-          <span class="status ${escapeHtml(statusClass)}">
+          <span class="status">
             ${escapeHtml(status)}
           </span>
 
@@ -3307,11 +3016,7 @@ async function trackOrder(){
           </strong>
 
           <span>
-            ${escapeHtml(
-              order.payment_method ||
-              order.paymentMethod ||
-              ""
-            )}
+            ${escapeHtml(payment)}
           </span>
 
         </div>
@@ -3324,11 +3029,7 @@ async function trackOrder(){
           </strong>
 
           <span>
-            ${escapeHtml(
-              order.payment_status ||
-              order.paymentStatus ||
-              "Pending"
-            )}
+            ${escapeHtml(paymentStatus)}
           </span>
 
         </div>
@@ -3336,26 +3037,25 @@ async function trackOrder(){
 
         ${
           order.customer_name ||
-          order.customerName
-          ? `
-            <div class="order-row">
+          order.name
+            ? `
+              <div class="order-row">
 
-              <strong>
-                Customer
-              </strong>
+                <strong>
+                  Customer
+                </strong>
 
-              <span>
-                ${escapeHtml(
-                  order.customer_name ||
-                  order.customerName
-                )}
-              </span>
+                <span>
+                  ${escapeHtml(
+                    order.customer_name ||
+                    order.name
+                  )}
+                </span>
 
-            </div>
-          `
-          : ""
+              </div>
+            `
+            : ""
         }
-
 
       </div>
 
@@ -3370,8 +3070,9 @@ async function trackOrder(){
         style="
           background:#fee2e2;
           color:#991b1b;
-          padding:12px;
-          border-radius:8px;">
+          padding:11px;
+          border-radius:8px;
+          font-size:12px;">
 
         ${escapeHtml(
           error.message ||
@@ -3393,9 +3094,7 @@ async function trackOrder(){
 
 function zoomImage(src){
 
-  if(!src){
-    return;
-  }
+  if(!src) return;
 
 
   document.getElementById(
@@ -3404,9 +3103,8 @@ function zoomImage(src){
 
 
   document.getElementById(
-    "zoomModal"
-  ).style.display =
-    "flex";
+    "imageZoomModal"
+  ).style.display = "flex";
 
 }
 
@@ -3414,9 +3112,8 @@ function zoomImage(src){
 function closeZoom(){
 
   document.getElementById(
-    "zoomModal"
-  ).style.display =
-    "none";
+    "imageZoomModal"
+  ).style.display = "none";
 
 
   document.getElementById(
@@ -3427,14 +3124,15 @@ function closeZoom(){
 
 
 document
-  .getElementById("zoomModal")
+  .getElementById(
+    "imageZoomModal"
+  )
   .addEventListener(
     "click",
     function(event){
 
       if(
-        event.target ===
-        this
+        event.target === this
       ){
 
         closeZoom();
@@ -3451,50 +3149,44 @@ document
 
 function scrollToProducts(){
 
-  const grid =
-    document.getElementById(
-      "productsGrid"
-    );
-
-
-  if(grid){
-
-    grid.scrollIntoView({
-      behavior:"smooth",
-      block:"start"
+  document
+    .getElementById(
+      "productsSection"
+    )
+    .scrollIntoView({
+      behavior:"smooth"
     });
-
-  }
 
 }
 
 
 /* =========================================================
-   MODAL BACKGROUND CLOSE
+   MODAL OUTSIDE CLICK
 ========================================================= */
 
 document
   .querySelectorAll(".modal")
-  .forEach(modal => {
+  .forEach(
+    modal => {
 
-    modal.addEventListener(
-      "click",
-      function(event){
+      modal.addEventListener(
+        "click",
+        function(event){
 
-        if(
-          event.target ===
-          this
-        ){
+          if(
+            event.target === modal
+          ){
 
-          this.style.display =
-            "none";
+            modal.style.display =
+              "none";
+
+          }
 
         }
+      );
 
-      }
-    );
-
-  });
+    }
+  );
 
 
 /* =========================================================
@@ -3504,6 +3196,8 @@ document
 async function init(){
 
   updateCartCount();
+
+  renderCart();
 
   await loadStore();
 
