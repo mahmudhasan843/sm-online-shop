@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#f70870">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+<meta
+  name="theme-color"
+  content="#f70870">
 
 <title>SM Online Shop</title>
 
+
 <style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
 *{
   box-sizing:border-box;
   margin:0;
@@ -39,6 +53,7 @@ a{
   text-decoration:none;
 }
 
+
 /* =========================================================
    COLORS
 ========================================================= */
@@ -49,9 +64,10 @@ a{
   --pink-light:#fff0f7;
   --text:#222;
   --muted:#777;
-  --border:#eee;
+  --border:#eeeeee;
   --green:#198754;
 }
+
 
 /* =========================================================
    HEADER
@@ -76,7 +92,10 @@ header{
   gap:18px;
 }
 
-/* LOGO */
+
+/* =========================================================
+   LOGO
+========================================================= */
 
 .brand{
   display:flex;
@@ -119,7 +138,10 @@ header{
   white-space:nowrap;
 }
 
-/* SEARCH */
+
+/* =========================================================
+   SEARCH
+========================================================= */
 
 .search-area{
   flex:1;
@@ -148,10 +170,15 @@ header{
   font-size:17px;
 }
 
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
 .header-actions{
   display:flex;
   align-items:center;
-  gap:5px;
+  gap:4px;
   margin-left:auto;
 }
 
@@ -190,6 +217,7 @@ header{
   position:relative;
   top:-4px;
 }
+
 
 /* =========================================================
    CATEGORY BAR
@@ -238,6 +266,7 @@ header{
   color:#fff;
 }
 
+
 /* =========================================================
    MAIN
 ========================================================= */
@@ -245,8 +274,9 @@ header{
 main{
   max-width:1250px;
   margin:auto;
-  padding:35px 10px 50px;
+  padding:28px 10px 50px;
 }
+
 
 /* =========================================================
    OFFER BANNER
@@ -256,7 +286,11 @@ main{
   width:100%;
   min-height:64px;
   border-radius:14px;
-  background:linear-gradient(90deg,#f70870,#ff4b9b);
+  background:linear-gradient(
+    90deg,
+    #f70870,
+    #ff4b9b
+  );
   color:#fff;
   display:grid;
   grid-template-columns:1fr 1fr 1fr auto;
@@ -289,6 +323,7 @@ main{
   font-weight:bold;
 }
 
+
 /* =========================================================
    FEATURED TITLE
 ========================================================= */
@@ -309,6 +344,7 @@ main{
   color:#999;
   font-size:13px;
 }
+
 
 /* =========================================================
    PRODUCTS GRID
@@ -335,6 +371,11 @@ main{
   box-shadow:0 5px 16px rgba(0,0,0,.10);
 }
 
+
+/* =========================================================
+   PRODUCT IMAGE
+========================================================= */
+
 .product-image-wrap{
   width:100%;
   height:245px;
@@ -356,6 +397,11 @@ main{
   transform:scale(1.04);
 }
 
+
+/* =========================================================
+   DISCOUNT
+========================================================= */
+
 .discount-badge{
   position:absolute;
   top:9px;
@@ -368,6 +414,11 @@ main{
   font-size:10px;
   font-weight:bold;
 }
+
+
+/* =========================================================
+   PRODUCT INFO
+========================================================= */
 
 .product-info{
   padding:9px 10px 10px;
@@ -392,6 +443,15 @@ main{
   color:#f2b600;
   font-size:12px;
   letter-spacing:1px;
+  margin-bottom:5px;
+}
+
+.product-description{
+  color:#999;
+  font-size:9px;
+  line-height:1.3;
+  height:12px;
+  overflow:hidden;
   margin-bottom:5px;
 }
 
@@ -424,6 +484,11 @@ main{
   color:#dc3545;
 }
 
+
+/* =========================================================
+   ADD CART
+========================================================= */
+
 .add-cart-btn{
   width:100%;
   height:34px;
@@ -444,6 +509,7 @@ main{
   cursor:not-allowed;
 }
 
+
 /* =========================================================
    EMPTY
 ========================================================= */
@@ -460,8 +526,9 @@ main{
   margin-bottom:10px;
 }
 
+
 /* =========================================================
-   MODALS
+   MODAL
 ========================================================= */
 
 .modal{
@@ -551,6 +618,7 @@ main{
   margin-top:8px;
 }
 
+
 /* =========================================================
    CART
 ========================================================= */
@@ -617,6 +685,7 @@ main{
   color:var(--pink);
 }
 
+
 /* =========================================================
    ORDER
 ========================================================= */
@@ -650,15 +719,26 @@ main{
   color:#166534;
 }
 
+.status-processing{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
+
+.status-shipped{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.status-delivered{
+  background:#dcfce7;
+  color:#166534;
+}
+
 .status-cancelled{
   background:#fee2e2;
   color:#991b1b;
 }
 
-.status-processing{
-  background:#dbeafe;
-  color:#1d4ed8;
-}
 
 /* =========================================================
    IMAGE ZOOM
@@ -691,6 +771,7 @@ main{
   color:#fff;
   font-size:38px;
 }
+
 
 /* =========================================================
    FOOTER
@@ -726,11 +807,23 @@ footer{
   font-weight:bold;
 }
 
+.admin-link{
+  display:inline-block;
+  margin-top:10px;
+  background:#333;
+  color:#fff;
+  padding:9px 18px;
+  border-radius:7px;
+  font-size:12px;
+  font-weight:bold;
+}
+
 .footer-copy{
   margin-top:14px;
   color:#999;
   font-size:10px;
 }
+
 
 /* =========================================================
    RESPONSIVE
@@ -747,6 +840,7 @@ footer{
   }
 
 }
+
 
 @media(max-width:650px){
 
@@ -813,7 +907,7 @@ footer{
   }
 
   main{
-    padding:28px 7px 35px;
+    padding:25px 7px 35px;
   }
 
   .offer-banner{
@@ -890,6 +984,7 @@ footer{
 
 }
 
+
 @media(max-width:390px){
 
   .shop-name{
@@ -914,10 +1009,14 @@ footer{
   }
 
 }
+
 </style>
+
 </head>
 
+
 <body>
+
 
 <!-- =========================================================
      HEADER
@@ -926,6 +1025,9 @@ footer{
 <header>
 
   <div class="header-main">
+
+
+    <!-- LOGO -->
 
     <div class="brand">
 
@@ -938,19 +1040,25 @@ footer{
         <div
           class="shop-name"
           id="shopName">
+
           SM Online Shop
+
         </div>
 
         <div
           class="tagline"
           id="shopTagline">
+
           Style • Comfort • Confidence ♥
+
         </div>
 
       </div>
 
     </div>
 
+
+    <!-- SEARCH -->
 
     <div class="search-area">
 
@@ -963,13 +1071,18 @@ footer{
       <button
         class="search-button"
         onclick="renderProducts()">
+
         🔍
+
       </button>
 
     </div>
 
 
+    <!-- HEADER BUTTONS -->
+
     <div class="header-actions">
+
 
       <!-- ADMIN -->
 
@@ -1029,7 +1142,9 @@ footer{
           <span
             id="cartCount"
             class="badge">
+
             0
+
           </span>
 
         </span>
@@ -1038,12 +1153,13 @@ footer{
 
       </button>
 
+
     </div>
 
   </div>
 
 
-  <!-- CATEGORY -->
+  <!-- CATEGORY BAR -->
 
   <div class="category-wrapper">
 
@@ -1058,6 +1174,7 @@ footer{
 </header>
 
 
+
 <!-- =========================================================
      MAIN
 ========================================================= -->
@@ -1070,15 +1187,23 @@ footer{
   <section class="offer-banner">
 
     <div class="offer-item">
+
       🎁 Special Offer
+
     </div>
 
     <div class="offer-item">
+
       Buy More, Save More
+
     </div>
 
     <div class="offer-item">
-      <strong>Up to 50% OFF</strong>
+
+      <strong>
+        Up to 50% OFF
+      </strong>
+
     </div>
 
     <button
@@ -1090,6 +1215,7 @@ footer{
     </button>
 
   </section>
+
 
 
   <!-- FEATURED -->
@@ -1109,18 +1235,28 @@ footer{
   </section>
 
 
+
   <!-- PRODUCTS -->
 
   <div id="productsGrid">
 
     <div class="empty">
-      <div class="empty-icon">🛍️</div>
-      Loading products...
+
+      <div class="empty-icon">
+        🛍️
+      </div>
+
+      <p>
+        Loading products...
+      </p>
+
     </div>
 
   </div>
 
+
 </main>
+
 
 
 <!-- =========================================================
@@ -1132,12 +1268,16 @@ footer{
   <div
     id="footerShopName"
     class="footer-shop">
+
     SM Online Shop
+
   </div>
+
 
   <div class="footer-phone">
 
     📞
+
     <span id="footerPhone1">
       01827872334
     </span>
@@ -1151,6 +1291,8 @@ footer{
   </div>
 
 
+  <!-- FACEBOOK -->
+
   <a
     class="facebook-link"
     href="https://www.facebook.com/share/1Dr8FEmuoQ/"
@@ -1162,13 +1304,26 @@ footer{
   </a>
 
 
+  <!-- ADMIN -->
+
+  <a
+    class="admin-link"
+    href="/admin.html">
+
+    ⚙️ Admin Panel
+
+  </a>
+
+
   <div class="footer-copy">
 
-    © 2026 SM Online Shop. All rights reserved.
+    © 2026 SM Online Shop.
+    All rights reserved.
 
   </div>
 
 </footer>
+
 
 
 <!-- =========================================================
@@ -1181,23 +1336,36 @@ footer{
 
   <div class="modal-box">
 
+
     <button
       class="close-btn"
       onclick="closeModal('cartModal')">
+
       ×
+
     </button>
 
+
     <div class="modal-title">
+
       🛍️ My Cart
+
     </div>
 
-    <div id="cartItems"></div>
+
+    <div id="cartItems">
+
+    </div>
+
 
     <div
       id="cartTotal"
       class="cart-total">
+
       Total: ৳0
+
     </div>
+
 
     <button
       id="checkoutBtn"
@@ -1208,9 +1376,11 @@ footer{
 
     </button>
 
+
   </div>
 
 </div>
+
 
 
 <!-- =========================================================
@@ -1223,22 +1393,31 @@ footer{
 
   <div class="modal-box">
 
+
     <button
       class="close-btn"
       onclick="closeModal('checkoutModal')">
+
       ×
+
     </button>
 
+
     <div class="modal-title">
+
       Checkout
+
     </div>
+
 
     <p
       style="
         color:#777;
         font-size:11px;
         margin-bottom:15px;">
+
       No account/login required.
+
     </p>
 
 
@@ -1314,6 +1493,7 @@ footer{
 
 
     <button
+      id="placeOrderButton"
       class="primary-btn"
       onclick="placeOrder()">
 
@@ -1321,9 +1501,11 @@ footer{
 
     </button>
 
+
   </div>
 
 </div>
+
 
 
 <!-- =========================================================
@@ -1336,14 +1518,20 @@ footer{
 
   <div class="modal-box">
 
+
     <button
       class="close-btn"
       onclick="closeModal('trackModal')">
+
       ×
+
     </button>
 
+
     <div class="modal-title">
+
       🔎 Track Order
+
     </div>
 
 
@@ -1356,7 +1544,7 @@ footer{
       <input
         id="trackOrderId"
         type="text"
-        placeholder="Enter your order ID">
+        placeholder="Enter your Order ID">
 
     </div>
 
@@ -1373,11 +1561,14 @@ footer{
     <div
       id="trackResult"
       style="margin-top:15px;">
+
     </div>
+
 
   </div>
 
 </div>
+
 
 
 <!-- =========================================================
@@ -1386,11 +1577,15 @@ footer{
 
 <div id="imageZoomModal">
 
+
   <button
     id="closeZoom"
     onclick="closeZoom()">
+
     ×
+
   </button>
+
 
   <img
     id="zoomImage"
@@ -1400,10 +1595,11 @@ footer{
 </div>
 
 
+
 <script>
 
 /* =========================================================
-   GLOBAL
+   GLOBAL DATA
 ========================================================= */
 
 let products = [];
@@ -1427,7 +1623,9 @@ try{
     );
 
   if(Array.isArray(savedCart)){
+
     cart = savedCart;
+
   }
 
 }catch(error){
@@ -1438,20 +1636,29 @@ try{
 
 
 /* =========================================================
-   HELPERS
+   HTML ESCAPE
 ========================================================= */
 
 function escapeHtml(value){
 
   return String(value ?? "")
+
     .replace(/&/g,"&amp;")
+
     .replace(/</g,"&lt;")
+
     .replace(/>/g,"&gt;")
+
     .replace(/"/g,"&quot;")
+
     .replace(/'/g,"&#039;");
 
 }
 
+
+/* =========================================================
+   MONEY
+========================================================= */
 
 function money(value){
 
@@ -1469,6 +1676,10 @@ function money(value){
 }
 
 
+/* =========================================================
+   SAVE CART
+========================================================= */
+
 function saveCart(){
 
   localStorage.setItem(
@@ -1481,24 +1692,37 @@ function saveCart(){
 }
 
 
+/* =========================================================
+   CART COUNT
+========================================================= */
+
 function updateCartCount(){
 
   const count =
     cart.reduce(
       (total,item) =>
-        total + Number(item.quantity || 0),
+        total +
+        Number(item.quantity || 0),
       0
     );
 
   const element =
-    document.getElementById("cartCount");
+    document.getElementById(
+      "cartCount"
+    );
 
   if(element){
+
     element.textContent = count;
+
   }
 
 }
 
+
+/* =========================================================
+   MODAL OPEN
+========================================================= */
 
 function openModal(id){
 
@@ -1506,11 +1730,17 @@ function openModal(id){
     document.getElementById(id);
 
   if(element){
+
     element.style.display = "block";
+
   }
 
 }
 
+
+/* =========================================================
+   MODAL CLOSE
+========================================================= */
 
 function closeModal(id){
 
@@ -1518,14 +1748,16 @@ function closeModal(id){
     document.getElementById(id);
 
   if(element){
+
     element.style.display = "none";
+
   }
 
 }
 
 
 /* =========================================================
-   ADMIN
+   ADMIN PANEL
 ========================================================= */
 
 function openAdminPanel(){
@@ -1604,7 +1836,7 @@ async function loadStore(){
 
 
 /* =========================================================
-   APPLY SETTINGS
+   APPLY STORE SETTINGS
 ========================================================= */
 
 function applySettings(){
@@ -1614,42 +1846,86 @@ function applySettings(){
     settings.shopName ||
     "SM Online Shop";
 
+
   const tagline =
     settings.tagline ||
     "Style • Comfort • Confidence ♥";
 
+
   const phone1 =
     settings.phone1 ||
     "01827872334";
+
 
   const phone2 =
     settings.phone2 ||
     "01886995687";
 
 
-  document.getElementById(
-    "shopName"
-  ).textContent = shopName;
+  const shopNameElement =
+    document.getElementById(
+      "shopName"
+    );
+
+  const taglineElement =
+    document.getElementById(
+      "shopTagline"
+    );
+
+  const footerNameElement =
+    document.getElementById(
+      "footerShopName"
+    );
+
+  const phone1Element =
+    document.getElementById(
+      "footerPhone1"
+    );
+
+  const phone2Element =
+    document.getElementById(
+      "footerPhone2"
+    );
 
 
-  document.getElementById(
-    "shopTagline"
-  ).textContent = tagline;
+  if(shopNameElement){
+
+    shopNameElement.textContent =
+      shopName;
+
+  }
 
 
-  document.getElementById(
-    "footerShopName"
-  ).textContent = shopName;
+  if(taglineElement){
+
+    taglineElement.textContent =
+      tagline;
+
+  }
 
 
-  document.getElementById(
-    "footerPhone1"
-  ).textContent = phone1;
+  if(footerNameElement){
+
+    footerNameElement.textContent =
+      shopName;
+
+  }
 
 
-  document.getElementById(
-    "footerPhone2"
-  ).textContent = phone2;
+  if(phone1Element){
+
+    phone1Element.textContent =
+      phone1;
+
+  }
+
+
+  if(phone2Element){
+
+    phone2Element.textContent =
+      phone2;
+
+  }
 
 }
 
@@ -1704,6 +1980,30 @@ async function loadProducts(){
     }
 
 
+    /*
+      IMPORTANT:
+      If selected category no longer exists,
+      return to All.
+    */
+
+    if(
+      selectedCategory !== "All" &&
+      !products.some(
+        product =>
+          normalizeCategory(
+            getProductCategory(product)
+          ) ===
+          normalizeCategory(
+            selectedCategory
+          )
+      )
+    ){
+
+      selectedCategory = "All";
+
+    }
+
+
     renderCategories();
 
     renderProducts();
@@ -1732,7 +2032,9 @@ async function loadProducts(){
         <button
           class="secondary-btn"
           onclick="loadProducts()"
-          style="max-width:220px;margin:15px auto 0;">
+          style="
+            max-width:220px;
+            margin:15px auto 0;">
 
           Try Again
 
@@ -1748,30 +2050,44 @@ async function loadProducts(){
 
 
 /* =========================================================
-   GET PRODUCT IMAGE
+   PRODUCT IMAGE
 ========================================================= */
 
 function getProductImage(product){
 
   return (
+
     product.image ||
+
     product.image_url ||
+
     product.imageUrl ||
+
     product.thumbnail ||
+
+    (
+      Array.isArray(product.images)
+        ? product.images[0]
+        : ""
+    ) ||
+
     "https://via.placeholder.com/600x600?text=SM+Online+Shop"
+
   );
 
 }
 
 
 /* =========================================================
-   GET PRODUCT CATEGORY
+   PRODUCT CATEGORY
 ========================================================= */
 
 function getProductCategory(product){
 
   return (
     product.category ||
+    product.category_name ||
+    product.categoryName ||
     "General"
   );
 
@@ -1779,43 +2095,168 @@ function getProductCategory(product){
 
 
 /* =========================================================
-   GET PRODUCT PRICE
+   CATEGORY NORMALIZATION
+   THIS FIXES THE CATEGORY PROBLEM
+========================================================= */
+
+function normalizeCategory(value){
+
+  let category =
+    String(value ?? "")
+      .trim()
+      .toLowerCase();
+
+
+  /*
+    Remove extra spaces.
+  */
+
+  category =
+    category.replace(
+      /\s+/g,
+      " "
+    );
+
+
+  /*
+    Category aliases.
+  */
+
+  const aliases = {
+
+    "dress":"dresses",
+    "dresses":"dresses",
+
+    "top":"tops",
+    "tops":"tops",
+
+    "saree":"saree",
+    "sarees":"saree",
+
+    "hijab":"hijab",
+    "hijabs":"hijab",
+
+    "bag":"bags",
+    "bags":"bags",
+
+    "shoe":"shoes",
+    "shoes":"shoes",
+
+    "jewellery":"jewellery",
+    "jewelry":"jewellery",
+    "jewelleries":"jewellery",
+    "jewelry items":"jewellery",
+
+    "accessory":"accessories",
+    "accessories":"accessories",
+
+    "beauty":"beauty"
+
+  };
+
+
+  return (
+    aliases[category] ||
+    category
+  );
+
+}
+
+
+/* =========================================================
+   DISPLAY CATEGORY NAME
+========================================================= */
+
+function displayCategoryName(category){
+
+  const normalized =
+    normalizeCategory(category);
+
+
+  const names = {
+
+    "dresses":"Dresses",
+
+    "tops":"Tops",
+
+    "saree":"Saree",
+
+    "hijab":"Hijab",
+
+    "bags":"Bags",
+
+    "shoes":"Shoes",
+
+    "jewellery":"Jewellery",
+
+    "accessories":"Accessories",
+
+    "beauty":"Beauty"
+
+  };
+
+
+  return (
+    names[normalized] ||
+    String(category || "General")
+      .trim()
+  );
+
+}
+
+
+/* =========================================================
+   PRODUCT PRICE
 ========================================================= */
 
 function getProductPrice(product){
 
   return Number(
+
     product.price ||
+
     product.sale_price ||
+
+    product.salePrice ||
+
     0
+
   );
 
 }
 
 
 /* =========================================================
-   GET OLD PRICE
+   OLD PRICE
 ========================================================= */
 
 function getOldPrice(product){
 
   return Number(
+
     product.oldPrice ||
+
     product.old_price ||
+
+    product.original_price ||
+
+    product.originalPrice ||
+
     0
+
   );
 
 }
 
 
 /* =========================================================
-   GET STOCK
+   STOCK
 ========================================================= */
 
 function getStock(product){
 
   return Number(
-    product.stock || 0
+    product.stock ?? 0
   );
 
 }
@@ -1832,13 +2273,17 @@ function getDiscount(product){
       product.discount || 0
     );
 
+
   if(direct > 0){
+
     return direct;
+
   }
 
 
   const price =
     getProductPrice(product);
+
 
   const oldPrice =
     getOldPrice(product);
@@ -1850,8 +2295,10 @@ function getDiscount(product){
   ){
 
     return Math.round(
-      ((oldPrice - price) /
-      oldPrice) * 100
+      (
+        (oldPrice - price) /
+        oldPrice
+      ) * 100
     );
 
   }
@@ -1874,38 +2321,136 @@ function renderCategories(){
     );
 
 
-  const categories =
-    [
-      "All",
-      ...new Set(
-        products
-          .map(
-            product =>
-              getProductCategory(product)
+  /*
+    Fixed order keeps the shop
+    looking like the original design.
+  */
+
+  const preferredCategories = [
+
+    "All",
+    "Dresses",
+    "Tops",
+    "Saree",
+    "Hijab",
+    "Bags",
+    "Shoes",
+    "Jewellery",
+    "Accessories",
+    "Beauty"
+
+  ];
+
+
+  /*
+    Only show categories that actually
+    exist in products, except All.
+  */
+
+  const existing =
+    new Set(
+      products.map(
+        product =>
+          normalizeCategory(
+            getProductCategory(product)
           )
-          .filter(Boolean)
       )
-    ];
+    );
+
+
+  const categories =
+    preferredCategories.filter(
+      category => {
+
+        if(category === "All"){
+          return true;
+        }
+
+        return existing.has(
+          normalizeCategory(category)
+        );
+
+      }
+    );
+
+
+  /*
+    Add any custom category from admin
+    that is not in the standard list.
+  */
+
+  const customCategories =
+    [];
+
+
+  products.forEach(
+    product => {
+
+      const raw =
+        getProductCategory(product);
+
+      const normalized =
+        normalizeCategory(raw);
+
+
+      const alreadyIncluded =
+        categories.some(
+          category =>
+            normalizeCategory(category) ===
+            normalized
+        );
+
+
+      if(
+        normalized &&
+        !alreadyIncluded &&
+        !customCategories.some(
+          category =>
+            normalizeCategory(category) ===
+            normalized
+        )
+      ){
+
+        customCategories.push(
+          displayCategoryName(raw)
+        );
+
+      }
+
+    }
+  );
+
+
+  const finalCategories =
+    categories.concat(
+      customCategories
+    );
 
 
   bar.innerHTML =
-    categories.map(
-      category => `
+    finalCategories
+      .map(
+        category => `
 
-        <button
-          class="category-btn ${
-            selectedCategory === category
-              ? "active"
-              : ""
-          }"
-          onclick='selectCategory(${JSON.stringify(category)})'>
+          <button
+            type="button"
+            class="category-btn ${
+              normalizeCategory(
+                selectedCategory
+              ) ===
+              normalizeCategory(category)
+                ? "active"
+                : ""
+            }"
+            onclick="selectCategory(${JSON.stringify(category)})">
 
-          ${escapeHtml(category)}
+            ${escapeHtml(category)}
 
-        </button>
+          </button>
 
-      `
-    ).join("");
+        `
+      )
+      .join("");
 
 }
 
@@ -1916,12 +2461,52 @@ function renderCategories(){
 
 function selectCategory(category){
 
-  selectedCategory =
-    category;
+  /*
+    Always store the displayed canonical
+    category name.
+  */
+
+  const normalized =
+    normalizeCategory(category);
+
+
+  if(normalized === "all"){
+
+    selectedCategory = "All";
+
+  }else{
+
+    selectedCategory =
+      displayCategoryName(category);
+
+  }
+
 
   renderCategories();
 
   renderProducts();
+
+
+  /*
+    Scroll to products after selecting
+    a category.
+  */
+
+  setTimeout(
+    () => {
+
+      document
+        .getElementById(
+          "productsSection"
+        )
+        ?.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+
+    },
+    50
+  );
 
 }
 
@@ -1954,48 +2539,87 @@ function renderProducts(){
     );
 
 
+  const searchInput =
+    document.getElementById(
+      "searchInput"
+    );
+
+
   const search =
-    document
-      .getElementById("searchInput")
-      .value
-      .trim()
-      .toLowerCase();
+    searchInput
+      ? searchInput.value
+          .trim()
+          .toLowerCase()
+      : "";
 
 
-  let filtered =
+  const selectedNormalized =
+    normalizeCategory(
+      selectedCategory
+    );
+
+
+  /*
+    THIS IS THE MAIN CATEGORY FIX.
+
+    Product category is normalized before
+    comparing with selected category.
+  */
+
+  const filtered =
     products.filter(
       product => {
 
-        const category =
+
+        const rawCategory =
           getProductCategory(
             product
+          );
+
+
+        const productCategory =
+          normalizeCategory(
+            rawCategory
           );
 
 
         const name =
           String(
             product.name || ""
-          ).toLowerCase();
+          )
+          .toLowerCase();
 
 
         const description =
           String(
             product.description || ""
-          ).toLowerCase();
-
-
-        const categoryMatch =
-          selectedCategory === "All" ||
-          category === selectedCategory;
+          )
+          .toLowerCase();
 
 
         const searchMatch =
+
           !search ||
+
           name.includes(search) ||
+
           description.includes(search) ||
-          category
-            .toLowerCase()
-            .includes(search);
+
+          productCategory.includes(search);
+
+
+        /*
+          All = every product.
+
+          Otherwise only matching category.
+        */
+
+        const categoryMatch =
+
+          selectedNormalized === "all" ||
+
+          productCategory ===
+          selectedNormalized;
 
 
         return (
@@ -2057,8 +2681,10 @@ function productCard(product){
 
 
   const category =
-    getProductCategory(
-      product
+    displayCategoryName(
+      getProductCategory(
+        product
+      )
     );
 
 
@@ -2115,20 +2741,33 @@ function productCard(product){
     );
 
 
+  const safeId =
+    escapeHtml(
+      String(id)
+    );
+
+
   return `
 
     <article
       class="product-card">
 
+
       <div
         class="product-image-wrap">
+
 
         ${
           discount > 0
             ? `
-              <div class="discount-badge">
+
+              <div
+                class="discount-badge">
+
                 -${discount}%
+
               </div>
+
             `
             : ""
         }
@@ -2139,42 +2778,50 @@ function productCard(product){
           src="${escapeHtml(image)}"
           alt="${escapeHtml(name)}"
           loading="lazy"
-          onclick="zoomImage('${escapeHtml(image)}')"
+          onclick="zoomImage(${JSON.stringify(image)})"
           onerror="this.src='https://via.placeholder.com/600x600?text=SM+Online+Shop'">
+
 
       </div>
 
 
       <div class="product-info">
 
+
         <div class="product-name">
+
           ${escapeHtml(name)}
+
         </div>
 
 
         <div class="product-category">
+
           ${escapeHtml(category)}
+
         </div>
 
 
         <div class="product-rating">
+
           ${stars}
+
         </div>
 
 
         ${
           description
             ? `
+
               <div
-                style="
-                  color:#999;
-                  font-size:9px;
-                  line-height:1.3;
-                  height:12px;
-                  overflow:hidden;
-                  margin-bottom:4px;">
-                ${escapeHtml(description)}
+                class="product-description">
+
+                ${escapeHtml(
+                  description
+                )}
+
               </div>
+
             `
             : ""
         }
@@ -2182,19 +2829,28 @@ function productCard(product){
 
         <div class="price-row">
 
+
           <span class="price">
+
             ${money(price)}
+
           </span>
+
 
           ${
             oldPrice > price
               ? `
+
                 <span class="old-price">
+
                   ${money(oldPrice)}
+
                 </span>
+
               `
               : ""
           }
+
 
         </div>
 
@@ -2216,17 +2872,19 @@ function productCard(product){
 
 
         <button
+          type="button"
           class="add-cart-btn"
           ${
             stock <= 0
               ? "disabled"
               : ""
           }
-          onclick="addToCart('${escapeHtml(String(id))}')">
+          onclick="addToCart(${JSON.stringify(String(id))})">
 
           🛒 Add to Cart
 
         </button>
+
 
       </div>
 
@@ -2253,7 +2911,7 @@ function findProduct(id){
 
 
 /* =========================================================
-   ADD CART
+   ADD TO CART
 ========================================================= */
 
 function addToCart(id){
@@ -2313,7 +2971,10 @@ function addToCart(id){
 
 
     existing.quantity =
-      Number(existing.quantity) + 1;
+      Number(
+        existing.quantity
+      ) + 1;
+
 
   }else{
 
@@ -2322,13 +2983,18 @@ function addToCart(id){
       id:product.id,
 
       name:
-        product.name || "Product",
+        product.name ||
+        "Product",
 
       price:
-        getProductPrice(product),
+        getProductPrice(
+          product
+        ),
 
       image:
-        getProductImage(product),
+        getProductImage(
+          product
+        ),
 
       quantity:1,
 
@@ -2342,6 +3008,15 @@ function addToCart(id){
   saveCart();
 
   renderCart();
+
+
+  /*
+    Small confirmation.
+  */
+
+  alert(
+    "Added to cart successfully."
+  );
 
 }
 
@@ -2371,6 +3046,7 @@ function renderCart(){
     document.getElementById(
       "cartItems"
     );
+
 
   const totalElement =
     document.getElementById(
@@ -2415,14 +3091,22 @@ function renderCart(){
     cart.map(
       item => {
 
+
         const price =
-          Number(item.price || 0);
+          Number(
+            item.price || 0
+          );
+
 
         const quantity =
-          Number(item.quantity || 1);
+          Number(
+            item.quantity || 1
+          );
+
 
         const subtotal =
           price * quantity;
+
 
         total += subtotal;
 
@@ -2431,47 +3115,80 @@ function renderCart(){
 
           <div class="cart-item">
 
+
             <img
-              src="${escapeHtml(item.image)}"
-              alt="${escapeHtml(item.name)}">
+              src="${escapeHtml(item.image || "")}"
+              alt="${escapeHtml(item.name || "Product")}"
+              onerror="this.src='https://via.placeholder.com/100x100?text=SM'">
+
 
             <div class="cart-item-info">
 
+
               <div class="cart-item-name">
-                ${escapeHtml(item.name)}
+
+                ${escapeHtml(
+                  item.name
+                )}
+
               </div>
 
+
               <div class="cart-item-price">
+
                 ${money(price)}
+
               </div>
 
 
               <div class="qty-controls">
 
+
                 <button
-                  onclick="changeQuantity('${escapeHtml(String(item.id))}',-1)">
+                  type="button"
+                  onclick="changeQuantity(
+                    ${JSON.stringify(String(item.id))},
+                    -1
+                  )">
+
                   −
+
                 </button>
+
 
                 <strong>
+
                   ${quantity}
+
                 </strong>
 
+
                 <button
-                  onclick="changeQuantity('${escapeHtml(String(item.id))}',1)">
+                  type="button"
+                  onclick="changeQuantity(
+                    ${JSON.stringify(String(item.id))},
+                    1
+                  )">
+
                   +
+
                 </button>
 
 
                 <button
+                  type="button"
                   class="remove-btn"
-                  onclick="removeFromCart('${escapeHtml(String(item.id))}')">
+                  onclick="removeFromCart(
+                    ${JSON.stringify(String(item.id))}
+                  )">
 
                   Remove
 
                 </button>
 
+
               </div>
+
 
             </div>
 
@@ -2498,7 +3215,10 @@ function renderCart(){
    CHANGE QUANTITY
 ========================================================= */
 
-function changeQuantity(id,change){
+function changeQuantity(
+  id,
+  change
+){
 
   const item =
     cart.find(
@@ -2518,11 +3238,15 @@ function changeQuantity(id,change){
   const stock =
     product
       ? getStock(product)
-      : Number(item.stock || 999999);
+      : Number(
+          item.stock || 999999
+        );
 
 
   const newQuantity =
-    Number(item.quantity) +
+    Number(
+      item.quantity
+    ) +
     Number(change);
 
 
@@ -2580,7 +3304,7 @@ function removeFromCart(id){
 
 
 /* =========================================================
-   CHECKOUT
+   CHECKOUT OPEN
 ========================================================= */
 
 function openCheckout(){
@@ -2599,6 +3323,7 @@ function openCheckout(){
   closeModal(
     "cartModal"
   );
+
 
   openModal(
     "checkoutModal"
@@ -2681,6 +3406,17 @@ async function placeOrder(){
   }
 
 
+  if(!/^01[3-9]\d{8}$/.test(phone)){
+
+    alert(
+      "Please enter a valid Bangladesh phone number."
+    );
+
+    return;
+
+  }
+
+
   if(!address){
 
     alert(
@@ -2706,10 +3442,14 @@ async function placeOrder(){
           item.name,
 
         price:
-          Number(item.price || 0),
+          Number(
+            item.price || 0
+          ),
 
         quantity:
-          Number(item.quantity || 1)
+          Number(
+            item.quantity || 1
+          )
 
       })
     );
@@ -2734,6 +3474,22 @@ async function placeOrder(){
   };
 
 
+  const button =
+    document.getElementById(
+      "placeOrderButton"
+    );
+
+
+  if(button){
+
+    button.disabled = true;
+
+    button.textContent =
+      "Placing Order...";
+
+  }
+
+
   try{
 
     const response =
@@ -2749,14 +3505,26 @@ async function placeOrder(){
           },
 
           body:
-            JSON.stringify(payload)
+            JSON.stringify(
+              payload
+            )
 
         }
       );
 
 
-    const data =
-      await response.json();
+    let data = {};
+
+    try{
+
+      data =
+        await response.json();
+
+    }catch{
+
+      data = {};
+
+    }
 
 
     if(!response.ok){
@@ -2771,14 +3539,22 @@ async function placeOrder(){
 
 
     const orderId =
+
       data.orderId ||
+
       data.order_id ||
+
       data.id ||
+
       (
         data.order &&
         data.order.id
       );
 
+
+    /*
+      Clear cart after successful order.
+    */
 
     cart = [];
 
@@ -2789,6 +3565,10 @@ async function placeOrder(){
       "checkoutModal"
     );
 
+
+    /*
+      Clear checkout fields.
+    */
 
     document.getElementById(
       "checkoutName"
@@ -2808,23 +3588,33 @@ async function placeOrder(){
     alert(
       "Order placed successfully!\n\n" +
       "Order ID: " +
-      orderId
+      (orderId || "Created")
     );
 
+
+    /*
+      Reload products because stock changed.
+    */
 
     await loadProducts();
 
 
-    document.getElementById(
-      "trackOrderId"
-    ).value =
-      String(orderId || "");
-
-
-    openTrackOrder();
-
+    /*
+      Automatically open tracking.
+    */
 
     if(orderId){
+
+      document.getElementById(
+        "trackOrderId"
+      ).value =
+        String(orderId);
+
+
+      openModal(
+        "trackModal"
+      );
+
 
       trackOrder();
 
@@ -2844,13 +3634,25 @@ async function placeOrder(){
       "Failed to place order."
     );
 
+
+  }finally{
+
+    if(button){
+
+      button.disabled = false;
+
+      button.textContent =
+        "Place Order";
+
+    }
+
   }
 
 }
 
 
 /* =========================================================
-   TRACK ORDER OPEN
+   OPEN TRACK ORDER
 ========================================================= */
 
 function openTrackOrder(){
@@ -2907,7 +3709,9 @@ async function trackOrder(){
   result.innerHTML = `
 
     <div class="empty">
+
       Loading...
+
     </div>
 
   `;
@@ -2925,8 +3729,19 @@ async function trackOrder(){
       );
 
 
-    const data =
-      await response.json();
+    let data = {};
+
+
+    try{
+
+      data =
+        await response.json();
+
+    }catch{
+
+      data = {};
+
+    }
 
 
     if(!response.ok){
@@ -2962,9 +3777,64 @@ async function trackOrder(){
       "Pending";
 
 
+    let statusClass =
+      "";
+
+
+    const normalizedStatus =
+      String(status)
+        .toLowerCase();
+
+
+    if(
+      normalizedStatus ===
+      "confirmed"
+    ){
+
+      statusClass =
+        "status-confirmed";
+
+    }else if(
+      normalizedStatus ===
+      "processing"
+    ){
+
+      statusClass =
+        "status-processing";
+
+    }else if(
+      normalizedStatus ===
+      "shipped"
+    ){
+
+      statusClass =
+        "status-shipped";
+
+    }else if(
+      normalizedStatus ===
+      "delivered"
+    ){
+
+      statusClass =
+        "status-delivered";
+
+    }else if(
+      normalizedStatus ===
+      "cancelled" ||
+      normalizedStatus ===
+      "canceled"
+    ){
+
+      statusClass =
+        "status-cancelled";
+
+    }
+
+
     result.innerHTML = `
 
       <div class="order-card">
+
 
         <div class="order-row">
 
@@ -2973,7 +3843,10 @@ async function trackOrder(){
           </strong>
 
           <span>
-            ${escapeHtml(order.id)}
+            ${escapeHtml(
+              order.id ??
+              id
+            )}
           </span>
 
         </div>
@@ -2985,8 +3858,13 @@ async function trackOrder(){
             Status
           </strong>
 
-          <span class="status">
-            ${escapeHtml(status)}
+          <span
+            class="status ${statusClass}">
+
+            ${escapeHtml(
+              status
+            )}
+
           </span>
 
         </div>
@@ -2999,11 +3877,13 @@ async function trackOrder(){
           </strong>
 
           <span>
+
             ${money(
               order.total ||
               order.total_amount ||
               0
             )}
+
           </span>
 
         </div>
@@ -3016,7 +3896,11 @@ async function trackOrder(){
           </strong>
 
           <span>
-            ${escapeHtml(payment)}
+
+            ${escapeHtml(
+              payment
+            )}
+
           </span>
 
         </div>
@@ -3029,7 +3913,11 @@ async function trackOrder(){
           </strong>
 
           <span>
-            ${escapeHtml(paymentStatus)}
+
+            ${escapeHtml(
+              paymentStatus
+            )}
+
           </span>
 
         </div>
@@ -3039,6 +3927,7 @@ async function trackOrder(){
           order.customer_name ||
           order.name
             ? `
+
               <div class="order-row">
 
                 <strong>
@@ -3046,16 +3935,20 @@ async function trackOrder(){
                 </strong>
 
                 <span>
+
                   ${escapeHtml(
                     order.customer_name ||
                     order.name
                   )}
+
                 </span>
 
               </div>
+
             `
             : ""
         }
+
 
       </div>
 
@@ -3104,7 +3997,8 @@ function zoomImage(src){
 
   document.getElementById(
     "imageZoomModal"
-  ).style.display = "flex";
+  ).style.display =
+    "flex";
 
 }
 
@@ -3113,7 +4007,8 @@ function closeZoom(){
 
   document.getElementById(
     "imageZoomModal"
-  ).style.display = "none";
+  ).style.display =
+    "none";
 
 
   document.getElementById(
@@ -3122,6 +4017,10 @@ function closeZoom(){
 
 }
 
+
+/* =========================================================
+   ZOOM OUTSIDE CLICK
+========================================================= */
 
 document
   .getElementById(
@@ -3132,7 +4031,8 @@ document
     function(event){
 
       if(
-        event.target === this
+        event.target ===
+        this
       ){
 
         closeZoom();
@@ -3144,7 +4044,7 @@ document
 
 
 /* =========================================================
-   SCROLL
+   SCROLL PRODUCTS
 ========================================================= */
 
 function scrollToProducts(){
@@ -3153,7 +4053,7 @@ function scrollToProducts(){
     .getElementById(
       "productsSection"
     )
-    .scrollIntoView({
+    ?.scrollIntoView({
       behavior:"smooth"
     });
 
@@ -3165,7 +4065,9 @@ function scrollToProducts(){
 ========================================================= */
 
 document
-  .querySelectorAll(".modal")
+  .querySelectorAll(
+    ".modal"
+  )
   .forEach(
     modal => {
 
@@ -3174,7 +4076,8 @@ document
         function(event){
 
           if(
-            event.target === modal
+            event.target ===
+            modal
           ){
 
             modal.style.display =
@@ -3187,6 +4090,38 @@ document
 
     }
   );
+
+
+/* =========================================================
+   ESC KEY
+========================================================= */
+
+document.addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key === "Escape"){
+
+      document
+        .querySelectorAll(
+          ".modal"
+        )
+        .forEach(
+          modal => {
+
+            modal.style.display =
+              "none";
+
+          }
+        );
+
+
+      closeZoom();
+
+    }
+
+  }
+);
 
 
 /* =========================================================
@@ -3206,6 +4141,10 @@ async function init(){
 }
 
 
+/* =========================================================
+   DOM READY
+========================================================= */
+
 document.addEventListener(
   "DOMContentLoaded",
   init
@@ -3213,5 +4152,7 @@ document.addEventListener(
 
 </script>
 
+
 </body>
+
 </html>
