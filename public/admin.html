@@ -1,638 +1,618 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-
 <meta charset="utf-8">
-
-<meta
-name="viewport"
-content="width=device-width,initial-scale=1"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SM Online Shop - Admin</title>
 
 <style>
-
 *{
-box-sizing:border-box
+  box-sizing:border-box;
 }
 
 body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f5f5f7;
-color:#17151b
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f5f7;
+  color:#17151b;
 }
 
 button,
 input,
 select,
 textarea{
-font:inherit
+  font:inherit;
 }
 
 button{
-cursor:pointer
+  cursor:pointer;
 }
 
 .hidden{
-display:none!important
+  display:none!important;
 }
 
-/* LOGIN */
+/* ================= LOGIN ================= */
 
 .login{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
-background:
-linear-gradient(
-135deg,
-#17151b,
-#f41470
-)
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(
+    135deg,
+    #17151b,
+    #f41470
+  );
 }
 
 .loginBox{
-width:100%;
-max-width:420px;
-background:#fff;
-padding:30px;
-border-radius:20px;
-box-shadow:
-0 20px 50px #0005
-}
-
-.loginBox h1{
-margin-top:0;
-text-align:center
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 20px 50px #0005;
 }
 
 .loginLogo{
-width:70px;
-height:70px;
-margin:auto;
-border-radius:50%;
-background:#17151b;
-color:#fff;
-border:4px solid #f41470;
-display:grid;
-place-items:center;
-font-size:22px;
-font-weight:bold
+  width:70px;
+  height:70px;
+  margin:auto;
+  border-radius:50%;
+  background:#17151b;
+  color:#fff;
+  border:4px solid #f41470;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  font-weight:bold;
 }
+
+.loginBox h1{
+  text-align:center;
+  margin:15px 0 5px;
+}
+
+/* ================= INPUT ================= */
 
 input,
 select,
 textarea{
-width:100%;
-padding:12px;
-border:1px solid #ddd;
-border-radius:8px;
-margin:6px 0 12px;
-outline:none;
-background:#fff
+  width:100%;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  margin:6px 0 12px;
+  outline:none;
+  background:#fff;
 }
 
 textarea{
-resize:vertical;
-min-height:130px;
-line-height:1.5
+  min-height:130px;
+  resize:vertical;
+  line-height:1.5;
 }
 
 input:focus,
 select:focus,
 textarea:focus{
-border-color:#f41470
+  border-color:#f41470;
 }
 
 label{
-font-size:13px;
-font-weight:bold
+  font-size:13px;
+  font-weight:bold;
 }
 
+/* ================= BUTTON ================= */
+
 .btn{
-border:0;
-background:#f41470;
-color:#fff;
-padding:11px 17px;
-border-radius:8px;
-font-weight:bold
+  border:0;
+  background:#f41470;
+  color:#fff;
+  padding:11px 17px;
+  border-radius:8px;
+  font-weight:bold;
 }
 
 .btn:hover{
-opacity:.9
+  opacity:.9;
 }
 
 .gray{
-background:#777
+  background:#777;
 }
 
 .red{
-background:#d52f46
+  background:#d52f46;
 }
 
 .green{
-background:#159447
+  background:#159447;
 }
 
 .blue{
-background:#2563eb
+  background:#2563eb;
 }
 
-/* HEADER */
+.dark{
+  background:#17151b;
+}
+
+/* ================= HEADER ================= */
 
 header{
-background:#17151b;
-color:#fff;
-padding:15px 5%;
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:15px
+  background:#17151b;
+  color:#fff;
+  padding:15px 5%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
 }
 
 header h1{
-margin:0;
-font-size:21px
+  margin:0;
+  font-size:21px;
 }
 
 header small{
-color:#ff75ae
+  color:#ff75ae;
 }
 
-/* DASHBOARD */
+/* ================= DASHBOARD ================= */
 
 .wrap{
-max-width:1250px;
-margin:auto;
-padding:20px 14px
+  max-width:1250px;
+  margin:auto;
+  padding:20px 14px;
 }
 
 .stats{
-display:grid;
-grid-template-columns:
-repeat(4,1fr);
-gap:15px;
-margin-bottom:20px
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:20px;
 }
 
 .stat{
-background:#fff;
-padding:20px;
-border-radius:14px;
-box-shadow:
-0 2px 10px #0000000d
+  background:#fff;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 2px 10px #0000000d;
 }
 
 .stat small{
-color:#777
+  color:#777;
 }
 
 .stat b{
-display:block;
-font-size:27px;
-margin-top:8px
+  display:block;
+  font-size:27px;
+  margin-top:8px;
 }
 
-/* NAV */
+/* ================= QUICK LINKS ================= */
+
+.quickLinks{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+}
+
+.quickLinks a{
+  text-decoration:none;
+}
+
+/* ================= TABS ================= */
 
 .tabs{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-bottom:20px
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
 }
 
 .tab{
-border:0;
-background:#fff;
-padding:11px 16px;
-border-radius:8px;
-font-weight:bold
+  border:0;
+  background:#fff;
+  padding:11px 16px;
+  border-radius:8px;
+  font-weight:bold;
 }
 
 .tab.active{
-background:#f41470;
-color:#fff
+  background:#f41470;
+  color:#fff;
 }
 
+/* ================= PANEL ================= */
+
 .panel{
-background:#fff;
-border-radius:15px;
-padding:20px;
-box-shadow:
-0 2px 10px #0000000d;
-margin-bottom:20px
+  background:#fff;
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 2px 10px #0000000d;
+  margin-bottom:20px;
 }
 
 .panel h2{
-margin-top:0
+  margin-top:0;
 }
 
-/* PRODUCT */
+/* ================= PRODUCTS ================= */
 
 .productGrid{
-display:grid;
-grid-template-columns:
-repeat(3,1fr);
-gap:15px
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
 }
 
 .product{
-border:1px solid #eee;
-border-radius:12px;
-overflow:hidden;
-background:#fff
+  border:1px solid #eee;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
 }
 
 .product img{
-width:100%;
-height:210px;
-object-fit:cover;
-background:#eee
+  width:100%;
+  height:210px;
+  object-fit:cover;
+  background:#eee;
 }
 
 .productBody{
-padding:13px
+  padding:13px;
 }
 
 .productBody h3{
-margin:0 0 8px
+  margin:0 0 8px;
 }
 
 .price{
-color:#f41470;
-font-size:18px;
-font-weight:bold
+  color:#f41470;
+  font-size:18px;
+  font-weight:bold;
 }
 
 .old{
-color:#999;
-font-size:12px;
-text-decoration:line-through;
-margin-left:5px
+  color:#999;
+  font-size:12px;
+  text-decoration:line-through;
+  margin-left:5px;
+}
+
+.productInfo{
+  color:#555;
+  font-size:13px;
+  line-height:1.6;
 }
 
 .actions{
-display:flex;
-gap:7px;
-margin-top:10px
+  display:flex;
+  gap:7px;
+  margin-top:10px;
 }
 
 .actions button{
-flex:1;
-border:0;
-padding:9px;
-border-radius:7px;
-font-weight:bold
+  flex:1;
+  border:0;
+  padding:9px;
+  border-radius:7px;
+  font-weight:bold;
 }
 
-/* FORM */
+/* ================= FORM ================= */
 
 .formGrid{
-display:grid;
-grid-template-columns:
-1fr 1fr;
-gap:12px
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
 .full{
-grid-column:1/-1
+  grid-column:1/-1;
 }
 
 .preview{
-width:130px;
-height:130px;
-object-fit:cover;
-border-radius:10px;
-border:1px solid #ddd;
-margin:5px 0 10px
+  width:130px;
+  height:130px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid #ddd;
+  margin:5px 0 10px;
 }
 
-.descriptionPreview{
-background:#fafafa;
-padding:12px;
-border-radius:8px;
-white-space:pre-wrap;
-line-height:1.6;
-font-size:14px;
-margin-top:8px
-}
-
-/* ORDERS */
+/* ================= ORDERS ================= */
 
 .order{
-border:1px solid #eee;
-border-radius:12px;
-padding:15px;
-margin-bottom:12px
+  border:1px solid #eee;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:12px;
+  background:#fff;
 }
 
 .orderHead{
-display:flex;
-justify-content:space-between;
-gap:10px;
-flex-wrap:wrap
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
 .orderId{
-font-weight:bold;
-font-size:16px
+  font-weight:bold;
+  font-size:16px;
 }
 
 .statusBox{
-display:flex;
-gap:8px;
-align-items:center;
-flex-wrap:wrap
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
 }
 
-.statusSelect{
-width:auto;
-min-width:145px;
-margin:0
-}
-
+.statusSelect,
 .paymentSelect{
-width:auto;
-min-width:125px;
-margin:0
+  width:auto;
+  min-width:145px;
+  margin:0;
 }
 
 .status{
-padding:5px 9px;
-border-radius:6px;
-font-weight:bold;
-font-size:12px
+  padding:5px 9px;
+  border-radius:6px;
+  font-weight:bold;
+  font-size:12px;
 }
 
 .statusPending{
-background:#fff7e6;
-color:#a16207
+  background:#fff7e6;
+  color:#a16207;
 }
 
 .statusConfirmed{
-background:#eff6ff;
-color:#1d4ed8
+  background:#eff6ff;
+  color:#1d4ed8;
 }
 
 .statusProcessing{
-background:#f5f3ff;
-color:#6d28d9
+  background:#f5f3ff;
+  color:#6d28d9;
 }
 
 .statusShipped{
-background:#ecfeff;
-color:#0e7490
+  background:#ecfeff;
+  color:#0e7490;
 }
 
 .statusDelivered{
-background:#ecfdf5;
-color:#047857
+  background:#ecfdf5;
+  color:#047857;
 }
 
 .statusCancelled{
-background:#fff1f2;
-color:#be123c
+  background:#fff1f2;
+  color:#be123c;
 }
 
 .paymentPaid{
-background:#ecfdf5;
-color:#047857
+  background:#ecfdf5;
+  color:#047857;
 }
 
 .paymentPending{
-background:#fff7e6;
-color:#a16207
+  background:#fff7e6;
+  color:#a16207;
 }
 
 .paymentFailed{
-background:#fff1f2;
-color:#be123c
+  background:#fff1f2;
+  color:#be123c;
 }
 
 .paymentRefunded{
-background:#f3f4f6;
-color:#374151
+  background:#f3f4f6;
+  color:#374151;
 }
 
 .orderItems{
-background:#fafafa;
-padding:10px;
-margin-top:10px;
-border-radius:8px
+  background:#fafafa;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
 }
 
 .orderItem{
-padding:7px 0;
-border-bottom:1px solid #eee
+  padding:7px 0;
+  border-bottom:1px solid #eee;
 }
 
 .orderItem:last-child{
-border-bottom:0
+  border-bottom:0;
 }
 
-/* TABLE */
+/* ================= FILTER ================= */
 
-table{
-width:100%;
-border-collapse:collapse
+.orderFilters{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:15px;
 }
 
-th,
-td{
-padding:10px;
-border-bottom:1px solid #eee;
-text-align:left;
-font-size:13px
-}
-
-/* MESSAGE */
+/* ================= MESSAGE ================= */
 
 .msg{
-padding:10px;
-border-radius:8px;
-margin-bottom:12px;
-display:none
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:12px;
+  display:none;
 }
 
 .success{
-display:block;
-background:#e9fff1;
-color:#08752f
+  display:block;
+  background:#e9fff1;
+  color:#08752f;
 }
 
 .error{
-display:block;
-background:#ffecee;
-color:#a50019
+  display:block;
+  background:#ffecee;
+  color:#a50019;
 }
 
-/* ORDER FILTER */
-
-.orderFilters{
-display:grid;
-grid-template-columns:
-1fr 1fr 1fr;
-gap:10px;
-margin-bottom:15px
+.info{
+  display:block;
+  background:#eff6ff;
+  color:#1d4ed8;
 }
 
-/* MOBILE */
+/* ================= EMPTY ================= */
+
+.empty{
+  text-align:center;
+  color:#777;
+  padding:25px;
+}
+
+/* ================= MOBILE ================= */
 
 @media(max-width:900px){
 
-.stats{
-grid-template-columns:
-repeat(2,1fr)
-}
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-.productGrid{
-grid-template-columns:
-repeat(2,1fr)
-}
+  .productGrid{
+    grid-template-columns:repeat(2,1fr);
+  }
 
 }
 
 @media(max-width:600px){
 
-header{
-padding:13px
-}
+  header{
+    padding:13px;
+  }
 
-header h1{
-font-size:17px
-}
+  header h1{
+    font-size:17px;
+  }
 
-.stats{
-grid-template-columns:
-1fr 1fr
-}
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
 
-.productGrid{
-grid-template-columns:
-1fr
-}
+  .productGrid{
+    grid-template-columns:1fr;
+  }
 
-.formGrid{
-grid-template-columns:
-1fr
-}
+  .formGrid{
+    grid-template-columns:1fr;
+  }
 
-.full{
-grid-column:auto
-}
+  .full{
+    grid-column:auto;
+  }
 
-.panel{
-padding:14px
-}
+  .panel{
+    padding:14px;
+  }
 
-.actions{
-flex-direction:column
-}
+  .actions{
+    flex-direction:column;
+  }
 
-.tabs{
-overflow:auto;
-flex-wrap:nowrap
-}
+  .tabs{
+    overflow:auto;
+    flex-wrap:nowrap;
+  }
 
-.tab{
-white-space:nowrap
-}
+  .tab{
+    white-space:nowrap;
+  }
 
-.orderFilters{
-grid-template-columns:1fr
-}
+  .orderFilters{
+    grid-template-columns:1fr;
+  }
 
-.statusBox{
-width:100%
-}
+  .statusSelect,
+  .paymentSelect{
+    width:100%;
+  }
 
-.statusSelect,
-.paymentSelect{
-width:100%
-}
+  .quickLinks{
+    flex-direction:column;
+  }
 
-table{
-font-size:11px
-}
+  .quickLinks .btn{
+    width:100%;
+  }
 
 }
-
 </style>
-
 </head>
 
 <body>
-
 
 <!-- =====================================================
      LOGIN
 ===================================================== -->
 
-<section
-id="loginPage"
-class="login"
->
+<section id="loginPage" class="login">
 
-<div class="loginBox">
+  <div class="loginBox">
 
-<div class="loginLogo">
-SM
-</div>
+    <div class="loginLogo">
+      SM
+    </div>
 
-<h1>
-SM Online Shop
-</h1>
+    <h1>
+      SM Online Shop
+    </h1>
 
-<p
-style="
-text-align:center;
-color:#777
-"
->
-Admin Panel
-</p>
+    <p style="text-align:center;color:#777;">
+      Admin Panel
+    </p>
 
-<div
-id="loginMsg"
-class="msg"
-></div>
+    <div id="loginMsg" class="msg"></div>
 
-<label>
-Username
-</label>
+    <label>
+      Username
+    </label>
 
-<input
-id="username"
-placeholder="Admin username"
-autocomplete="username"
->
+    <input
+      id="username"
+      placeholder="Admin username"
+      autocomplete="username"
+    >
 
-<label>
-Password
-</label>
+    <label>
+      Password
+    </label>
 
-<input
-id="password"
-type="password"
-placeholder="Admin password"
-autocomplete="current-password"
->
+    <input
+      id="password"
+      type="password"
+      placeholder="Admin password"
+      autocomplete="current-password"
+      onkeydown="if(event.key==='Enter') login()"
+    >
 
-<button
-class="btn"
-style="width:100%"
-onclick="login()"
->
-Login
-</button>
+    <button
+      class="btn"
+      style="width:100%;"
+      onclick="login()"
+    >
+      🔐 Login
+    </button>
 
-</div>
+  </div>
 
 </section>
 
@@ -642,30 +622,42 @@ Login
 ===================================================== -->
 
 <section
-id="adminPage"
-class="hidden"
+  id="adminPage"
+  class="hidden"
 >
 
 <header>
 
-<div>
+  <div>
 
-<h1>
-SM Online Shop
-</h1>
+    <h1>
+      SM Online Shop
+    </h1>
 
-<small>
-Admin Dashboard
-</small>
+    <small>
+      Admin Dashboard
+    </small>
 
-</div>
+  </div>
 
-<button
-class="btn red"
-onclick="logout()"
->
-Logout
-</button>
+  <div style="display:flex;gap:8px;">
+
+    <a
+      href="/"
+      target="_blank"
+      class="btn blue"
+    >
+      🌐 Website
+    </a>
+
+    <button
+      class="btn red"
+      onclick="logout()"
+    >
+      Logout
+    </button>
+
+  </div>
 
 </header>
 
@@ -673,130 +665,153 @@ Logout
 <div class="wrap">
 
 
-<!-- STATS -->
+<!-- =====================================================
+     QUICK LINKS
+===================================================== -->
+
+<div class="quickLinks">
+
+  <a
+    href="/"
+    target="_blank"
+    class="btn blue"
+  >
+    🌐 Open Website
+  </a>
+
+  <a
+    id="facebookLink"
+    href="https://www.facebook.com/share/1Dr8FEmuoQ/"
+    target="_blank"
+    class="btn"
+  >
+    📘 Facebook Page
+  </a>
+
+</div>
+
+
+<!-- =====================================================
+     STATS
+===================================================== -->
 
 <div class="stats">
 
-<div class="stat">
+  <div class="stat">
+    <small>
+      Total Products
+    </small>
 
-<small>
-Total Products
-</small>
+    <b id="productCount">
+      0
+    </b>
+  </div>
 
-<b
-id="productCount"
->
-0
-</b>
 
-</div>
+  <div class="stat">
+    <small>
+      Active Orders
+    </small>
 
-<div class="stat">
+    <b id="orderCount">
+      0
+    </b>
+  </div>
 
-<small>
-Active Orders
-</small>
 
-<b
-id="orderCount"
->
-0
-</b>
+  <div class="stat">
+    <small>
+      Pending Orders
+    </small>
 
-</div>
+    <b id="pendingCount">
+      0
+    </b>
+  </div>
 
-<div class="stat">
 
-<small>
-Pending Orders
-</small>
+  <div class="stat">
+    <small>
+      Total Sales
+    </small>
 
-<b
-id="pendingCount"
->
-0
-</b>
-
-</div>
-
-<div class="stat">
-
-<small>
-Total Sales
-</small>
-
-<b
-id="salesTotal"
->
-৳0
-</b>
-
-</div>
+    <b id="salesTotal">
+      ৳0
+    </b>
+  </div>
 
 </div>
 
 
-<!-- TABS -->
+<!-- =====================================================
+     TABS
+===================================================== -->
 
 <div class="tabs">
 
-<button
-class="tab active"
-onclick="showTab('products',this)"
->
-🛍 Products
-</button>
+  <button
+    class="tab active"
+    onclick="showTab('products',this)"
+  >
+    🛍 Products
+  </button>
 
-<button
-class="tab"
-onclick="showTab('add',this)"
->
-➕ Add Product
-</button>
 
-<button
-class="tab"
-onclick="showTab('orders',this)"
->
-📦 Orders
-</button>
+  <button
+    class="tab"
+    onclick="showTab('add',this)"
+  >
+    ➕ Add Product
+  </button>
 
-<button
-class="tab"
-onclick="showTab('settings',this)"
->
-⚙️ Settings
-</button>
+
+  <button
+    class="tab"
+    onclick="showTab('orders',this)"
+  >
+    📦 Orders
+  </button>
+
+
+  <button
+    class="tab"
+    onclick="showTab('settings',this)"
+  >
+    ⚙️ Settings
+  </button>
 
 </div>
 
 
 <!-- =====================================================
-     PRODUCTS
+     PRODUCTS TAB
 ===================================================== -->
 
 <div
-id="productsTab"
-class="tabContent"
+  id="productsTab"
+  class="tabContent"
 >
 
 <div class="panel">
 
-<h2>
-Products
-</h2>
+  <h2>
+    🛍 Products
+  </h2>
 
-<input
-id="productSearch"
-placeholder="Search products..."
-oninput="searchProducts()"
->
+  <input
+    id="productSearch"
+    placeholder="Search products..."
+    oninput="searchProducts()"
+  >
 
-<div
-id="productGrid"
-class="productGrid"
->
-</div>
+  <div
+    id="productGrid"
+    class="productGrid"
+  >
+    <div class="empty">
+      Loading products...
+    </div>
+  </div>
 
 </div>
 
@@ -804,177 +819,185 @@ class="productGrid"
 
 
 <!-- =====================================================
-     ADD / EDIT PRODUCT
+     ADD PRODUCT TAB
 ===================================================== -->
 
 <div
-id="addTab"
-class="tabContent hidden"
+  id="addTab"
+  class="tabContent hidden"
 >
 
 <div class="panel">
 
-<h2
-id="formTitle"
->
-Add New Product
-</h2>
+  <h2 id="formTitle">
+    Add New Product
+  </h2>
 
-<div
-id="productMsg"
-class="msg"
-></div>
-
-<input
-type="hidden"
-id="editId"
->
-
-<div class="formGrid">
+  <div
+    id="productMsg"
+    class="msg"
+  ></div>
 
 
-<div>
-
-<label>
-Product Name
-</label>
-
-<input
-id="pName"
-placeholder="Example: Premium Ladies Dress"
->
-
-</div>
+  <input
+    type="hidden"
+    id="editId"
+  >
 
 
-<div>
-
-<label>
-Category
-</label>
-
-<select
-id="pCategory"
->
-
-<option value="Dresses">
-Dresses
-</option>
-
-<option value="Tops">
-Tops
-</option>
-
-<option value="Saree">
-Saree
-</option>
-
-<option value="Hijab">
-Hijab
-</option>
-
-<option value="Bags">
-Bags
-</option>
-
-<option value="Shoes">
-Shoes
-</option>
-
-<option value="Jewellery">
-Jewellery
-</option>
-
-<option value="Accessories">
-Accessories
-</option>
-
-<option value="General">
-General
-</option>
-
-</select>
-
-</div>
+  <div class="formGrid">
 
 
-<div>
+    <!-- NAME -->
 
-<label>
-Price
-</label>
+    <div>
 
-<input
-id="pPrice"
-type="number"
-step="0.01"
-placeholder="1200"
->
+      <label>
+        Product Name
+      </label>
 
-</div>
+      <input
+        id="pName"
+        placeholder="Example: Premium Ladies Dress"
+      >
 
-
-<div>
-
-<label>
-Old Price
-</label>
-
-<input
-id="pOldPrice"
-type="number"
-step="0.01"
-placeholder="1500"
->
-
-</div>
+    </div>
 
 
-<div>
+    <!-- CATEGORY -->
 
-<label>
-Discount %
-</label>
+    <div>
 
-<input
-id="pDiscount"
-type="number"
-step="0.01"
-placeholder="20"
->
+      <label>
+        Category
+      </label>
 
-</div>
+      <select id="pCategory">
+
+        <option value="Dresses">
+          Dresses
+        </option>
+
+        <option value="Tops">
+          Tops
+        </option>
+
+        <option value="Saree">
+          Saree
+        </option>
+
+        <option value="Hijab">
+          Hijab
+        </option>
+
+        <option value="Bags">
+          Bags
+        </option>
+
+        <option value="Shoes">
+          Shoes
+        </option>
+
+        <option value="Jewellery">
+          Jewellery
+        </option>
+
+        <option value="Accessories">
+          Accessories
+        </option>
+
+        <option value="General">
+          General
+        </option>
+
+      </select>
+
+    </div>
 
 
-<div>
+    <!-- PRICE -->
 
-<label>
-Stock
-</label>
+    <div>
 
-<input
-id="pStock"
-type="number"
-placeholder="10"
->
+      <label>
+        Price
+      </label>
 
-</div>
+      <input
+        id="pPrice"
+        type="number"
+        step="0.01"
+        placeholder="1200"
+      >
+
+    </div>
 
 
-<!-- =====================================================
-     DESCRIPTION
-===================================================== -->
+    <!-- OLD PRICE -->
 
-<div class="full">
+    <div>
 
-<label>
-Product Description
-</label>
+      <label>
+        Old Price
+      </label>
 
-<textarea
-id="pDescription"
-rows="8"
-placeholder="Write detailed product information...
+      <input
+        id="pOldPrice"
+        type="number"
+        step="0.01"
+        placeholder="1500"
+      >
+
+    </div>
+
+
+    <!-- DISCOUNT -->
+
+    <div>
+
+      <label>
+        Discount %
+      </label>
+
+      <input
+        id="pDiscount"
+        type="number"
+        step="0.01"
+        placeholder="20"
+      >
+
+    </div>
+
+
+    <!-- STOCK -->
+
+    <div>
+
+      <label>
+        Stock
+      </label>
+
+      <input
+        id="pStock"
+        type="number"
+        placeholder="10"
+      >
+
+    </div>
+
+
+    <!-- DESCRIPTION -->
+
+    <div class="full">
+
+      <label>
+        Product Description
+      </label>
+
+      <textarea
+        id="pDescription"
+        rows="8"
+        placeholder="Write detailed product information...
 
 Example:
 
@@ -985,82 +1008,76 @@ Available Color: Black, Red, Blue
 Comfortable and stylish.
 Suitable for regular and party wear.
 Delivery available all over Bangladesh."
-></textarea>
+      ></textarea>
 
-<small
-style="
-color:#777;
-display:block;
-margin-bottom:8px
-"
->
-Give customers complete product information such as
-fabric, size, color, quality, features and delivery details.
-</small>
+      <small style="color:#777;">
+        Add fabric, size, color, quality, features and delivery information.
+      </small>
 
-</div>
+    </div>
 
 
-<!-- IMAGE -->
+    <!-- IMAGE -->
 
-<div class="full">
+    <div class="full">
 
-<label>
-Product Image
-</label>
+      <label>
+        Product Image
+      </label>
 
-<input
-id="pImageFile"
-type="file"
-accept="image/*"
-onchange="previewImage(event)"
->
+      <input
+        id="pImageFile"
+        type="file"
+        accept="image/*"
+        onchange="previewImage(event)"
+      >
 
-<img
-id="imagePreview"
-class="preview hidden"
->
+      <img
+        id="imagePreview"
+        class="preview hidden"
+        alt="Preview"
+      >
 
-<input
-id="pImage"
-placeholder="Image URL"
->
+      <input
+        id="pImage"
+        placeholder="Or paste Image URL"
+      >
 
-<small
-style="color:#777"
->
-Choose an image to upload to Cloudinary,
-or paste an image URL.
-</small>
+      <small style="color:#777;">
+        Choose an image from phone or paste an image URL.
+      </small>
 
-</div>
-
-</div>
+    </div>
 
 
-<div
-style="
-display:flex;
-gap:10px;
-margin-top:10px
-"
->
+  </div>
 
-<button
-class="btn"
-onclick="saveProduct()"
->
-💾 Save Product
-</button>
 
-<button
-class="btn gray"
-onclick="resetProductForm()"
->
-Clear
-</button>
+  <div
+    style="
+      display:flex;
+      gap:10px;
+      margin-top:15px;
+      flex-wrap:wrap;
+    "
+  >
 
-</div>
+    <button
+      class="btn"
+      onclick="saveProduct()"
+    >
+      💾 Save Product
+    </button>
+
+
+    <button
+      class="btn gray"
+      onclick="resetProductForm()"
+    >
+      Clear
+    </button>
+
+  </div>
 
 </div>
 
@@ -1068,121 +1085,125 @@ Clear
 
 
 <!-- =====================================================
-     ORDERS
+     ORDERS TAB
 ===================================================== -->
 
 <div
-id="ordersTab"
-class="tabContent hidden"
+  id="ordersTab"
+  class="tabContent hidden"
 >
 
 <div class="panel">
 
-<h2>
-📦 Customer Orders
-</h2>
-
-<div class="orderFilters">
+  <h2>
+    📦 Customer Orders
+  </h2>
 
 
-<div>
-
-<label>
-Order Status
-</label>
-
-<select
-id="orderStatusFilter"
-onchange="renderOrders()"
->
-
-<option value="">
-All Active Orders
-</option>
-
-<option value="Pending">
-Pending
-</option>
-
-<option value="Confirmed">
-Confirmed
-</option>
-
-<option value="Processing">
-Processing
-</option>
-
-<option value="Shipped">
-Shipped
-</option>
-
-<option value="Delivered">
-Delivered
-</option>
-
-</select>
-
-</div>
+  <div class="orderFilters">
 
 
-<div>
+    <div>
 
-<label>
-Payment Status
-</label>
+      <label>
+        Order Status
+      </label>
 
-<select
-id="paymentStatusFilter"
-onchange="renderOrders()"
->
+      <select
+        id="orderStatusFilter"
+        onchange="renderOrders()"
+      >
 
-<option value="">
-All Payment
-</option>
+        <option value="">
+          All Active Orders
+        </option>
 
-<option value="Pending">
-Pending
-</option>
+        <option value="Pending">
+          Pending
+        </option>
 
-<option value="Paid">
-Paid
-</option>
+        <option value="Confirmed">
+          Confirmed
+        </option>
 
-<option value="Failed">
-Failed
-</option>
+        <option value="Processing">
+          Processing
+        </option>
 
-<option value="Refunded">
-Refunded
-</option>
+        <option value="Shipped">
+          Shipped
+        </option>
 
-</select>
+        <option value="Delivered">
+          Delivered
+        </option>
 
-</div>
+      </select>
 
-
-<div>
-
-<label>
-Search Order
-</label>
-
-<input
-id="orderSearch"
-placeholder="Order ID / Phone"
-oninput="renderOrders()"
->
-
-</div>
-
-</div>
+    </div>
 
 
-<div
-id="ordersList"
->
-Loading...
-</div>
+    <div>
+
+      <label>
+        Payment Status
+      </label>
+
+      <select
+        id="paymentStatusFilter"
+        onchange="renderOrders()"
+      >
+
+        <option value="">
+          All Payment
+        </option>
+
+        <option value="Pending">
+          Pending
+        </option>
+
+        <option value="Paid">
+          Paid
+        </option>
+
+        <option value="Failed">
+          Failed
+        </option>
+
+        <option value="Refunded">
+          Refunded
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div>
+
+      <label>
+        Search Order
+      </label>
+
+      <input
+        id="orderSearch"
+        placeholder="Order ID / Phone / Name"
+        oninput="renderOrders()"
+      >
+
+    </div>
+
+
+  </div>
+
+
+  <div id="ordersList">
+
+    <div class="empty">
+      Loading orders...
+    </div>
+
+  </div>
 
 </div>
 
@@ -1190,2303 +1211,2926 @@ Loading...
 
 
 <!-- =====================================================
-     SETTINGS
+     SETTINGS TAB
 ===================================================== -->
 
 <div
-id="settingsTab"
-class="tabContent hidden"
+  id="settingsTab"
+  class="tabContent hidden"
 >
 
 <div class="panel">
 
-<h2>
-⚙️ Store Settings
-</h2>
-
-<div
-id="settingsMsg"
-class="msg"
-></div>
-
-<div class="formGrid">
+  <h2>
+    ⚙️ Store Settings
+  </h2>
 
 
-<div>
+  <div
+    id="settingsMsg"
+    class="msg"
+  ></div>
 
-<label>
-Shop Name
-</label>
 
-<input
-id="shopName"
->
+  <div class="formGrid">
+
+
+    <div>
+
+      <label>
+        Shop Name
+      </label>
+
+      <input
+        id="shopName"
+        value="SM Online Shop"
+      >
+
+    </div>
+
+
+    <div>
+
+      <label>
+        Tagline
+      </label>
+
+      <input
+        id="tagline"
+        value="Style • Comfort • Confidence ♥"
+      >
+
+    </div>
+
+
+    <div>
+
+      <label>
+        Phone 1
+      </label>
+
+      <input
+        id="phone1"
+        value="01827872334"
+      >
+
+    </div>
+
+
+    <div>
+
+      <label>
+        Phone 2
+      </label>
+
+      <input
+        id="phone2"
+        value="01886995687"
+      >
+
+    </div>
+
+
+    <div class="full">
+
+      <label>
+        Facebook Page
+      </label>
+
+      <input
+        id="facebook"
+        value="https://www.facebook.com/share/1Dr8FEmuoQ/"
+        placeholder="https://facebook.com/..."
+      >
+
+    </div>
+
+
+    <div>
+
+      <label>
+        Currency
+      </label>
+
+      <select id="currency">
+
+        <option value="BDT">
+          BDT
+        </option>
+
+        <option value="USD">
+          USD
+        </option>
+
+      </select>
+
+    </div>
+
+
+  </div>
+
+
+  <button
+    class="btn"
+    onclick="saveSettings()"
+  >
+    💾 Save Settings
+  </button>
+
+</div>
 
 </div>
 
 
-<div>
-
-<label>
-Tagline
-</label>
-
-<input
-id="tagline"
->
-
 </div>
 
-
-<div>
-
-<label>
-Phone 1
-</label>
-
-<input
-id="phone1"
->
-
-</div>
-
-
-<div>
-
-<label>
-Phone 2
-</label>
-
-<input
-id="phone2"
->
-
-</div>
-
-
-<div class="full">
-
-<label>
-Facebook Page
-</label>
-
-<input
-id="facebook"
-placeholder="https://facebook.com/..."
->
-
-</div>
-
-
-<div>
-
-<label>
-Currency
-</label>
-
-<select
-id="currency"
->
-
-<option value="BDT">
-BDT
-</option>
-
-<option value="USD">
-USD
-</option>
-
-</select>
-
-</div>
-
-</div>
-
-
-<button
-class="btn"
-onclick="saveSettings()"
->
-💾 Save Settings
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
+</section>
 
 
 <script>
 
-/* =====================================================
+/* =========================================================
    GLOBAL
-===================================================== */
+========================================================= */
 
 let token =
-localStorage.getItem(
-"smAdminToken"
-) || "";
+  localStorage.getItem("smAdminToken") || "";
 
 let products = [];
 
 let orders = [];
 
 
-/* =====================================================
+/* =========================================================
+   SAFE ARRAY
+   IMPORTANT FIX
+========================================================= */
+
+function asArray(value){
+
+  if(Array.isArray(value)){
+    return value;
+  }
+
+  if(
+    value &&
+    Array.isArray(value.products)
+  ){
+    return value.products;
+  }
+
+  if(
+    value &&
+    Array.isArray(value.orders)
+  ){
+    return value.orders;
+  }
+
+  if(
+    value &&
+    Array.isArray(value.data)
+  ){
+    return value.data;
+  }
+
+  return [];
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(
+    value == null ? "" : value
+  )
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   MONEY
+========================================================= */
+
+function money(value){
+
+  const n =
+    Number(value || 0);
+
+  return "৳" +
+    n.toLocaleString("en-BD",{
+      maximumFractionDigits:2
+    });
+
+}
+
+
+/* =========================================================
    API
-===================================================== */
+========================================================= */
 
 async function api(
-url,
-options={}
+  url,
+  options={}
 ){
 
-options.headers =
-options.headers || {};
+  options =
+    options || {};
 
-if(token){
+  options.headers =
+    options.headers || {};
 
-options.headers.Authorization =
-"Bearer " + token;
+
+  if(token){
+
+    options.headers.Authorization =
+      "Bearer " + token;
+
+  }
+
+
+  if(
+    options.body &&
+    typeof options.body === "object" &&
+    !(options.body instanceof FormData) &&
+    !(options.body instanceof Blob)
+  ){
+
+    options.headers["Content-Type"] =
+      "application/json";
+
+    options.body =
+      JSON.stringify(
+        options.body
+      );
+
+  }
+
+
+  const response =
+    await fetch(
+      url,
+      options
+    );
+
+
+  let data = {};
+
+  try{
+
+    data =
+      await response.json();
+
+  }catch(e){
+
+    data = {};
+
+  }
+
+
+  if(response.status === 401){
+
+    token = "";
+
+    localStorage.removeItem(
+      "smAdminToken"
+    );
+
+    document
+      .getElementById("adminPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("loginPage")
+      .classList.remove("hidden");
+
+    throw new Error(
+      data.error ||
+      data.message ||
+      "Admin session expired. Please login again."
+    );
+
+  }
+
+
+  if(!response.ok){
+
+    throw new Error(
+      data.error ||
+      data.message ||
+      "Request failed."
+    );
+
+  }
+
+
+  return data;
 
 }
 
-if(
 
-options.body &&
-
-typeof options.body ===
-"object" &&
-
-!(options.body instanceof FormData)
-
-){
-
-options.headers[
-"Content-Type"
-] =
-"application/json";
-
-options.body =
-JSON.stringify(
-options.body
-);
-
-}
-
-const response =
-await fetch(
-url,
-options
-);
-
-let data = {};
-
-try{
-
-data =
-await response.json();
-
-}catch(e){}
-
-if(
-response.status === 401
-){
-
-logout();
-
-throw new Error(
-data.error ||
-"Session expired"
-);
-
-}
-
-if(
-!response.ok
-){
-
-throw new Error(
-data.error ||
-"Request failed"
-);
-
-}
-
-return data;
-
-}
-
-
-/* =====================================================
+/* =========================================================
    LOGIN
-===================================================== */
+========================================================= */
 
 async function login(){
 
-const username =
-document
-.getElementById(
-"username"
-)
-.value
-.trim();
+  const username =
+    document
+      .getElementById("username")
+      .value
+      .trim();
 
-const password =
-document
-.getElementById(
-"password"
-)
-.value;
+  const password =
+    document
+      .getElementById("password")
+      .value;
 
-const msg =
-document
-.getElementById(
-"loginMsg"
-);
 
-msg.className =
-"msg";
+  const msg =
+    document.getElementById(
+      "loginMsg"
+    );
 
-msg.textContent =
-"";
 
-if(
-!username ||
-!password
-){
+  msg.className = "msg";
 
-msg.className =
-"msg error";
+  msg.textContent = "";
 
-msg.textContent =
-"Username and password required.";
 
-return;
+  if(!username || !password){
+
+    msg.className =
+      "msg error";
+
+    msg.textContent =
+      "Username and password required.";
+
+    return;
+
+  }
+
+
+  try{
+
+    const data =
+      await api(
+        "/api/admin/login",
+        {
+          method:"POST",
+          body:{
+            username,
+            password
+          }
+        }
+      );
+
+
+    if(!data.token){
+
+      throw new Error(
+        "Login token was not received."
+      );
+
+    }
+
+
+    token =
+      data.token;
+
+
+    localStorage.setItem(
+      "smAdminToken",
+      token
+    );
+
+
+    await showAdmin();
+
+
+  }catch(error){
+
+    msg.className =
+      "msg error";
+
+    msg.textContent =
+      error.message ||
+      "Login failed.";
+
+  }
 
 }
 
-try{
 
-const data =
-await api(
-"/api/admin/login",
-{
-method:"POST",
-body:{
-username,
-password
-}
-}
-);
-
-token =
-data.token;
-
-localStorage.setItem(
-"smAdminToken",
-token
-);
-
-showAdmin();
-
-}catch(error){
-
-msg.className =
-"msg error";
-
-msg.textContent =
-error.message;
-
-}
-
-}
-
-
-/* =====================================================
+/* =========================================================
    LOGOUT
-===================================================== */
+========================================================= */
 
 async function logout(){
 
-try{
+  try{
 
-if(token){
+    if(token){
 
-await fetch(
-"/api/admin/logout",
-{
-method:"POST",
-headers:{
-Authorization:
-"Bearer " + token
-}
-}
-);
+      await fetch(
+        "/api/admin/logout",
+        {
+          method:"POST",
+          headers:{
+            Authorization:
+              "Bearer " + token
+          }
+        }
+      );
 
-}
+    }
 
-}catch(e){}
+  }catch(e){}
 
-token = "";
 
-localStorage.removeItem(
-"smAdminToken"
-);
+  token = "";
 
-document
-.getElementById(
-"adminPage"
-)
-.classList.add(
-"hidden"
-);
+  localStorage.removeItem(
+    "smAdminToken"
+  );
 
-document
-.getElementById(
-"loginPage"
-)
-.classList.remove(
-"hidden"
-);
+
+  document
+    .getElementById("adminPage")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("loginPage")
+    .classList.remove("hidden");
 
 }
 
 
-/* =====================================================
+/* =========================================================
    SHOW ADMIN
-===================================================== */
+========================================================= */
 
 async function showAdmin(){
 
-document
-.getElementById(
-"loginPage"
-)
-.classList.add(
-"hidden"
-);
+  document
+    .getElementById("loginPage")
+    .classList.add("hidden");
 
-document
-.getElementById(
-"adminPage"
-)
-.classList.remove(
-"hidden"
-);
 
-await loadProducts();
+  document
+    .getElementById("adminPage")
+    .classList.remove("hidden");
 
-await loadOrders();
 
-await loadSettings();
+  await loadProducts();
+
+  await loadOrders();
+
+  await loadSettings();
 
 }
 
 
-/* =====================================================
+/* =========================================================
    TABS
-===================================================== */
+========================================================= */
 
 function showTab(
-name,
-button
+  name,
+  button
 ){
 
-document
-.querySelectorAll(
-".tabContent"
-)
-.forEach(
-x =>
-x.classList.add(
-"hidden"
-)
-);
+  document
+    .querySelectorAll(".tabContent")
+    .forEach(
+      x =>
+        x.classList.add("hidden")
+    );
 
-document
-.getElementById(
-name + "Tab"
-)
-.classList.remove(
-"hidden"
-);
 
-document
-.querySelectorAll(
-".tab"
-)
-.forEach(
-x =>
-x.classList.remove(
-"active"
-)
-);
+  const target =
+    document.getElementById(
+      name + "Tab"
+    );
 
-button.classList.add(
-"active"
-);
+
+  if(target){
+
+    target.classList.remove(
+      "hidden"
+    );
+
+  }
+
+
+  document
+    .querySelectorAll(".tab")
+    .forEach(
+      x =>
+        x.classList.remove(
+          "active"
+        )
+    );
+
+
+  if(button){
+
+    button.classList.add(
+      "active"
+    );
+
+  }
 
 }
 
 
-/* =====================================================
-   PRODUCTS
-===================================================== */
+/* =========================================================
+   LOAD PRODUCTS
+========================================================= */
 
 async function loadProducts(){
 
-try{
+  const grid =
+    document.getElementById(
+      "productGrid"
+    );
 
-products =
-await api(
-"/api/admin/products"
-);
 
-renderProducts();
+  try{
 
-updateStats();
+    grid.innerHTML =
+      '<div class="empty">Loading products...</div>';
 
-}catch(error){
 
-alert(
-error.message
-);
+    const data =
+      await api(
+        "/api/admin/products",
+        {
+          method:"GET"
+        }
+      );
+
+
+    /*
+      SERVER MAY RETURN:
+
+      []
+      OR
+      { products: [] }
+      OR
+      { data: [] }
+
+      This is the important fix.
+    */
+
+    products =
+      asArray(data);
+
+
+    renderProducts();
+
+    updateStats();
+
+
+  }catch(error){
+
+    console.error(
+      "Products error:",
+      error
+    );
+
+
+    products = [];
+
+
+    grid.innerHTML = `
+      <div class="msg error" style="display:block;">
+        ${escapeHtml(
+          error.message ||
+          "Failed to load products."
+        )}
+      </div>
+    `;
+
+
+    updateStats();
+
+  }
 
 }
 
-}
 
-
-/* =====================================================
+/* =========================================================
    RENDER PRODUCTS
-===================================================== */
+========================================================= */
 
 function renderProducts(
-list = products
+  list = products
 ){
 
-const grid =
-document.getElementById(
-"productGrid"
-);
+  const grid =
+    document.getElementById(
+      "productGrid"
+    );
 
-if(
-!list.length
-){
 
-grid.innerHTML =
-"<p>No products found.</p>";
+  if(!Array.isArray(list)){
 
-return;
+    list = [];
+
+  }
+
+
+  if(!list.length){
+
+    grid.innerHTML = `
+      <div class="empty">
+        No products found.
+        <br><br>
+        Click <b>➕ Add Product</b> to add a product.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  grid.innerHTML =
+    list.map(
+      p => {
+
+        const price =
+          Number(p.price || 0);
+
+        const oldPrice =
+          Number(
+            p.oldPrice ||
+            p.old_price ||
+            price
+          );
+
+
+        const discount =
+          Number(
+            p.discount || 0
+          );
+
+
+        const stock =
+          Number(
+            p.stock || 0
+          );
+
+
+        const image =
+          p.image ||
+          p.image_url ||
+          "";
+
+
+        return `
+
+        <div class="product">
+
+          ${
+            image
+            ?
+            `
+            <img
+              src="${escapeHtml(image)}"
+              alt="${escapeHtml(p.name)}"
+              onerror="
+                this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27210%27%3E%3Crect width=%27100%25%27 height=%27100%25%27 fill=%27%23eeeeee%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 fill=%27%23999%27%3ENo Image%3C/text%3E%3C/svg%3E';
+              "
+            >
+            `
+            :
+            `
+            <div
+              style="
+                height:210px;
+                display:grid;
+                place-items:center;
+                background:#eee;
+                color:#999;
+              "
+            >
+              No Image
+            </div>
+            `
+          }
+
+
+          <div class="productBody">
+
+            <h3>
+              ${escapeHtml(
+                p.name || "Unnamed Product"
+              )}
+            </h3>
+
+
+            <p
+              style="
+                color:#777;
+                margin:0 0 8px;
+              "
+            >
+              ${escapeHtml(
+                p.category || "General"
+              )}
+            </p>
+
+
+            <p class="price">
+
+              ${money(price)}
+
+              ${
+                oldPrice > price
+                ?
+                `
+                <span class="old">
+                  ${money(oldPrice)}
+                </span>
+                `
+                :
+                ""
+              }
+
+            </p>
+
+
+            <div class="productInfo">
+
+              <b>Stock:</b>
+              ${stock}
+
+              <br>
+
+              <b>Discount:</b>
+              ${discount}%
+
+            </div>
+
+
+            ${
+              p.description
+              ?
+              `
+              <div
+                style="
+                  background:#fafafa;
+                  padding:10px;
+                  border-radius:8px;
+                  margin-top:10px;
+                  white-space:pre-wrap;
+                  font-size:13px;
+                  line-height:1.5;
+                "
+              >
+                ${escapeHtml(
+                  p.description
+                )}
+              </div>
+              `
+              :
+              ""
+            }
+
+
+            <div class="actions">
+
+              <button
+                style="
+                  background:#fff0f5;
+                  color:#f41470;
+                "
+                onclick="
+                  editProduct(${Number(p.id)})
+                "
+              >
+                ✏️ Edit
+              </button>
+
+
+              <button
+                style="
+                  background:#ffecee;
+                  color:#c00;
+                "
+                onclick="
+                  deleteProduct(${Number(p.id)})
+                "
+              >
+                🗑 Delete
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        `;
+
+      }
+    ).join("");
 
 }
 
-grid.innerHTML =
-list.map(
-p => `
 
-<div class="product">
-
-<img
-src="${escapeHtml(
-p.image || ""
-)}"
-onerror="this.style.display='none'"
->
-
-<div class="productBody">
-
-<h3>
-${escapeHtml(
-p.name
-)}
-</h3>
-
-<small>
-${escapeHtml(
-p.category
-)}
-</small>
-
-<p class="price">
-
-৳${Number(
-p.price
-).toLocaleString(
-"en-BD"
-)}
-
-<span class="old">
-
-৳${Number(
-p.oldPrice ||
-p.price
-).toLocaleString(
-"en-BD"
-)}
-
-</span>
-
-</p>
-
-<p>
-
-Stock:
-<b>
-${Number(p.stock || 0)}
-</b>
-
-&nbsp; | &nbsp;
-
-Discount:
-<b>
-${Number(p.discount || 0)}%
-</b>
-
-</p>
-
-${
-p.description
-?
-`
-<div class="descriptionPreview">
-${escapeHtml(
-p.description
-)}
-</div>
-`
-:
-""
-}
-
-<div class="actions">
-
-<button
-style="
-background:#fff0f5;
-color:#f41470
-"
-onclick="
-editProduct(${Number(p.id)})
-"
->
-✏️ Edit
-</button>
-
-<button
-style="
-background:#ffecee;
-color:#c00
-"
-onclick="
-deleteProduct(${Number(p.id)})
-"
->
-🗑 Delete
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-`
-).join("");
-
-}
-
-
-/* =====================================================
+/* =========================================================
    SEARCH PRODUCTS
-===================================================== */
+========================================================= */
 
 function searchProducts(){
 
-const q =
-document
-.getElementById(
-"productSearch"
-)
-.value
-.toLowerCase();
+  const q =
+    document
+      .getElementById(
+        "productSearch"
+      )
+      .value
+      .toLowerCase()
+      .trim();
 
-renderProducts(
 
-products.filter(
-p =>
+  if(!q){
 
-(
-(p.name || "") +
-" " +
-(p.category || "") +
-" " +
-(p.description || "")
-)
-.toLowerCase()
-.includes(q)
+    renderProducts();
 
-)
+    return;
 
-);
+  }
+
+
+  const filtered =
+    products.filter(
+      p => {
+
+        const text =
+          (
+            (p.name || "") +
+            " " +
+            (p.category || "") +
+            " " +
+            (p.description || "")
+          )
+          .toLowerCase();
+
+
+        return text.includes(q);
+
+      }
+    );
+
+
+  renderProducts(
+    filtered
+  );
 
 }
 
 
-/* =====================================================
+/* =========================================================
    IMAGE PREVIEW
-===================================================== */
+========================================================= */
 
-function previewImage(
-event
-){
+function previewImage(event){
 
-const file =
-event.target.files[0];
+  const file =
+    event.target.files &&
+    event.target.files[0];
 
-if(!file){
-return;
+
+  const preview =
+    document.getElementById(
+      "imagePreview"
+    );
+
+
+  if(!file){
+
+    preview.classList.add(
+      "hidden"
+    );
+
+    return;
+
+  }
+
+
+  if(
+    file.size >
+    10 * 1024 * 1024
+  ){
+
+    alert(
+      "Image must be smaller than 10MB."
+    );
+
+    event.target.value = "";
+
+    return;
+
+  }
+
+
+  preview.src =
+    URL.createObjectURL(
+      file
+    );
+
+
+  preview.classList.remove(
+    "hidden"
+  );
+
 }
 
-const preview =
-document.getElementById(
-"imagePreview"
-);
 
-preview.src =
-URL.createObjectURL(
-file
-);
-
-preview.classList.remove(
-"hidden"
-);
-
-}
-
-
-/* =====================================================
+/* =========================================================
    UPLOAD IMAGE
-===================================================== */
+========================================================= */
 
 async function uploadImage(){
 
-const file =
-document
-.getElementById(
-"pImageFile"
-)
-.files[0];
+  const file =
+    document
+      .getElementById(
+        "pImageFile"
+      )
+      .files[0];
 
-if(!file){
 
-return document
-.getElementById(
-"pImage"
-)
-.value
-.trim();
+  const url =
+    document
+      .getElementById(
+        "pImage"
+      )
+      .value
+      .trim();
+
+
+  /*
+    If no new file selected,
+    keep existing URL.
+  */
+
+  if(!file){
+
+    return url;
+
+  }
+
+
+  if(
+    file.size >
+    10 * 1024 * 1024
+  ){
+
+    throw new Error(
+      "Image must be smaller than 10MB."
+    );
+
+  }
+
+
+  const reader =
+    new FileReader();
+
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      reader.onload =
+        async function(){
+
+          try{
+
+            const data =
+              await api(
+                "/api/admin/upload",
+                {
+                  method:"POST",
+                  body:{
+                    image:
+                      reader.result
+                  }
+                }
+              );
+
+
+            const uploadedUrl =
+              data.url ||
+              data.image ||
+              data.secure_url;
+
+
+            if(!uploadedUrl){
+
+              throw new Error(
+                "Image upload failed: URL not received."
+              );
+
+            }
+
+
+            resolve(
+              uploadedUrl
+            );
+
+
+          }catch(error){
+
+            reject(
+              error
+            );
+
+          }
+
+        };
+
+
+      reader.onerror =
+        function(){
+
+          reject(
+            new Error(
+              "Could not read image."
+            )
+          );
+
+        };
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    }
+  );
 
 }
 
-if(
-file.size >
-10 * 1024 * 1024
-){
 
-throw new Error(
-"Image must be smaller than 10MB."
-);
-
-}
-
-return new Promise(
-(resolve,reject)=>{
-
-const reader =
-new FileReader();
-
-reader.onload =
-async () => {
-
-try{
-
-const data =
-await api(
-"/api/admin/upload",
-{
-method:"POST",
-body:{
-image:
-reader.result
-}
-}
-);
-
-resolve(
-data.url
-);
-
-}catch(error){
-
-reject(
-error
-);
-
-}
-
-};
-
-reader.onerror =
-() => {
-
-reject(
-new Error(
-"Could not read image"
-)
-);
-
-};
-
-reader.readAsDataURL(
-file
-);
-
-}
-);
-
-}
-
-
-/* =====================================================
+/* =========================================================
    SAVE PRODUCT
-===================================================== */
+========================================================= */
 
 async function saveProduct(){
 
-const msg =
-document.getElementById(
-"productMsg"
-);
+  const msg =
+    document.getElementById(
+      "productMsg"
+    );
 
-msg.className =
-"msg";
 
-try{
+  msg.className =
+    "msg";
 
-const name =
-document
-.getElementById(
-"pName"
-)
-.value
-.trim();
 
-const price =
-Number(
-document
-.getElementById(
-"pPrice"
-)
-.value
-);
+  msg.textContent =
+    "";
 
-if(!name){
 
-throw new Error(
-"Product name is required."
-);
+  try{
+
+    const name =
+      document
+        .getElementById(
+          "pName"
+        )
+        .value
+        .trim();
+
+
+    const price =
+      Number(
+        document
+          .getElementById(
+            "pPrice"
+          )
+          .value
+      );
+
+
+    if(!name){
+
+      throw new Error(
+        "Product name is required."
+      );
+
+    }
+
+
+    if(
+      !Number.isFinite(price) ||
+      price <= 0
+    ){
+
+      throw new Error(
+        "Valid product price is required."
+      );
+
+    }
+
+
+    msg.className =
+      "msg info";
+
+
+    msg.textContent =
+      "Saving product...";
+
+
+    const image =
+      await uploadImage();
+
+
+    const body = {
+
+      name:name,
+
+      category:
+        document
+          .getElementById(
+            "pCategory"
+          )
+          .value,
+
+      description:
+        document
+          .getElementById(
+            "pDescription"
+          )
+          .value
+          .trim(),
+
+      price:price,
+
+      oldPrice:
+        Number(
+          document
+            .getElementById(
+              "pOldPrice"
+            )
+            .value
+        ) || price,
+
+      discount:
+        Number(
+          document
+            .getElementById(
+              "pDiscount"
+            )
+            .value
+        ) || 0,
+
+      stock:
+        Number(
+          document
+            .getElementById(
+              "pStock"
+            )
+            .value
+        ) || 0,
+
+      image:image
+
+    };
+
+
+    const editId =
+      document
+        .getElementById(
+          "editId"
+        )
+        .value
+        .trim();
+
+
+    if(editId){
+
+      await api(
+        "/api/admin/products/" +
+        encodeURIComponent(
+          editId
+        ),
+        {
+          method:"PUT",
+          body:body
+        }
+      );
+
+
+      msg.className =
+        "msg success";
+
+
+      msg.textContent =
+        "Product updated successfully.";
+
+    }else{
+
+      await api(
+        "/api/admin/products",
+        {
+          method:"POST",
+          body:body
+        }
+      );
+
+
+      msg.className =
+        "msg success";
+
+
+      msg.textContent =
+        "Product added successfully.";
+
+    }
+
+
+    await loadProducts();
+
+
+    setTimeout(
+      function(){
+
+        resetProductForm();
+
+      },
+      800
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Save product error:",
+      error
+    );
+
+
+    msg.className =
+      "msg error";
+
+
+    msg.textContent =
+      error.message ||
+      "Failed to save product.";
+
+  }
 
 }
 
-if(price <= 0){
 
-throw new Error(
-"Valid product price is required."
-);
-
-}
-
-msg.className =
-"msg success";
-
-msg.textContent =
-"Saving product...";
-
-const image =
-await uploadImage();
-
-const body = {
-
-name:name,
-
-category:
-document
-.getElementById(
-"pCategory"
-)
-.value,
-
-description:
-document
-.getElementById(
-"pDescription"
-)
-.value
-.trim(),
-
-price:price,
-
-oldPrice:
-Number(
-document
-.getElementById(
-"pOldPrice"
-)
-.value
-) || price,
-
-discount:
-Number(
-document
-.getElementById(
-"pDiscount"
-)
-.value
-) || 0,
-
-stock:
-Number(
-document
-.getElementById(
-"pStock"
-)
-.value
-) || 0,
-
-image:image
-
-};
-
-const editId =
-document
-.getElementById(
-"editId"
-)
-.value;
-
-if(editId){
-
-await api(
-
-"/api/admin/products/" +
-encodeURIComponent(
-editId
-),
-
-{
-method:"PUT",
-body:body
-}
-
-);
-
-msg.textContent =
-"Product updated successfully.";
-
-}else{
-
-await api(
-"/api/admin/products",
-{
-method:"POST",
-body:body
-}
-);
-
-msg.textContent =
-"Product added successfully.";
-
-}
-
-await loadProducts();
-
-setTimeout(
-function(){
-
-resetProductForm();
-
-},
-500
-);
-
-}catch(error){
-
-msg.className =
-"msg error";
-
-msg.textContent =
-error.message;
-
-}
-
-}
-
-
-/* =====================================================
+/* =========================================================
    EDIT PRODUCT
-===================================================== */
+========================================================= */
 
-function editProduct(
-id
-){
+function editProduct(id){
 
-const p =
-products.find(
-x =>
-Number(x.id) ===
-Number(id)
-);
+  const p =
+    products.find(
+      x =>
+        Number(x.id) ===
+        Number(id)
+    );
 
-if(!p){
-return;
+
+  if(!p){
+
+    alert(
+      "Product not found."
+    );
+
+    return;
+
+  }
+
+
+  document
+    .getElementById(
+      "editId"
+    )
+    .value =
+      p.id;
+
+
+  document
+    .getElementById(
+      "pName"
+    )
+    .value =
+      p.name || "";
+
+
+  document
+    .getElementById(
+      "pCategory"
+    )
+    .value =
+      p.category || "General";
+
+
+  document
+    .getElementById(
+      "pDescription"
+    )
+    .value =
+      p.description || "";
+
+
+  document
+    .getElementById(
+      "pPrice"
+    )
+    .value =
+      p.price || "";
+
+
+  document
+    .getElementById(
+      "pOldPrice"
+    )
+    .value =
+      p.oldPrice ||
+      p.old_price ||
+      "";
+
+
+  document
+    .getElementById(
+      "pDiscount"
+    )
+    .value =
+      p.discount || "";
+
+
+  document
+    .getElementById(
+      "pStock"
+    )
+    .value =
+      p.stock || "";
+
+
+  document
+    .getElementById(
+      "pImage"
+    )
+    .value =
+      p.image ||
+      p.image_url ||
+      "";
+
+
+  document
+    .getElementById(
+      "formTitle"
+    )
+    .textContent =
+      "Edit Product";
+
+
+  const preview =
+    document.getElementById(
+      "imagePreview"
+    );
+
+
+  if(
+    p.image ||
+    p.image_url
+  ){
+
+    preview.src =
+      p.image ||
+      p.image_url;
+
+    preview.classList.remove(
+      "hidden"
+    );
+
+  }
+
+
+  showTab(
+    "add",
+    document
+      .querySelectorAll(
+        ".tab"
+      )[1]
+  );
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
 }
 
-document
-.getElementById(
-"editId"
-)
-.value =
-p.id;
 
-document
-.getElementById(
-"pName"
-)
-.value =
-p.name || "";
-
-document
-.getElementById(
-"pCategory"
-)
-.value =
-p.category || "General";
-
-document
-.getElementById(
-"pDescription"
-)
-.value =
-p.description || "";
-
-document
-.getElementById(
-"pPrice"
-)
-.value =
-p.price || "";
-
-document
-.getElementById(
-"pOldPrice"
-)
-.value =
-p.oldPrice || "";
-
-document
-.getElementById(
-"pDiscount"
-)
-.value =
-p.discount || "";
-
-document
-.getElementById(
-"pStock"
-)
-.value =
-p.stock || "";
-
-document
-.getElementById(
-"pImage"
-)
-.value =
-p.image || "";
-
-document
-.getElementById(
-"formTitle"
-)
-.textContent =
-"Edit Product";
-
-document
-.getElementById(
-"addTab"
-)
-.classList.remove(
-"hidden"
-);
-
-document
-.getElementById(
-"productsTab"
-)
-.classList.add(
-"hidden"
-);
-
-document
-.querySelectorAll(
-".tab"
-)
-.forEach(
-x =>
-x.classList.remove(
-"active"
-)
-);
-
-document
-.querySelectorAll(
-".tab"
-)[1]
-.classList.add(
-"active"
-);
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
-}
-
-
-/* =====================================================
+/* =========================================================
    DELETE PRODUCT
-===================================================== */
+========================================================= */
 
-async function deleteProduct(
-id
-){
+async function deleteProduct(id){
 
-const p =
-products.find(
-x =>
-Number(x.id) ===
-Number(id)
-);
+  const p =
+    products.find(
+      x =>
+        Number(x.id) ===
+        Number(id)
+    );
 
-if(!p){
-return;
+
+  if(!p){
+
+    return;
+
+  }
+
+
+  if(
+    !confirm(
+      'Delete "' +
+      p.name +
+      '"?'
+    )
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
+    await api(
+      "/api/admin/products/" +
+      encodeURIComponent(
+        id
+      ),
+      {
+        method:"DELETE"
+      }
+    );
+
+
+    await loadProducts();
+
+
+    alert(
+      "Product deleted successfully."
+    );
+
+
+  }catch(error){
+
+    alert(
+      error.message ||
+      "Failed to delete product."
+    );
+
+  }
+
 }
 
-if(
-!confirm(
-'Delete "' +
-p.name +
-'"?'
-)
-){
 
-return;
-
-}
-
-try{
-
-await api(
-
-"/api/admin/products/" +
-encodeURIComponent(
-id
-),
-
-{
-method:"DELETE"
-}
-
-);
-
-await loadProducts();
-
-alert(
-"Product deleted successfully."
-);
-
-}catch(error){
-
-alert(
-error.message
-);
-
-}
-
-}
-
-
-/* =====================================================
+/* =========================================================
    RESET PRODUCT FORM
-===================================================== */
+========================================================= */
 
 function resetProductForm(){
 
-document
-.getElementById(
-"editId"
-)
-.value = "";
+  document
+    .getElementById(
+      "editId"
+    )
+    .value = "";
 
-document
-.getElementById(
-"pName"
-)
-.value = "";
 
-document
-.getElementById(
-"pPrice"
-)
-.value = "";
+  document
+    .getElementById(
+      "pName"
+    )
+    .value = "";
 
-document
-.getElementById(
-"pOldPrice"
-)
-.value = "";
 
-document
-.getElementById(
-"pDiscount"
-)
-.value = "";
+  document
+    .getElementById(
+      "pCategory"
+    )
+    .value = "Dresses";
 
-document
-.getElementById(
-"pStock"
-)
-.value = "";
 
-document
-.getElementById(
-"pDescription"
-)
-.value = "";
+  document
+    .getElementById(
+      "pPrice"
+    )
+    .value = "";
 
-document
-.getElementById(
-"pImage"
-)
-.value = "";
 
-document
-.getElementById(
-"pImageFile"
-)
-.value = "";
+  document
+    .getElementById(
+      "pOldPrice"
+    )
+    .value = "";
 
-document
-.getElementById(
-"imagePreview"
-)
-.classList.add(
-"hidden"
-);
 
-document
-.getElementById(
-"formTitle"
-)
-.textContent =
-"Add New Product";
+  document
+    .getElementById(
+      "pDiscount"
+    )
+    .value = "";
 
-const msg =
-document.getElementById(
-"productMsg"
-);
 
-msg.className =
-"msg";
+  document
+    .getElementById(
+      "pStock"
+    )
+    .value = "";
 
-msg.textContent =
-"";
+
+  document
+    .getElementById(
+      "pDescription"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "pImage"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "pImageFile"
+    )
+    .value = "";
+
+
+  const preview =
+    document.getElementById(
+      "imagePreview"
+    );
+
+
+  preview.src = "";
+
+  preview.classList.add(
+    "hidden"
+  );
+
+
+  document
+    .getElementById(
+      "formTitle"
+    )
+    .textContent =
+      "Add New Product";
+
+
+  const msg =
+    document.getElementById(
+      "productMsg"
+    );
+
+
+  msg.className =
+    "msg";
+
+  msg.textContent =
+    "";
 
 }
 
 
-/* =====================================================
-   ORDERS
-===================================================== */
+/* =========================================================
+   LOAD ORDERS
+========================================================= */
 
 async function loadOrders(){
 
-try{
+  const box =
+    document.getElementById(
+      "ordersList"
+    );
 
-orders =
-await api(
-"/api/admin/orders"
-);
 
-renderOrders();
+  try{
 
-updateStats();
+    box.innerHTML =
+      '<div class="empty">Loading orders...</div>';
 
-}catch(error){
 
-console.error(
-error
-);
+    const data =
+      await api(
+        "/api/admin/orders",
+        {
+          method:"GET"
+        }
+      );
+
+
+    /*
+      IMPORTANT FIX:
+
+      Server may return:
+      []
+      OR
+      { orders: [] }
+      OR
+      { data: [] }
+    */
+
+    orders =
+      asArray(data);
+
+
+    renderOrders();
+
+    updateStats();
+
+
+  }catch(error){
+
+    console.error(
+      "Orders error:",
+      error
+    );
+
+
+    orders = [];
+
+
+    box.innerHTML = `
+      <div class="msg error" style="display:block;">
+        ${escapeHtml(
+          error.message ||
+          "Failed to load orders."
+        )}
+      </div>
+    `;
+
+
+    updateStats();
+
+  }
 
 }
 
-}
 
+/* =========================================================
+   STATUS CLASS
+========================================================= */
 
-/* =====================================================
-   ORDER STATUS CLASS
-===================================================== */
+function getStatusClass(status){
 
-function getStatusClass(
-status
-){
+  switch(status){
 
-switch(status){
+    case "Confirmed":
+      return "statusConfirmed";
 
-case "Confirmed":
-return "statusConfirmed";
+    case "Processing":
+      return "statusProcessing";
 
-case "Processing":
-return "statusProcessing";
+    case "Shipped":
+      return "statusShipped";
 
-case "Shipped":
-return "statusShipped";
+    case "Delivered":
+      return "statusDelivered";
 
-case "Delivered":
-return "statusDelivered";
+    case "Cancelled":
+      return "statusCancelled";
 
-case "Cancelled":
-return "statusCancelled";
+    default:
+      return "statusPending";
 
-default:
-return "statusPending";
-
-}
+  }
 
 }
 
 
-/* =====================================================
+/* =========================================================
    PAYMENT CLASS
-===================================================== */
+========================================================= */
 
-function getPaymentClass(
-status
-){
+function getPaymentClass(status){
 
-switch(status){
+  switch(status){
 
-case "Paid":
-return "paymentPaid";
+    case "Paid":
+      return "paymentPaid";
 
-case "Failed":
-return "paymentFailed";
+    case "Failed":
+      return "paymentFailed";
 
-case "Refunded":
-return "paymentRefunded";
+    case "Refunded":
+      return "paymentRefunded";
 
-default:
-return "paymentPending";
+    default:
+      return "paymentPending";
 
-}
+  }
 
 }
 
 
-/* =====================================================
+/* =========================================================
    RENDER ORDERS
-===================================================== */
+========================================================= */
 
 function renderOrders(){
 
-const box =
-document.getElementById(
-"ordersList"
-);
-
-let list =
-[...orders];
-
-/*
-IMPORTANT:
-Server already removes cancelled orders.
-This extra filter prevents cancelled
-orders from staying on screen.
-*/
-
-list =
-list.filter(
-order =>
-order.status !== "Cancelled"
-);
+  const box =
+    document.getElementById(
+      "ordersList"
+    );
 
 
-/* FILTER STATUS */
+  /*
+    NEVER call filter on a non-array.
+  */
 
-const statusFilter =
-document
-.getElementById(
-"orderStatusFilter"
-)
-.value;
+  if(!Array.isArray(orders)){
 
-if(statusFilter){
+    orders = [];
 
-list =
-list.filter(
-order =>
-order.status ===
-statusFilter
-);
+  }
+
+
+  let list =
+    orders.slice();
+
+
+  /* CANCELLED REMOVED */
+
+  list =
+    list.filter(
+      order =>
+        String(
+          order.status || ""
+        ) !==
+        "Cancelled"
+    );
+
+
+  /* STATUS FILTER */
+
+  const statusFilter =
+    document
+      .getElementById(
+        "orderStatusFilter"
+      )
+      .value;
+
+
+  if(statusFilter){
+
+    list =
+      list.filter(
+        order =>
+          String(
+            order.status || ""
+          ) ===
+          statusFilter
+      );
+
+  }
+
+
+  /* PAYMENT FILTER */
+
+  const paymentFilter =
+    document
+      .getElementById(
+        "paymentStatusFilter"
+      )
+      .value;
+
+
+  if(paymentFilter){
+
+    list =
+      list.filter(
+        order =>
+          String(
+            order.paymentStatus ||
+            order.payment_status ||
+            "Pending"
+          ) ===
+          paymentFilter
+      );
+
+  }
+
+
+  /* SEARCH */
+
+  const search =
+    document
+      .getElementById(
+        "orderSearch"
+      )
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  if(search){
+
+    list =
+      list.filter(
+        order => {
+
+          const customer =
+            order.customer ||
+            {};
+
+
+          return (
+
+            String(
+              order.id || ""
+            )
+            .toLowerCase()
+            .includes(search)
+
+            ||
+
+            String(
+              customer.phone || ""
+            )
+            .toLowerCase()
+            .includes(search)
+
+            ||
+
+            String(
+              customer.name || ""
+            )
+            .toLowerCase()
+            .includes(search)
+
+          );
+
+        }
+      );
+
+  }
+
+
+  if(!list.length){
+
+    box.innerHTML = `
+      <div class="empty">
+        No active orders found.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+    list.map(
+      order => {
+
+        const customer =
+          order.customer ||
+          {};
+
+
+        const items =
+          Array.isArray(order.items)
+          ?
+          order.items
+          :
+          [];
+
+
+        const paymentStatus =
+          order.paymentStatus ||
+          order.payment_status ||
+          "Pending";
+
+
+        const paymentMethod =
+          order.paymentMethod ||
+          order.payment_method ||
+          "Cash on Delivery";
+
+
+        const created =
+          order.createdAt ||
+          order.created_at ||
+          "";
+
+
+        return `
+
+        <div class="order">
+
+
+          <div class="orderHead">
+
+            <div>
+
+              <div class="orderId">
+
+                Order #
+                ${escapeHtml(
+                  order.id
+                )}
+
+              </div>
+
+
+              <small>
+
+                ${
+                  created
+                  ?
+                  escapeHtml(
+                    new Date(
+                      created
+                    ).toLocaleString(
+                      "en-BD"
+                    )
+                  )
+                  :
+                  ""
+                }
+
+              </small>
+
+            </div>
+
+
+            <div>
+
+              <span
+                class="
+                  status
+                  ${getStatusClass(
+                    order.status
+                  )}
+                "
+              >
+                ${escapeHtml(
+                  order.status ||
+                  "Pending"
+                )}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <hr>
+
+
+          <b>
+            Customer
+          </b>
+
+
+          <p>
+
+            Name:
+            ${escapeHtml(
+              customer.name || ""
+            )}
+
+            <br>
+
+            Phone:
+            ${escapeHtml(
+              customer.phone || ""
+            )}
+
+            <br>
+
+            Address:
+            ${escapeHtml(
+              customer.address || ""
+            )}
+
+          </p>
+
+
+          <!-- STATUS -->
+
+          <div
+            style="
+              display:grid;
+              grid-template-columns:1fr 1fr;
+              gap:10px;
+              margin-top:10px;
+            "
+          >
+
+            <div>
+
+              <label>
+                Order Status
+              </label>
+
+              <select
+                class="statusSelect"
+                id="status-${escapeHtml(
+                  String(order.id)
+                )}"
+              >
+
+                <option
+                  value="Pending"
+                  ${
+                    order.status === "Pending"
+                    ?
+                    "selected"
+                    :
+                    ""
+                  }
+                >
+                  Pending
+                </option>
+
+
+                <option
+                  value="Confirmed"
+                  ${
+                    order.status === "Confirmed"
+                    ?
+                    "selected"
+                    :
+                    ""
+                  }
+                >
+                  Confirmed
+                </option>
+
+
+                <option
+                  value="Processing"
+                  ${
+                    order.status === "Processing"
+                    ?
+                    "selected"
+                    :
+                    ""
+                  }
+                >
+                  Processing
+                </option>
+
+
+                <option
+                  value="Shipped"
+                  ${
+                    order.status === "Shipped"
+                    ?
+                    "selected"
+                    :
+                    ""
+                  }
+                >
+                  Shipped
+                </option>
+
+
+                <option
+                  value="Delivered"
+                  ${
+                    order.status === "Delivered"
+                    ?
+                    "selected"
+                    :
+                    ""
+                  }
+                >
+                  Delivered
+                </option>
+
+
+                <option
+                  value="Cancelled"
+                >
+                  Cancelled
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- PAYMENT -->
+
+            <div>
+
+              <label>
+                Payment Status
+              </label>
+
+              <select
+                class="paymentSelect"
+                id="payment-${escapeHtml(
+                  String(order.id)
+                )}"
+              >
+
+                <option
+                  value="Pending"
+                  ${
+                    paymentStatus === "Pending"
+                    ?
+                    "selected"
+                    :
+                    ""
+                  }
+                >
+                  Pending
+                </option>
+
+
+                <option
+                  value="Paid"
+                  ${
+                    paymentStatus === "Paid"
+                    ?
+                    "selected"
+                    :
+                    ""
+                  }
+                >
+                  Paid
+                </option>
+
+
+                <option
+                  value="Failed"
+                  ${
+                    paymentStatus === "Failed"
+                    ?
+                    "selected"
+                    :
+                    ""
+                  }
+                >
+                  Failed
+                </option>
+
+
+                <option
+                  value="Refunded"
+                  ${
+                    paymentStatus === "Refunded"
+                    ?
+                    "selected"
+                    :
+                    ""
+                  }
+                >
+                  Refunded
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <!-- BUTTONS -->
+
+          <div
+            style="
+              display:flex;
+              gap:8px;
+              margin-top:10px;
+              flex-wrap:wrap;
+            "
+          >
+
+            <button
+              class="btn"
+              onclick="
+                updateOrderStatus(
+                  '${escapeHtml(
+                    String(order.id)
+                  )}'
+                )
+              "
+            >
+              💾 Update Order
+            </button>
+
+
+            <button
+              class="btn green"
+              onclick="
+                updatePaymentStatus(
+                  '${escapeHtml(
+                    String(order.id)
+                  )}'
+                )
+              "
+            >
+              💳 Update Payment
+            </button>
+
+          </div>
+
+
+          <!-- PAYMENT INFO -->
+
+          <p>
+
+            <b>
+              Payment Method:
+            </b>
+
+            ${escapeHtml(
+              paymentMethod
+            )}
+
+            &nbsp; | &nbsp;
+
+            <b>
+              Payment:
+            </b>
+
+            <span
+              class="
+                status
+                ${getPaymentClass(
+                  paymentStatus
+                )}
+              "
+            >
+              ${escapeHtml(
+                paymentStatus
+              )}
+            </span>
+
+          </p>
+
+
+          <!-- PRODUCTS -->
+
+          <div class="orderItems">
+
+            <b>
+              Products
+            </b>
+
+
+            ${
+              items.length
+              ?
+              items.map(
+                item => {
+
+                  const qty =
+                    Number(
+                      item.qty ||
+                      item.quantity ||
+                      0
+                    );
+
+
+                  const itemPrice =
+                    Number(
+                      item.price || 0
+                    );
+
+
+                  return `
+
+                    <div class="orderItem">
+
+                      ${escapeHtml(
+                        item.name || ""
+                      )}
+
+                      ×
+
+                      ${qty}
+
+                      =
+
+                      ${money(
+                        itemPrice * qty
+                      )}
+
+                    </div>
+
+                  `;
+
+                }
+              ).join("")
+              :
+              `
+              <div
+                style="
+                  color:#777;
+                  padding:8px 0;
+                "
+              >
+                No product details.
+              </div>
+              `
+            }
+
+
+            <hr>
+
+
+            <b>
+              Total:
+              ${money(
+                order.total || 0
+              )}
+            </b>
+
+          </div>
+
+
+        </div>
+
+        `;
+
+      }
+    ).join("");
 
 }
 
 
-/* FILTER PAYMENT */
-
-const paymentFilter =
-document
-.getElementById(
-"paymentStatusFilter"
-)
-.value;
-
-if(paymentFilter){
-
-list =
-list.filter(
-order =>
-(order.paymentStatus ||
-"Pending") ===
-paymentFilter
-);
-
-}
-
-
-/* SEARCH */
-
-const search =
-document
-.getElementById(
-"orderSearch"
-)
-.value
-.toLowerCase()
-.trim();
-
-if(search){
-
-list =
-list.filter(
-order => {
-
-const customer =
-order.customer ||
-{};
-
-return (
-
-String(
-order.id
-)
-.toLowerCase()
-.includes(
-search
-)
-
-||
-
-String(
-customer.phone ||
-""
-)
-.toLowerCase()
-.includes(
-search
-)
-
-||
-
-String(
-customer.name ||
-""
-)
-.toLowerCase()
-.includes(
-search
-)
-
-);
-
-}
-);
-
-}
-
-
-if(
-!list.length
-){
-
-box.innerHTML =
-"<p>No active orders found.</p>";
-
-return;
-
-}
-
-
-box.innerHTML =
-list.map(
-order => {
-
-const customer =
-order.customer ||
-{};
-
-const items =
-order.items ||
-[];
-
-const paymentStatus =
-order.paymentStatus ||
-"Pending";
-
-return `
-
-<div class="order">
-
-<div class="orderHead">
-
-<div>
-
-<div class="orderId">
-
-Order #
-${escapeHtml(
-order.id
-)}
-
-</div>
-
-<small>
-
-${order.createdAt
-?
-new Date(
-order.createdAt
-).toLocaleString(
-"en-BD"
-)
-:
-""
-}
-
-</small>
-
-</div>
-
-
-<div class="statusBox">
-
-<span
-class="
-status
-${getStatusClass(
-order.status
-)}
-"
->
-
-${escapeHtml(
-order.status ||
-"Pending"
-)}
-
-</span>
-
-</div>
-
-</div>
-
-
-<hr>
-
-
-<b>
-Customer
-</b>
-
-<p>
-
-Name:
-${escapeHtml(
-customer.name ||
-""
-)}
-
-<br>
-
-Phone:
-${escapeHtml(
-customer.phone ||
-""
-)}
-
-<br>
-
-Address:
-${escapeHtml(
-customer.address ||
-""
-)}
-
-</p>
-
-
-<div
-style="
-display:grid;
-grid-template-columns:
-1fr 1fr;
-gap:10px;
-margin-top:10px
-"
->
-
-
-<div>
-
-<label>
-Order Status
-</label>
-
-<select
-class="statusSelect"
-id="status-${escapeHtml(
-String(order.id)
-)}"
->
-
-<option
-value="Pending"
-${order.status==="Pending"?"selected":""}
->
-Pending
-</option>
-
-<option
-value="Confirmed"
-${order.status==="Confirmed"?"selected":""}
->
-Confirmed
-</option>
-
-<option
-value="Processing"
-${order.status==="Processing"?"selected":""}
->
-Processing
-</option>
-
-<option
-value="Shipped"
-${order.status==="Shipped"?"selected":""}
->
-Shipped
-</option>
-
-<option
-value="Delivered"
-${order.status==="Delivered"?"selected":""}
->
-Delivered
-</option>
-
-<option
-value="Cancelled"
->
-Cancelled
-</option>
-
-</select>
-
-</div>
-
-
-<div>
-
-<label>
-Payment Status
-</label>
-
-<select
-class="paymentSelect"
-id="payment-${escapeHtml(
-String(order.id)
-)}"
->
-
-<option
-value="Pending"
-${paymentStatus==="Pending"?"selected":""}
->
-Pending
-</option>
-
-<option
-value="Paid"
-${paymentStatus==="Paid"?"selected":""}
->
-Paid
-</option>
-
-<option
-value="Failed"
-${paymentStatus==="Failed"?"selected":""}
->
-Failed
-</option>
-
-<option
-value="Refunded"
-${paymentStatus==="Refunded"?"selected":""}
->
-Refunded
-</option>
-
-</select>
-
-</div>
-
-</div>
-
-
-<div
-style="
-display:flex;
-gap:8px;
-margin-top:8px;
-flex-wrap:wrap
-"
->
-
-<button
-class="btn"
-onclick="
-updateOrderStatus(
-'${escapeHtml(
-String(order.id)
-)}'
-)
-"
->
-💾 Update Order
-</button>
-
-<button
-class="btn green"
-onclick="
-updatePaymentStatus(
-'${escapeHtml(
-String(order.id)
-)}'
-)
-"
->
-💳 Update Payment
-</button>
-
-</div>
-
-
-<p>
-
-<b>
-Payment Method:
-</b>
-
-${escapeHtml(
-order.paymentMethod ||
-"cod"
-)}
-
-&nbsp; | &nbsp;
-
-<b>
-Payment:
-</b>
-
-<span
-class="
-status
-${getPaymentClass(
-paymentStatus
-)}
-"
->
-
-${escapeHtml(
-paymentStatus
-)}
-
-</span>
-
-</p>
-
-
-<div class="orderItems">
-
-<b>
-Products
-</b>
-
-${items.map(
-item => `
-
-<div class="orderItem">
-
-${escapeHtml(
-item.name || ""
-)}
-
-×
-${Number(
-item.qty || 0
-)}
-
-=
-
-৳${Number(
-(Number(item.price) || 0) *
-(Number(item.qty) || 0)
-).toLocaleString(
-"en-BD"
-)}
-
-</div>
-
-`
-).join("")}
-
-
-<hr>
-
-
-<b>
-
-Total:
-৳${Number(
-order.total || 0
-).toLocaleString(
-"en-BD"
-)}
-
-</b>
-
-</div>
-
-</div>
-
-`;
-
-}
-).join("");
-
-}
-
-
-/* =====================================================
+/* =========================================================
    UPDATE ORDER STATUS
-===================================================== */
+========================================================= */
 
 async function updateOrderStatus(
-orderId
+  orderId
 ){
 
-const select =
-document.getElementById(
-"status-" +
-orderId
-);
-
-if(!select){
-return;
-}
-
-const status =
-select.value;
+  const select =
+    document.getElementById(
+      "status-" +
+      orderId
+    );
 
 
-/*
-SPECIAL CANCEL FLOW
+  if(!select){
 
-When Cancelled is selected:
-1. Database gets Cancelled
-2. Orders reload from server
-3. Cancelled order disappears immediately
-4. Refresh also keeps it gone
-*/
+    return;
 
-if(status === "Cancelled"){
-
-const ok =
-confirm(
-"Are you sure you want to cancel this order?\n\nThe cancelled order will be removed from the active order list."
-);
-
-if(!ok){
-
-/* Restore original order */
-
-await loadOrders();
-
-return;
-
-}
-
-}
+  }
 
 
-try{
-
-await api(
-
-"/api/admin/orders/" +
-encodeURIComponent(
-orderId
-) +
-"/status",
-
-{
-method:"PUT",
-
-body:{
-status:status
-}
-
-}
-
-);
+  const status =
+    select.value;
 
 
-/*
-Reload from DATABASE
-*/
+  if(status === "Cancelled"){
 
-await loadOrders();
-
-
-if(status === "Cancelled"){
-
-alert(
-"Order cancelled successfully."
-);
-
-}else{
-
-alert(
-"Order status updated to " +
-status
-);
-
-}
+    const ok =
+      confirm(
+        "Are you sure you want to cancel this order?\n\nThe cancelled order will be removed from the active list."
+      );
 
 
-}catch(error){
+    if(!ok){
 
-alert(
-error.message
-);
+      await loadOrders();
 
-await loadOrders();
+      return;
 
-}
+    }
+
+  }
+
+
+  try{
+
+    await api(
+      "/api/admin/orders/" +
+      encodeURIComponent(
+        orderId
+      ) +
+      "/status",
+      {
+        method:"PUT",
+        body:{
+          status:status
+        }
+      }
+    );
+
+
+    await loadOrders();
+
+
+    if(status === "Cancelled"){
+
+      alert(
+        "Order cancelled successfully."
+      );
+
+    }else{
+
+      alert(
+        "Order status updated to " +
+        status
+      );
+
+    }
+
+
+  }catch(error){
+
+    alert(
+      error.message ||
+      "Failed to update order."
+    );
+
+
+    await loadOrders();
+
+  }
 
 }
 
 
-/* =====================================================
-   UPDATE PAYMENT STATUS
-===================================================== */
+/* =========================================================
+   UPDATE PAYMENT
+========================================================= */
 
 async function updatePaymentStatus(
-orderId
+  orderId
 ){
 
-const select =
-document.getElementById(
-"payment-" +
-orderId
-);
+  const select =
+    document.getElementById(
+      "payment-" +
+      orderId
+    );
 
-if(!select){
-return;
+
+  if(!select){
+
+    return;
+
+  }
+
+
+  const paymentStatus =
+    select.value;
+
+
+  try{
+
+    /*
+      Current server endpoint:
+      /api/admin/orders/:id/payment
+    */
+
+    await api(
+      "/api/admin/orders/" +
+      encodeURIComponent(
+        orderId
+      ) +
+      "/payment",
+      {
+        method:"PUT",
+        body:{
+          paymentStatus:
+            paymentStatus
+        }
+      }
+    );
+
+
+    await loadOrders();
+
+
+    alert(
+      "Payment status updated to " +
+      paymentStatus
+    );
+
+
+  }catch(error){
+
+    alert(
+      error.message ||
+      "Failed to update payment."
+    );
+
+  }
+
 }
 
-const paymentStatus =
-select.value;
 
-try{
-
-await api(
-
-"/api/admin/orders/" +
-encodeURIComponent(
-orderId
-) +
-"/payment-status",
-
-{
-method:"PUT",
-
-body:{
-paymentStatus:
-paymentStatus
-}
-
-}
-
-);
-
-await loadOrders();
-
-alert(
-"Payment status updated to " +
-paymentStatus
-);
-
-}catch(error){
-
-alert(
-error.message
-);
-
-}
-
-}
-
-
-/* =====================================================
-   SETTINGS
-===================================================== */
+/* =========================================================
+   LOAD SETTINGS
+========================================================= */
 
 async function loadSettings(){
 
-try{
+  try{
 
-const data =
-await api(
-"/api/store"
-);
+    const data =
+      await api(
+        "/api/store",
+        {
+          method:"GET"
+        }
+      );
 
-const s =
-data.settings ||
-{};
 
-document
-.getElementById(
-"shopName"
-)
-.value =
-s.shopName ||
-"";
+    const s =
+      data.settings ||
+      {};
 
-document
-.getElementById(
-"tagline"
-)
-.value =
-s.tagline ||
-"";
 
-document
-.getElementById(
-"phone1"
-)
-.value =
-s.phone1 ||
-"";
+    document
+      .getElementById(
+        "shopName"
+      )
+      .value =
+        s.shopName ||
+        s.shop_name ||
+        "SM Online Shop";
 
-document
-.getElementById(
-"phone2"
-)
-.value =
-s.phone2 ||
-"";
 
-document
-.getElementById(
-"facebook"
-)
-.value =
-s.facebook ||
-"";
+    document
+      .getElementById(
+        "tagline"
+      )
+      .value =
+        s.tagline ||
+        "Style • Comfort • Confidence ♥";
 
-document
-.getElementById(
-"currency"
-)
-.value =
-s.currency ||
-"BDT";
 
-}catch(error){
+    document
+      .getElementById(
+        "phone1"
+      )
+      .value =
+        s.phone1 ||
+        "01827872334";
 
-console.error(
-error
-);
+
+    document
+      .getElementById(
+        "phone2"
+      )
+      .value =
+        s.phone2 ||
+        "01886995687";
+
+
+    document
+      .getElementById(
+        "facebook"
+      )
+      .value =
+        s.facebook ||
+        "https://www.facebook.com/share/1Dr8FEmuoQ/";
+
+
+    document
+      .getElementById(
+        "currency"
+      )
+      .value =
+        s.currency ||
+        "BDT";
+
+
+    updateFacebookLink();
+
+
+  }catch(error){
+
+    console.error(
+      "Settings error:",
+      error
+    );
+
+  }
 
 }
 
-}
 
-
-/* =====================================================
+/* =========================================================
    SAVE SETTINGS
-===================================================== */
+========================================================= */
 
 async function saveSettings(){
 
-const msg =
-document.getElementById(
-"settingsMsg"
-);
+  const msg =
+    document.getElementById(
+      "settingsMsg"
+    );
 
-msg.className =
-"msg";
 
-try{
+  msg.className =
+    "msg";
 
-await api(
 
-"/api/admin/settings",
+  try{
 
-{
+    const body = {
 
-method:"PUT",
+      shopName:
+        document
+          .getElementById(
+            "shopName"
+          )
+          .value
+          .trim(),
 
-body:{
+      tagline:
+        document
+          .getElementById(
+            "tagline"
+          )
+          .value
+          .trim(),
 
-shopName:
-document
-.getElementById(
-"shopName"
-)
-.value,
+      phone1:
+        document
+          .getElementById(
+            "phone1"
+          )
+          .value
+          .trim(),
 
-tagline:
-document
-.getElementById(
-"tagline"
-)
-.value,
+      phone2:
+        document
+          .getElementById(
+            "phone2"
+          )
+          .value
+          .trim(),
 
-phone1:
-document
-.getElementById(
-"phone1"
-)
-.value,
+      facebook:
+        document
+          .getElementById(
+            "facebook"
+          )
+          .value
+          .trim(),
 
-phone2:
-document
-.getElementById(
-"phone2"
-)
-.value,
+      currency:
+        document
+          .getElementById(
+            "currency"
+          )
+          .value
 
-facebook:
-document
-.getElementById(
-"facebook"
-)
-.value,
+    };
 
-currency:
-document
-.getElementById(
-"currency"
-)
-.value
+
+    await api(
+      "/api/admin/settings",
+      {
+        method:"PUT",
+        body:body
+      }
+    );
+
+
+    msg.className =
+      "msg success";
+
+
+    msg.textContent =
+      "Settings saved successfully.";
+
+
+    updateFacebookLink();
+
+
+  }catch(error){
+
+    msg.className =
+      "msg error";
+
+
+    msg.textContent =
+      error.message ||
+      "Failed to save settings.";
+
+  }
 
 }
 
+
+/* =========================================================
+   FACEBOOK LINK
+========================================================= */
+
+function updateFacebookLink(){
+
+  const input =
+    document.getElementById(
+      "facebook"
+    );
+
+
+  const link =
+    document.getElementById(
+      "facebookLink"
+    );
+
+
+  if(
+    input &&
+    link
+  ){
+
+    const value =
+      input.value.trim();
+
+
+    if(value){
+
+      link.href =
+        value;
+
+    }
+
+  }
+
 }
 
-);
 
-msg.className =
-"msg success";
-
-msg.textContent =
-"Settings saved successfully.";
-
-}catch(error){
-
-msg.className =
-"msg error";
-
-msg.textContent =
-error.message;
-
-}
-
-}
-
-
-/* =====================================================
+/* =========================================================
    STATS
-===================================================== */
+========================================================= */
 
 function updateStats(){
 
-const activeOrders =
-orders.filter(
-x =>
-x.status !==
-"Cancelled"
-);
+  if(!Array.isArray(products)){
+
+    products = [];
+
+  }
 
 
-document
-.getElementById(
-"productCount"
-)
-.textContent =
-products.length;
+  if(!Array.isArray(orders)){
+
+    orders = [];
+
+  }
 
 
-document
-.getElementById(
-"orderCount"
-)
-.textContent =
-activeOrders.length;
+  const activeOrders =
+    orders.filter(
+      x =>
+        String(
+          x.status || ""
+        ) !==
+        "Cancelled"
+    );
 
 
-document
-.getElementById(
-"pendingCount"
-)
-.textContent =
-
-activeOrders.filter(
-x =>
-x.status ===
-"Pending"
-).length;
+  document
+    .getElementById(
+      "productCount"
+    )
+    .textContent =
+      products.length;
 
 
-/*
-TOTAL SALES
-
-Cancelled orders excluded.
-*/
-
-const sales =
-activeOrders.reduce(
-(sum,x) => {
-
-return (
-sum +
-Number(
-x.total || 0
-)
-);
-
-},
-0
-);
+  document
+    .getElementById(
+      "orderCount"
+    )
+    .textContent =
+      activeOrders.length;
 
 
-document
-.getElementById(
-"salesTotal"
-)
-.textContent =
-"৳" +
-sales.toLocaleString(
-"en-BD"
-);
+  document
+    .getElementById(
+      "pendingCount"
+    )
+    .textContent =
+      activeOrders.filter(
+        x =>
+          String(
+            x.status || ""
+          ) ===
+          "Pending"
+      ).length;
 
-}
+
+  const sales =
+    activeOrders.reduce(
+      (
+        sum,
+        x
+      ) =>
+        sum +
+        Number(
+          x.total || 0
+        ),
+      0
+    );
 
 
-/* =====================================================
-   SECURITY / ESCAPE HTML
-===================================================== */
-
-function escapeHtml(
-value
-){
-
-return String(
-value == null
-?
-""
-:
-value
-)
-
-.replace(
-/&/g,
-"&amp;"
-)
-
-.replace(
-/</g,
-"&lt;"
-)
-
-.replace(
-/>/g,
-"&gt;"
-)
-
-.replace(
-/"/g,
-"&quot;"
-)
-
-.replace(
-/'/g,
-"&#039;"
-);
+  document
+    .getElementById(
+      "salesTotal"
+    )
+    .textContent =
+      money(sales);
 
 }
 
 
-/* =====================================================
-   START
-===================================================== */
+/* =========================================================
+   PAGE START
+========================================================= */
 
-if(token){
+document.addEventListener(
+  "DOMContentLoaded",
+  async function(){
 
-showAdmin();
+    /*
+      If old token exists,
+      try opening admin.
+    */
 
-}
+    if(token){
+
+      try{
+
+        await showAdmin();
+
+      }catch(error){
+
+        console.error(
+          error
+        );
+
+        token = "";
+
+        localStorage.removeItem(
+          "smAdminToken"
+        );
+
+      }
+
+    }
+
+    /*
+      Settings Facebook live update
+    */
+
+    const facebook =
+      document.getElementById(
+        "facebook"
+      );
+
+
+    if(facebook){
+
+      facebook.addEventListener(
+        "input",
+        updateFacebookLink
+      );
+
+    }
+
+  }
+);
 
 </script>
 
 </body>
-
 </html>
