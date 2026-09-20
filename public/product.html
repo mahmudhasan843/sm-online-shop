@@ -1,1 +1,1654 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+<meta
+  name="theme-color"
+  content="#f70870">
+
+<title>Product Details - SM Online Shop</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#fafafa;
+  color:#222;
+}
+
+button{
+  font:inherit;
+  cursor:pointer;
+}
+
+a{
+  text-decoration:none;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:#fff;
+  border-bottom:1px solid #eee;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+
+.header{
+  max-width:1200px;
+  min-height:65px;
+  margin:auto;
+  padding:8px 15px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.logo-circle{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#181818;
+  border:3px solid #ff4b9b;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+.shop-name{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:19px;
+  font-weight:bold;
+}
+
+.tagline{
+  color:#f70870;
+  font-size:9px;
+  font-weight:bold;
+  margin-top:2px;
+}
+
+.back-btn{
+  border:0;
+  background:#fff0f7;
+  color:#f70870;
+  padding:9px 14px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+main{
+  max-width:1200px;
+  margin:auto;
+  padding:25px 12px 50px;
+}
+
+.breadcrumb{
+  font-size:12px;
+  color:#888;
+  margin-bottom:18px;
+}
+
+.product-details{
+  background:#fff;
+  border-radius:16px;
+  border:1px solid #eee;
+  padding:18px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+  box-shadow:0 3px 15px rgba(0,0,0,.05);
+}
+
+/* =========================
+   GALLERY
+========================= */
+
+.gallery{
+  min-width:0;
+}
+
+.main-image-box{
+  width:100%;
+  height:520px;
+  background:#f7f7f7;
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+}
+
+.main-image{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  cursor:zoom-in;
+  transition:transform .3s;
+}
+
+.main-image:hover{
+  transform:scale(1.03);
+}
+
+.discount-badge{
+  position:absolute;
+  top:12px;
+  left:12px;
+  z-index:5;
+  background:#f70870;
+  color:#fff;
+  padding:7px 10px;
+  border-radius:7px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.thumbnails{
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding:12px 2px 4px;
+}
+
+.thumbnail{
+  flex:0 0 76px;
+  width:76px;
+  height:86px;
+  border:2px solid #eee;
+  border-radius:9px;
+  overflow:hidden;
+  background:#fff;
+  cursor:pointer;
+}
+
+.thumbnail.active{
+  border-color:#f70870;
+}
+
+.thumbnail img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* =========================
+   INFO
+========================= */
+
+.product-info{
+  padding:8px 5px;
+}
+
+.category{
+  color:#f70870;
+  font-size:12px;
+  font-weight:bold;
+  margin-bottom:9px;
+  text-transform:uppercase;
+}
+
+.product-name{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:31px;
+  line-height:1.2;
+  margin-bottom:10px;
+}
+
+.rating{
+  color:#f2b600;
+  font-size:14px;
+  margin-bottom:18px;
+}
+
+.price-box{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:8px;
+}
+
+.current-price{
+  color:#f70870;
+  font-size:29px;
+  font-weight:bold;
+}
+
+.old-price{
+  color:#999;
+  font-size:16px;
+  text-decoration:line-through;
+}
+
+.discount-text{
+  background:#fff0f7;
+  color:#d9005d;
+  padding:5px 8px;
+  border-radius:6px;
+  font-size:11px;
+  font-weight:bold;
+}
+
+.stock{
+  color:#198754;
+  font-size:13px;
+  margin:12px 0 20px;
+}
+
+.out-stock{
+  color:#dc3545;
+}
+
+.description-title{
+  font-size:17px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.description{
+  color:#666;
+  font-size:14px;
+  line-height:1.7;
+  white-space:pre-line;
+  margin-bottom:22px;
+}
+
+.quantity-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.quantity-box button{
+  width:36px;
+  height:36px;
+  border:1px solid #ddd;
+  background:#fff;
+  border-radius:7px;
+  font-size:20px;
+}
+
+.quantity{
+  min-width:30px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.add-cart{
+  width:100%;
+  height:48px;
+  border:0;
+  border-radius:9px;
+  background:#f70870;
+  color:#fff;
+  font-weight:bold;
+  font-size:15px;
+}
+
+.add-cart:hover{
+  background:#d9005d;
+}
+
+.add-cart:disabled{
+  background:#aaa;
+  cursor:not-allowed;
+}
+
+.buy-now{
+  width:100%;
+  height:45px;
+  border:1px solid #f70870;
+  border-radius:9px;
+  background:#fff;
+  color:#f70870;
+  font-weight:bold;
+  margin-top:9px;
+}
+
+/* =========================
+   ZOOM
+========================= */
+
+#zoomModal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:rgba(0,0,0,.94);
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+#zoomImage{
+  max-width:94%;
+  max-height:84vh;
+  object-fit:contain;
+  transition:transform .25s;
+  touch-action:none;
+}
+
+.zoom-close{
+  position:absolute;
+  top:8px;
+  right:15px;
+  border:0;
+  background:transparent;
+  color:#fff;
+  font-size:40px;
+}
+
+.zoom-controls{
+  position:absolute;
+  bottom:20px;
+  display:flex;
+  gap:8px;
+}
+
+.zoom-controls button{
+  width:45px;
+  height:40px;
+  border:0;
+  border-radius:8px;
+  background:#fff;
+  color:#222;
+  font-size:20px;
+}
+
+/* =========================
+   LOADING / ERROR
+========================= */
+
+.loading{
+  text-align:center;
+  padding:100px 20px;
+  color:#777;
+}
+
+.error{
+  text-align:center;
+  padding:80px 20px;
+}
+
+.error h2{
+  margin-bottom:10px;
+}
+
+.home-btn{
+  display:inline-block;
+  margin-top:15px;
+  background:#f70870;
+  color:#fff;
+  padding:11px 20px;
+  border-radius:8px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:800px){
+
+  .product-details{
+    grid-template-columns:1fr;
+    gap:20px;
+    padding:12px;
+  }
+
+  .main-image-box{
+    height:400px;
+  }
+
+  .product-name{
+    font-size:25px;
+  }
+
+  .current-price{
+    font-size:25px;
+  }
+
+}
+
+@media(max-width:500px){
+
+  .shop-name{
+    font-size:15px;
+  }
+
+  .tagline{
+    font-size:8px;
+  }
+
+  .logo-circle{
+    width:38px;
+    height:38px;
+  }
+
+  .back-btn{
+    padding:8px 10px;
+    font-size:10px;
+  }
+
+  main{
+    padding:18px 7px 35px;
+  }
+
+  .main-image-box{
+    height:360px;
+  }
+
+  .product-name{
+    font-size:23px;
+  }
+
+  .description{
+    font-size:13px;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <div class="header">
+
+    <div class="logo">
+
+      <div class="logo-circle">
+        SM
+      </div>
+
+      <div>
+
+        <div
+          class="shop-name"
+          id="shopName">
+          SM Online Shop
+        </div>
+
+        <div
+          class="tagline"
+          id="tagline">
+          Style • Comfort • Confidence ♥
+        </div>
+
+      </div>
+
+    </div>
+
+    <button
+      class="back-btn"
+      onclick="goBack()">
+
+      ← Back to Shop
+
+    </button>
+
+  </div>
+
+</header>
+
+
+<main>
+
+  <div
+    class="breadcrumb"
+    id="breadcrumb">
+
+    Home / Product
+
+  </div>
+
+
+  <div
+    id="loading"
+    class="loading">
+
+    Loading product...
+
+  </div>
+
+
+  <div
+    id="error"
+    class="error"
+    style="display:none;">
+
+    <h2>Product not found</h2>
+
+    <p>
+      This product may have been removed.
+    </p>
+
+    <a
+      class="home-btn"
+      href="/">
+
+      Back to Shop
+
+    </a>
+
+  </div>
+
+
+  <div
+    id="productDetails"
+    class="product-details"
+    style="display:none;">
+
+    <!-- GALLERY -->
+
+    <div class="gallery">
+
+      <div class="main-image-box">
+
+        <div
+          id="discountBadge"
+          class="discount-badge"
+          style="display:none;">
+        </div>
+
+        <img
+          id="mainImage"
+          class="main-image"
+          src=""
+          alt="Product"
+          onclick="openZoom()">
+
+      </div>
+
+
+      <div
+        id="thumbnails"
+        class="thumbnails">
+      </div>
+
+    </div>
+
+
+    <!-- INFO -->
+
+    <div class="product-info">
+
+      <div
+        id="category"
+        class="category">
+      </div>
+
+
+      <h1
+        id="productName"
+        class="product-name">
+      </h1>
+
+
+      <div
+        class="rating">
+        ★★★★★
+      </div>
+
+
+      <div class="price-box">
+
+        <span
+          id="currentPrice"
+          class="current-price">
+        </span>
+
+        <span
+          id="oldPrice"
+          class="old-price"
+          style="display:none;">
+        </span>
+
+        <span
+          id="discountText"
+          class="discount-text"
+          style="display:none;">
+        </span>
+
+      </div>
+
+
+      <div
+        id="stock"
+        class="stock">
+      </div>
+
+
+      <div
+        class="description-title">
+
+        Product Description
+
+      </div>
+
+
+      <div
+        id="description"
+        class="description">
+      </div>
+
+
+      <div class="quantity-box">
+
+        <button
+          onclick="changeQuantity(-1)">
+          −
+        </button>
+
+        <span
+          id="quantity"
+          class="quantity">
+          1
+        </span>
+
+        <button
+          onclick="changeQuantity(1)">
+          +
+        </button>
+
+      </div>
+
+
+      <button
+        id="addCartButton"
+        class="add-cart"
+        onclick="addToCart()">
+
+        🛒 Add to Cart
+
+      </button>
+
+
+      <button
+        class="buy-now"
+        onclick="goToShop()">
+
+        Continue Shopping
+
+      </button>
+
+    </div>
+
+  </div>
+
+</main>
+
+
+<!-- ZOOM MODAL -->
+
+<div
+  id="zoomModal">
+
+  <button
+    class="zoom-close"
+    onclick="closeZoom()">
+
+    ×
+
+  </button>
+
+
+  <img
+    id="zoomImage"
+    src=""
+    alt="Zoomed Product">
+
+
+  <div class="zoom-controls">
+
+    <button
+      onclick="zoomOut()">
+      −
+    </button>
+
+    <button
+      onclick="resetZoom()">
+      1×
+    </button>
+
+    <button
+      onclick="zoomIn()">
+      +
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   GLOBAL
+========================= */
+
+let product = null;
+
+let quantity = 1;
+
+let zoomLevel = 1;
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function money(value){
+
+  return "৳" +
+    Number(value || 0).toLocaleString(
+      "en-BD",
+      {
+        maximumFractionDigits:2
+      }
+    );
+
+}
+
+
+function getDiscount(product){
+
+  const direct =
+    Number(product.discount || 0);
+
+  if(direct > 0){
+    return direct;
+  }
+
+  const price =
+    Number(product.price || 0);
+
+  const oldPrice =
+    Number(
+      product.oldPrice ||
+      product.old_price ||
+      0
+    );
+
+  if(
+    oldPrice > price &&
+    price > 0
+  ){
+
+    return Math.round(
+      ((oldPrice-price) /
+      oldPrice) * 100
+    );
+
+  }
+
+  return 0;
+
+}
+
+
+function getGallery(product){
+
+  let gallery =
+    product.gallery;
+
+  if(
+    typeof gallery === "string"
+  ){
+
+    try{
+      gallery =
+        JSON.parse(gallery);
+    }catch(error){
+      gallery = [];
+    }
+
+  }
+
+  if(!Array.isArray(gallery)){
+    gallery = [];
+  }
+
+  const result = [];
+
+  if(product.image){
+    result.push(product.image);
+  }
+
+  gallery.forEach(
+    image => {
+
+      if(
+        image &&
+        !result.includes(image)
+      ){
+
+        result.push(image);
+
+      }
+
+    }
+  );
+
+  return result.slice(0,3);
+
+}
+
+
+/* =========================
+   LOAD PRODUCT
+========================= */
+
+async function loadProduct(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const id =
+    params.get("id");
+
+  if(!id){
+
+    showError();
+    return;
+
+  }
+
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/products",
+        {
+          cache:"no-store"
+        }
+      );
+
+    const data =
+      await response.json();
+
+    const products =
+      Array.isArray(data)
+        ? data
+        : (
+          data.products ||
+          data.items ||
+          []
+        );
+
+
+    product =
+      products.find(
+        item =>
+          String(item.id) ===
+          String(id)
+      );
+
+
+    if(!product){
+
+      showError();
+      return;
+
+    }
+
+
+    renderProduct();
+
+  }catch(error){
+
+    console.error(error);
+
+    showError();
+
+  }
+
+}
+
+
+/* =========================
+   RENDER PRODUCT
+========================= */
+
+function renderProduct(){
+
+  document.getElementById(
+    "loading"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "productDetails"
+  ).style.display = "grid";
+
+
+  const name =
+    product.name ||
+    "Product";
+
+
+  const category =
+    product.category ||
+    "General";
+
+
+  const price =
+    Number(product.price || 0);
+
+
+  const oldPrice =
+    Number(
+      product.oldPrice ||
+      product.old_price ||
+      0
+    );
+
+
+  const stock =
+    Number(product.stock || 0);
+
+
+  const description =
+    product.description ||
+    "No description available.";
+
+
+  const discount =
+    getDiscount(product);
+
+
+  document.title =
+    name +
+    " - SM Online Shop";
+
+
+  document.getElementById(
+    "breadcrumb"
+  ).textContent =
+    "Home / " +
+    category +
+    " / " +
+    name;
+
+
+  document.getElementById(
+    "category"
+  ).textContent =
+    category;
+
+
+  document.getElementById(
+    "productName"
+  ).textContent =
+    name;
+
+
+  document.getElementById(
+    "currentPrice"
+  ).textContent =
+    money(price);
+
+
+  document.getElementById(
+    "description"
+  ).textContent =
+    description;
+
+
+  /* OLD PRICE */
+
+  if(oldPrice > price){
+
+    const old =
+      document.getElementById(
+        "oldPrice"
+      );
+
+    old.textContent =
+      money(oldPrice);
+
+    old.style.display =
+      "inline";
+
+  }
+
+
+  /* DISCOUNT */
+
+  if(discount > 0){
+
+    const badge =
+      document.getElementById(
+        "discountBadge"
+      );
+
+    badge.textContent =
+      "-" + discount + "% OFF";
+
+    badge.style.display =
+      "block";
+
+
+    const discountText =
+      document.getElementById(
+        "discountText"
+      );
+
+    discountText.textContent =
+      "Save " + discount + "%";
+
+    discountText.style.display =
+      "inline";
+
+  }
+
+
+  /* STOCK */
+
+  const stockElement =
+    document.getElementById(
+      "stock"
+    );
+
+
+  if(stock > 0){
+
+    stockElement.textContent =
+      "✓ In stock (" +
+      stock +
+      " available)";
+
+    stockElement.className =
+      "stock";
+
+  }else{
+
+    stockElement.textContent =
+      "✕ Out of stock";
+
+    stockElement.className =
+      "stock out-stock";
+
+    document.getElementById(
+      "addCartButton"
+    ).disabled = true;
+
+  }
+
+
+  /* GALLERY */
+
+  const gallery =
+    getGallery(product);
+
+
+  if(!gallery.length){
+
+    gallery.push(
+      "https://via.placeholder.com/700x700?text=SM+Online+Shop"
+    );
+
+  }
+
+
+  setMainImage(
+    gallery[0]
+  );
+
+
+  const thumbnails =
+    document.getElementById(
+      "thumbnails"
+    );
+
+
+  thumbnails.innerHTML =
+    gallery.map(
+      (image,index) => `
+
+        <button
+          class="thumbnail ${
+            index === 0
+              ? "active"
+              : ""
+          }"
+          onclick='selectImage(
+            ${JSON.stringify(image)},
+            this
+          )'>
+
+          <img
+            src="${escapeHtml(image)}"
+            alt="${escapeHtml(name)}">
+
+        </button>
+
+      `
+    ).join("");
+
+}
+
+
+/* =========================
+   MAIN IMAGE
+========================= */
+
+function setMainImage(src){
+
+  document.getElementById(
+    "mainImage"
+  ).src = src;
+
+}
+
+
+/* =========================
+   SELECT IMAGE
+========================= */
+
+function selectImage(
+  src,
+  button
+){
+
+  setMainImage(src);
+
+
+  document
+    .querySelectorAll(
+      ".thumbnail"
+    )
+    .forEach(
+      item =>
+        item.classList.remove(
+          "active"
+        )
+    );
+
+
+  button.classList.add(
+    "active"
+  );
+
+}
+
+
+/* =========================
+   ZOOM
+========================= */
+
+function openZoom(){
+
+  const src =
+    document.getElementById(
+      "mainImage"
+    ).src;
+
+  document.getElementById(
+    "zoomImage"
+  ).src = src;
+
+
+  zoomLevel = 1;
+
+  updateZoom();
+
+
+  document.getElementById(
+    "zoomModal"
+  ).style.display =
+    "flex";
+
+}
+
+
+function closeZoom(){
+
+  document.getElementById(
+    "zoomModal"
+  ).style.display =
+    "none";
+
+}
+
+
+function zoomIn(){
+
+  zoomLevel =
+    Math.min(
+      3,
+      zoomLevel + .25
+    );
+
+  updateZoom();
+
+}
+
+
+function zoomOut(){
+
+  zoomLevel =
+    Math.max(
+      1,
+      zoomLevel - .25
+    );
+
+  updateZoom();
+
+}
+
+
+function resetZoom(){
+
+  zoomLevel = 1;
+
+  updateZoom();
+
+}
+
+
+function updateZoom(){
+
+  document.getElementById(
+    "zoomImage"
+  ).style.transform =
+    "scale(" +
+    zoomLevel +
+    ")";
+
+}
+
+
+document.getElementById(
+  "zoomModal"
+).addEventListener(
+  "click",
+  function(event){
+
+    if(
+      event.target === this
+    ){
+
+      closeZoom();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   DOUBLE TAP ZOOM
+========================= */
+
+let lastTap = 0;
+
+document.getElementById(
+  "zoomImage"
+).addEventListener(
+  "touchend",
+  function(){
+
+    const now =
+      Date.now();
+
+    if(
+      now - lastTap <
+      350
+    ){
+
+      if(
+        zoomLevel === 1
+      ){
+
+        zoomLevel = 2;
+
+      }else{
+
+        zoomLevel = 1;
+
+      }
+
+      updateZoom();
+
+    }
+
+    lastTap = now;
+
+  }
+);
+
+
+/* =========================
+   QUANTITY
+========================= */
+
+function changeQuantity(change){
+
+  if(!product){
+    return;
+  }
+
+
+  const stock =
+    Number(product.stock || 0);
+
+
+  quantity += change;
+
+
+  if(quantity < 1){
+    quantity = 1;
+  }
+
+
+  if(quantity > stock){
+    quantity = stock;
+  }
+
+
+  if(stock <= 0){
+    quantity = 1;
+  }
+
+
+  document.getElementById(
+    "quantity"
+  ).textContent =
+    quantity;
+
+}
+
+
+/* =========================
+   ADD TO CART
+========================= */
+
+function addToCart(){
+
+  if(!product){
+    return;
+  }
+
+
+  const stock =
+    Number(product.stock || 0);
+
+
+  if(stock <= 0){
+
+    alert(
+      "This product is out of stock."
+    );
+
+    return;
+
+  }
+
+
+  let cart = [];
+
+
+  try{
+
+    cart =
+      JSON.parse(
+        localStorage.getItem(
+          "smCart"
+        ) || "[]"
+      );
+
+    if(!Array.isArray(cart)){
+      cart = [];
+    }
+
+  }catch(error){
+
+    cart = [];
+
+  }
+
+
+  const existing =
+    cart.find(
+      item =>
+        String(item.id) ===
+        String(product.id)
+    );
+
+
+  if(existing){
+
+    const newQty =
+      Number(existing.quantity || 0) +
+      quantity;
+
+
+    if(newQty > stock){
+
+      alert(
+        "Only " +
+        stock +
+        " items are available."
+      );
+
+      return;
+
+    }
+
+
+    existing.quantity =
+      newQty;
+
+  }else{
+
+    cart.push({
+
+      id:product.id,
+
+      name:
+        product.name ||
+        "Product",
+
+      price:
+        Number(
+          product.price || 0
+        ),
+
+      image:
+        product.image ||
+        getGallery(product)[0] ||
+        "",
+
+      quantity:
+        quantity,
+
+      stock:
+        stock
+
+    });
+
+  }
+
+
+  localStorage.setItem(
+    "smCart",
+    JSON.stringify(cart)
+  );
+
+
+  alert(
+    "Product added to cart!"
+  );
+
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function goBack(){
+
+  if(
+    document.referrer &&
+    document.referrer.includes(
+      window.location.host
+    )
+  ){
+
+    history.back();
+
+  }else{
+
+    window.location.href = "/";
+
+  }
+
+}
+
+
+function goToShop(){
+
+  window.location.href = "/";
+
+}
+
+
+/* =========================
+   STORE SETTINGS
+========================= */
+
+async function loadSettings(){
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/store",
+        {
+          cache:"no-store"
+        }
+      );
+
+    const data =
+      await response.json();
+
+
+    const settings =
+      data.settings ||
+      data.store ||
+      data ||
+      {};
+
+
+    document.getElementById(
+      "shopName"
+    ).textContent =
+      settings.shop_name ||
+      settings.shopName ||
+      "SM Online Shop";
+
+
+    document.getElementById(
+      "tagline"
+    ).textContent =
+      settings.tagline ||
+      "Style • Comfort • Confidence ♥";
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+function showError(){
+
+  document.getElementById(
+    "loading"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "error"
+  ).style.display =
+    "block";
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function(){
+
+    loadSettings();
+
+    loadProduct();
+
+  }
+);
+
+</script>
+
+</body>
+</html>
